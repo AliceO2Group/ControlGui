@@ -1,2 +1,2 @@
 # ControlGui
-Web gui elements for the control
+Web GUI elements for the control
