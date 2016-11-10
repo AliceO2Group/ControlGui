@@ -1,5 +1,4 @@
 const config = require('./../config.json');
-const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -8,10 +7,14 @@ const oauth2 = require('simple-oauth2');
 const mustache = require('mustache');
 const EventEmitter = require("events").EventEmitter;
 
+const JwtToken = require('./../jwt/token.js');
+
 module.exports = class HTTPServer {
 
   constructor(credentials, app) {
     this.app = app;
+
+    this.jwt = new JwtToken(config.jwtSecret);
  
     this.oAuthInitConfiguration();
     this.enableHttpRedirect();
@@ -87,7 +90,7 @@ module.exports = class HTTPServer {
       var emitter = new EventEmitter();
       this.oAuthGetUserDetails(oAuthToken.token.access_token, emitter);
       emitter.on('userdata', function(data) {
-        data.token = this.generateToken(data.personid);
+        data.token = this.jwt.generateToken(data.personid, 1);
         return res.status(200).send(this.renderPage('public/index.tpl', data));
       }.bind(this));
     }.bind(this));    
@@ -127,34 +130,15 @@ module.exports = class HTTPServer {
     postRequest.end();
   }
 
-  generateToken(userId) {
-    var user = { id: userId, access: 2 };  
-    var token = jwt.sign(user, config.jwtSecret, {
-        expiresIn: '1m'
-    });
-    return token;
-  }
-
   jwtVerify(req, res, next) {
-      var token = req.query.token || req.headers['x-access-token'];
-      if (!token) {
-        return res.status(403).send({
-          message: 'No token provided.'
-        });
-      }
-      jwt.verify(token, 'supersecret', function(err, decoded) {
-        if (err) {
-          if (err.name == 'TokenExpiredError') {
-            return res.json({ message: 'Token expired. ' + err.expiredAt });
-          } else if (err.name == 'JsonWebTokenError') {
-              return res.json({ message: 'Failed to authenticate token.' });
-          }
-        } else {
-          req.decoded = decoded;
-          next();
-        }
-      });
-   }
+    var jwtFeedback = this.jwt.verify(req.query.token);
+    if (jwtFeedback.success) {
+      req.decoded = jwtFeedback.decoded;
+      next();
+    } else {
+      return res.status(403).json(jwtFeedback);
+    }
+  }
 
    runs(req, res) {
       res.json({run: 123});
