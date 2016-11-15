@@ -16,7 +16,7 @@ const HTTPServer = require('./http/server');
 
 
 var zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port);
-var zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.ip, false);
+var zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, false);
 
 var http = new HTTPServer(credentials, app);
 var websocketServer = new WebSocket(http.server);
@@ -32,15 +32,6 @@ zmqSub.on('notification', function(notification) {
 zmqSub.on('_error', function(error) {
   websocketServer.broadcast('!Error (' + error.code + '): ' + error.message);
 });
-
-zmqSub.on('notification', function(notification) {
-  websocketServer.broadcast('Notification (' + notification.code + '): ' + notification.message);
-});
-
-zmqSub.on('_error', function(error) {
-  websocketServer.broadcast('!Error (' + error.code + '): ' + error.message);
-});
-
 
 websocketServer.on('textmessage', function(message) {
   zmqReq.send(message);
