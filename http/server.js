@@ -3,11 +3,11 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const express = require('express');
-const oauth2 = require('simple-oauth2');
 const mustache = require('mustache');
 const EventEmitter = require("events").EventEmitter;
 
 const JwtToken = require('./../jwt/token.js');
+const OAuth = require('./oauth.js');
 
 module.exports = class HTTPServer {
 
@@ -15,8 +15,8 @@ module.exports = class HTTPServer {
     this.app = app;
 
     this.jwt = new JwtToken(config.jwtSecret);
+    this.oauth = new OAuth();
  
-    this.oAuthInitConfiguration();
     this.enableHttpRedirect();
     this.specifyRoutes();
     
@@ -49,51 +49,17 @@ module.exports = class HTTPServer {
     });
   }
 
-  oAuthInitConfiguration() {
-    this.oauthCreds = oauth2.create({
-      client: {
-        id: config.oAuth.id,
-        secret: config.oAuth.secret,
-      },
-      auth: {
-        tokenHost: config.oAuth.tokenHost,
-        tokenPath: config.oAuth.tokenPath,
-        authorizePath: config.oAuth.authorizePath
-      },
-    });
-
-    this.authorizationUri = this.oauthCreds.authorizationCode.authorizeURL({
-      redirect_uri: config.oAuth.redirect_uri,
-      scope: config.oAuth.scope,
-      state: config.oAuth.state
-    });  
-  }
-
   oAuthAuthorize(req, res) {
-    res.redirect(this.authorizationUri);
+    res.redirect(this.oauth.authorizationUri);
   }
 
   oAuthCallback(req, res) {
-    const code = req.query.code;
-    const options = {
-      code,
-      redirect_uri: config.oAuth.redirect_uri
-    };
-
-    this.oauthCreds.authorizationCode.getToken(options, function(error, result) {
-      if (error) {
-        console.error('Access Token Error', error.message);
-        return res.json(error.message);
-      }
-
-      var oAuthToken = this.oauthCreds.accessToken.create(result);
-      var emitter = new EventEmitter();
-      this.oAuthGetUserDetails(oAuthToken.token.access_token, emitter);
-      emitter.on('userdata', function(data) {
-        data.token = this.jwt.generateToken(data.personid, 1);
-        return res.status(200).send(this.renderPage('public/index.tpl', data));
-      }.bind(this));
-    }.bind(this));    
+    var emitter = new EventEmitter();
+    this.oauth.oAuthCallback(emitter, req.query.code);
+    emitter.on('userdata', function(data) {
+      data.token = this.jwt.generateToken(data.personid, 1);
+      return res.status(200).send(this.renderPage('public/index.tpl', data));
+    }.bind(this));
   }
   
   renderPage(page, data) {
