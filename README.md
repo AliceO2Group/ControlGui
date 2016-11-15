@@ -9,9 +9,9 @@
 - jQuery
 
 ## Functional modules
-- Client side application that consists of custom jQuery widgets
-- HTTP server/REST API
-- WebSocket server that communicates with Control subsystem via ZeroMQ
+1. Client side application that consists of custom jQuery widgets
+2. HTTP server/REST API
+3. WebSocket server that communicates with Control subsystem via ZeroMQ
 
 ## Features
 - HTTPS and WSS
