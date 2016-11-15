@@ -47,7 +47,6 @@ module.exports = class ZeroMQClient extends EventEmitter {
       this.emit('_error', {code: 5000, message: 'Connection to ZeroMQ-master in not estabilished. Request discarded'});
       return false;
     }
-    console.log(message);
     this.socket.send(message);
   }
 }

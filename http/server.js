@@ -71,32 +71,8 @@ module.exports = class HTTPServer {
     return this.httpsServer;
   }
 
-  oAuthGetUserDetails(token, emitter) {
-    var postOptions = {
-      host: 'oauthresource.web.cern.ch',
-      port: 443,
-      path: '/api/User',
-      method: 'GET',
-      headers: {
-          'Content-Type': 'text',
-          'Authorization': 'Bearer ' + token
-      }
-    };
-    var postRequest = https.request(postOptions, function(res) {
-      res.setEncoding('utf8');
-      res.on('data', function (chunk) {
-          return emitter.emit('userdata', JSON.parse(chunk));
-      });
-      res.on('error', function (e) {
-        console.log(e);
-      });
-    });
-
-    postRequest.write('');
-    postRequest.end();
-  }
-
   jwtVerify(req, res, next) {
+    /// jwt.verify is called synchronously; to improve performance call it in async way
     var jwtFeedback = this.jwt.verify(req.query.token);
     if (jwtFeedback.success) {
       req.decoded = jwtFeedback.decoded;
