@@ -35,7 +35,7 @@ module.exports = class ZeroMQClient extends EventEmitter {
     this.connected = false;
   }
   
-  onmessage(topic, message) {
+  onmessage(message) {
     if (typeof message === 'undefined') {
       return;
     }
