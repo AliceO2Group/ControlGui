@@ -4,7 +4,7 @@ const zmq = require('zmq');
 
 module.exports = class ZeroMQClient extends EventEmitter {
 
-  constructor(ip, port, type = true) {
+  constructor(ip, port, type = false) {
     super();
 
     this.connected = true;

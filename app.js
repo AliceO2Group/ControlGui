@@ -15,8 +15,8 @@ const WebSocket = require('./websocket/server');
 const HTTPServer = require('./http/server');
 
 
-var zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port);
-var zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, false);
+var zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port, true);
+var zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port);
 
 var http = new HTTPServer(credentials, app);
 var websocketServer = new WebSocket(http.server);
