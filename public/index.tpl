@@ -24,17 +24,19 @@ $(function(){
     username: '{{username}}'
   }, $('#ws') );
   $('#ws').bind('websocketmessage', function(event, data) {
-    $('#txt').append("Command " + JSON.parse(data).name + "\n");
+    $('#txt').append(data + "\n");
   });
-  $('#hello').on('click', function() {
-    var json = {name : 'hello', value: 100 };
+  $('button').on('click', function() {
+    var json = {command : this.id, value: Math.random()*100 };
     $ws.send(JSON.stringify(json));
   });
 });
 </script>
 </head>
 <body>
-<button id="hello">Execute hello!</button>
+<button id="lock-get">Lock</button>
+<button id="lock-release">Unlock</button>
+<button id="lock-check">Check lock</button>
 <br><br>
 <textarea id="txt"></textarea>
 <div id="ws"></div>

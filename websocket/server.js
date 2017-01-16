@@ -4,36 +4,62 @@ const url = require('url');
 const config = require('./../config.json');
 
 const JwtToken = require('./../jwt/token.js');
+const Padlock = require('./padlock.js');
+const MessageFactory = require('./message.js');
 
 module.exports = class WebSocket extends EventEmitter {
    
   constructor(httpsServer) {
     super();
     this.jwt = new JwtToken(config.jwtSecret);
-    this.server = new WebSocketServer({ server: httpsServer });
+    this.server = new WebSocketServer({ server: httpsServer, clientTracking: true });
     this.server.on('connection', this.onconnection.bind(this));
+    this.message = new MessageFactory();
+    this.padlock = new Padlock(this.message);
   }
 
-  onmessage(message) {
+  onmessage(message, address, id, authLevel) {
     if (typeof message === 'undefined') {
       return;
     }
-    this.emit('textmessage', message);
+    console.log(message.command, id, authLevel);
+    
+    if (this.padlock.isHoldingLock(id)) {
+      switch(message.command.split('-')[0]) {
+        case 'lock':
+          return this.padlock.process(message.command.split('-')[1], id, authLevel);
+          break;
+        case 'run':
+          //this.run.process(message.command.split('-')[1]);
+          break;
+        default:
+          return this.message.createError(404, 'Unknown command');
+      }
+    } else {
+      switch(message.command.split('-')[0]) {
+        case 'lock':
+          return this.padlock.privileged(message.command.split('-')[1], id, authLevel);
+          break;
+        default: 
+          return this.message.createError(403, 'Unauthorized');
+      }
+    }     
   }
 
   onconnection(client) {
-    var hostname = client._socket.remoteAddress;
-      
     var token = url.parse(client.upgradeReq.url, true).query.token;
     var jwtFeedback = this.jwt.verify(token);
     if (jwtFeedback.success) {
-      console.log('hurray token verified!');
-      console.log(jwtFeedback.decoded);
+      client._auth = jwtFeedback.decoded;
     } else {
       client.close(4000, jwtFeedback.message);
     }
-
-    client.on('message', this.onmessage.bind(this));
+    jwtFeedback.decoded.id += Math.floor(Math.random() * 100);
+    client.on('message', function(message, flags) {
+      var response = this.onmessage(JSON.parse(message), client._socket.remoteAddress, jwtFeedback.decoded.id, jwtFeedback.decoded.access);
+      if (response.status == 0) this.broadcast(JSON.stringify(response));
+      else client.send(JSON.stringify(response));
+    }.bind(this));
   }
 
   broadcast(message) {
