@@ -5,11 +5,11 @@ module.exports = class Message {
   }
 
   create(statusCode, message) {
-    return JSON.stringify({success: 1, status: statusCode, message: message});
+    return {success: 1, status: statusCode, message: message};
   }
 
   createError(errorCode, message) {
-    return JSON.stringify({success: 0, status: errorCode, message: message});
+    return {success: 0, status: errorCode, message: message};
   }
 
 }
