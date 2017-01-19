@@ -4,12 +4,12 @@ module.exports = class Message {
   constructor() {
   }
 
-  create(statusCode, message) {
-    return {success: 1, status: statusCode, message: message};
+  create(command, message, broadcast = false, custom = {}) {
+    return {command: command, success: 1, broadcast: broadcast, message: message, custom: custom};
   }
 
-  createError(errorCode, message) {
-    return {success: 0, status: errorCode, message: message};
+  createError(command, errorCode, message) {
+    return {command: command, success: 0, status: errorCode, message: message};
   }
 
 }

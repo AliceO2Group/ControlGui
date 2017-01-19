@@ -1,6 +1,7 @@
 <html>
 <head>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="libs/jquery-ui.css">
+<link rel="stylesheet" href="libs/font-awesome.css">
 <style>
 body {
   margin: 20px;
@@ -12,16 +13,17 @@ button {
 
 textarea {
   width: 500px;
-  height: 200px;
+  height: 150px;
 }
 </style>
 <script src="libs/jquery-3.1.1.js"></script>
 <script src="libs/jquery-ui.js"></script>
 <script src="ws.widget.js"></script>
+<script src="padlock.widget.js"></script>
 <script>
-$(function(){
+$(function() {
   /// instance of websocket widget
-  var $ws = $.o2.websocket({
+  var ws = $.o2.websocket({
     // pass url of websocket server
     url: 'wss://pcald03.cern.ch',
     // token, cernid, name and username are provided by CERN SSO
@@ -31,25 +33,39 @@ $(function(){
     username: '{{username}}'
   }, $('#ws') );
 
-  /// listener for incoming messages
-  $('#ws').bind('websocketmessage', function(event, data) {  
-    $('#textarea').append(data + "\n");
-  });
+  var padlock = $.o2.padlock({
+    temp: 'dupa'
+  }, $('#padlock') );
 
+  $('#ws').bind('websocketlock-get', function() { padlock.lock() });
+  $('#ws').bind('websocketlock-release', function() { padlock.unlock() });
+ 
   /// button listener - sends commands to server
   $('button').on('click', function() {
-    var json = {command : this.id, value: Math.random()*100 };
-    $ws.send(JSON.stringify(json));
+    ws.send(JSON.stringify({command : this.id, value: Math.random()*100}));
+  });
+
+  $('#ws').bind('websocketopen', function() {
+    ws.send(JSON.stringify({command: 'lock-check'}));
   });
 });
 </script>
 </head>
 <body>
-<button id="lock-get">Lock</button>
-<button id="lock-release">Unlock</button>
-<button id="lock-check">Check lock</button>
+<h3>Commands</h3>
+<button id="lock-get" class="ui-button ui-corner-all ui-widget">Lock</button>
+<button id="lock-release" class="ui-button ui-corner-all ui-widget">Unlock</button>
+<button id="lock-check" class="ui-button ui-corner-all ui-widget">Check lock</button>
+<button id="test-zeromq" class="ui-button ui-corner-all ui-widget">Send random value</button>
 <br><br>
-<textarea id="textarea"></textarea>
+<h3>Lock icon</h3>
+<span id="padlock" class="fa fa-2x"></span>
+<br><br>
+<h3>Messages arrived</h3>
+<textarea id="messages" class="ui-widget ui-state-default ui-corner-all"></textarea>
+<br><br>
+<h3>Console log</h3>
+<textarea id="console" class="ui-widget ui-state-default ui-corner-all"></textarea>
 <div id="ws"></div>
 </body>
 </html>

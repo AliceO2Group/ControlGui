@@ -5,7 +5,7 @@ $.widget("o2.websocket", {
     id: undefined,
     token: undefined,
     connection: undefined,
-    url: undefined
+    url: undefined,
   },
   _create: function() {
     this._connect();
@@ -22,7 +22,11 @@ $.widget("o2.websocket", {
     }, this);
 
     this.options.connection.onmessage = $.proxy(function(evt) {
-      this._trigger('message', evt, evt.data);
+      $((~evt.data.indexOf('testmessage')) ? '#messages' : '#console').append(evt.data + "\n");
+      try {
+      var parsed = $.parseJSON(evt.data);
+      this._trigger(parsed.command, evt, parsed);
+      } catch(e) {}
     }, this);
 
     this.options.connection.onclose = $.proxy(function(code) {
@@ -31,6 +35,5 @@ $.widget("o2.websocket", {
   },
   send: function(message) {
     this.options.connection.send(message);
-  }
- 
+  },
 });

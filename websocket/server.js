@@ -27,21 +27,22 @@ module.exports = class WebSocket extends EventEmitter {
     if (this.padlock.isHoldingLock(id)) {
       switch(message.command.split('-')[0]) {
         case 'lock':
-          return this.padlock.process(message.command.split('-')[1], id, authLevel);
+          return this.padlock.process(message.command, id, authLevel);
           break;
-        case 'run':
-          //this.run.process(message.command.split('-')[1]);
+        case 'test':
+          this.emit('textmessage', JSON.stringify(message));
+          return this.message.create(message.command, 1, 'Command executed');
           break;
         default:
-          return this.message.createError(404, 'Unknown command');
+          return this.message.createError(message.command, 404, 'Unknown command');
       }
     } else {
       switch(message.command.split('-')[0]) {
         case 'lock':
-          return this.padlock.privileged(message.command.split('-')[1], id, authLevel);
+          return this.padlock.privileged(message.command, id, authLevel);
           break;
         default: 
-          return this.message.createError(403, 'Unauthorized');
+          return this.message.createError(message.command, 403, 'Unauthorized');
       }
     }     
   }
@@ -57,7 +58,7 @@ module.exports = class WebSocket extends EventEmitter {
     jwtFeedback.decoded.id += Math.floor(Math.random() * 100);
     client.on('message', function(message, flags) {
       var response = this.onmessage(JSON.parse(message), client._socket.remoteAddress, jwtFeedback.decoded.id, jwtFeedback.decoded.access);
-      if (response.status == 0) this.broadcast(JSON.stringify(response));
+      if (response.broadcast) this.broadcast(JSON.stringify(response));
       else client.send(JSON.stringify(response));
     }.bind(this));
   }
