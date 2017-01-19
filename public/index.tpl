@@ -37,8 +37,8 @@ $(function() {
     temp: 'dupa'
   }, $('#padlock') );
 
-  $('#ws').bind('websocketlock-get', function() { padlock.lock() });
-  $('#ws').bind('websocketlock-release', function() { padlock.unlock() });
+  $('#ws').bind('websocketlock-get', function(evt, data) { if (data.success) padlock.lock() });
+  $('#ws').bind('websocketlock-release', function(evt, data) { if (data.success) padlock.unlock(data.success) });
  
   /// button listener - sends commands to server
   $('button').on('click', function() {
