@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 const WebSocketServer = require('ws').Server
 const url = require('url');
 const config = require('./../config.json');
+const log = require('./../log.js');
 
 const JwtToken = require('./../jwt/token.js');
 const Padlock = require('./padlock.js');
@@ -18,16 +19,19 @@ module.exports = class WebSocket extends EventEmitter {
     this.padlock = new Padlock(this.message);
   }
 
-  onmessage(message, address, id, authLevel) {
+  onmessage(message) {
     if (typeof message === 'undefined') {
       return;
     }
-    console.log(message.command, id, authLevel);
+    var id = this.verify(message.token);
+    if (id === false) return this.message.createError(message.command, 403, 'Unauthorized');
     
-    if (this.padlock.isHoldingLock(id)) {
+    log.debug('%d : command %s', id, message.command);
+    
+    if ( this.padlock.isHoldingLock(id)) {
       switch(message.command.split('-')[0]) {
         case 'lock':
-          return this.padlock.process(message.command, id, authLevel);
+          return this.padlock.process(message.command, id);
           break;
         case 'test':
           this.emit('textmessage', JSON.stringify(message));
@@ -36,10 +40,11 @@ module.exports = class WebSocket extends EventEmitter {
         default:
           return this.message.createError(message.command, 404, 'Unknown command');
       }
-    } else {
+    }
+    else {
       switch(message.command.split('-')[0]) {
         case 'lock':
-          return this.padlock.privileged(message.command, id, authLevel);
+          return this.padlock.privileged(message.command, id);
           break;
         default: 
           return this.message.createError(message.command, 403, 'Unauthorized');
@@ -47,19 +52,32 @@ module.exports = class WebSocket extends EventEmitter {
     }     
   }
 
+  verify(token) {
+    var verified = this.jwt.verify(token);
+    if (verified.success && verified.decoded.access == 1) {
+      return verified.decoded.id;
+    }
+    log.warn('unknown : jwt verify failed: %s', verified.message);
+    return false;
+  }
+
   onconnection(client) {
     var token = url.parse(client.upgradeReq.url, true).query.token;
     var jwtFeedback = this.jwt.verify(token);
-    if (jwtFeedback.success) {
-      client._auth = jwtFeedback.decoded;
-    } else {
+    if (jwtFeedback.success == false) {
       client.close(4000, jwtFeedback.message);
     }
-    jwtFeedback.decoded.id += Math.floor(Math.random() * 100);
+    log.info('%d : connected', jwtFeedback.decoded.id);
     client.on('message', function(message, flags) {
-      var response = this.onmessage(JSON.parse(message), client._socket.remoteAddress, jwtFeedback.decoded.id, jwtFeedback.decoded.access);
-      if (response.broadcast) this.broadcast(JSON.stringify(response));
-      else client.send(JSON.stringify(response));
+      var response = this.onmessage(JSON.parse(message));
+      if (response.broadcast) {
+        log.debug('broadcast : command %s sent', response.command);
+        this.broadcast(JSON.stringify(response));
+      }
+      else {
+        log.debug('%d : command %s sent', jwtFeedback.decoded.id, response.command);
+        client.send(JSON.stringify(response));
+      }
     }.bind(this));
   }
 

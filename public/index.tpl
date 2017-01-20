@@ -38,15 +38,15 @@ $(function() {
   }, $('#padlock') );
 
   $('#ws').bind('websocketlock-get', function(evt, data) { if (data.success) padlock.lock() });
-  $('#ws').bind('websocketlock-release', function(evt, data) { if (data.success) padlock.unlock(data.success) });
+  $('#ws').bind('websocketlock-release', function(evt, data) { if (data.success) padlock.unlock() });
  
   /// button listener - sends commands to server
   $('button').on('click', function() {
-    ws.send(JSON.stringify({command : this.id, value: Math.random()*100}));
+    ws.send({command : this.id, value: Math.random()*100});
   });
 
   $('#ws').bind('websocketopen', function() {
-    ws.send(JSON.stringify({command: 'lock-check'}));
+    ws.send({command: 'lock-check'});
   });
 });
 </script>

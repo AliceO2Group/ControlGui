@@ -9,17 +9,16 @@ module.exports = class JwtToken {
   generateToken(userId, accessLevel) {
     var user = { id: userId, access: accessLevel };
     var token = jwt.sign(user, this.secret, {
-        expiresIn: '1m'
+        expiresIn: '2m'
     });
     return token;
   }
 
   verify(token) {
     if (!token) {
-      console.log('no token');
       return {
         success: false,
-        message: 'No token provided'
+        message: 'Token not provided'
       };
     }
     try {

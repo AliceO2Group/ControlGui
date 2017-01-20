@@ -24,8 +24,8 @@ $.widget("o2.websocket", {
     this.options.connection.onmessage = $.proxy(function(evt) {
       $((~evt.data.indexOf('testmessage')) ? '#messages' : '#console').append(evt.data + "\n");
       try {
-      var parsed = $.parseJSON(evt.data);
-      this._trigger(parsed.command, evt, parsed);
+        var parsed = $.parseJSON(evt.data);
+        this._trigger(parsed.command, evt, parsed);
       } catch(e) {}
     }, this);
 
@@ -34,6 +34,7 @@ $.widget("o2.websocket", {
     }, this);
   },
   send: function(message) {
-    this.options.connection.send(message);
+    message.token = this.options.token;
+    this.options.connection.send(JSON.stringify(message));
   },
 });
