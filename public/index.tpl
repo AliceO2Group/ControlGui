@@ -48,6 +48,9 @@ $(function() {
   $('#ws').bind('websocketopen', function() {
     ws.send({command: 'lock-check'});
   });
+  $('#ws').bind('websocketclose', function() {
+    console.log('connection closed');
+  });
 });
 </script>
 </head>

@@ -15,6 +15,7 @@ module.exports = class WebSocket extends EventEmitter {
     this.jwt = new JwtToken(config.jwtSecret);
     this.server = new WebSocketServer({ server: httpsServer, clientTracking: true });
     this.server.on('connection', this.onconnection.bind(this));
+    this.server.on('close', this.onclose.bind(this));
     this.message = new MessageFactory();
     this.padlock = new Padlock(this.message);
   }
@@ -79,6 +80,10 @@ module.exports = class WebSocket extends EventEmitter {
         client.send(JSON.stringify(response));
       }
     }.bind(this));
+  }
+
+  onclose(client) {
+    log.info('disconnected');
   }
 
   broadcast(message) {
