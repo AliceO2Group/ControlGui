@@ -42,8 +42,10 @@ To solve this issue you need to recompile zmq module.
      ```
      '-I/<ZeroMQPath>/include/'
      ```
-4. Run *npm install* again
-
+4. Run again 
+    ```
+    npm install
+    ```
 ## Configuration file
 I
 
