@@ -21,13 +21,13 @@ The goal of Prototype Control GUI is to identify library and framework sets and 
 ## Installation
 1. Install ZeroMQ > 4.0
 2. Clone repository
-```
-git clone https://github.com/AliceO2Group/ControlGui && cd ControlGui
-```
+     ```
+     git clone https://github.com/AliceO2Group/ControlGui && cd ControlGui
+     ```
 3. Install dependecies
-```
-npm install
-```
+     ```
+     npm install
+     ```
 
 ### ZeroMQ custom installation
 If you've installed ZeroMQ under custom path, npm install will fail with : *fatal error: zmq.h: No such file or directory*
@@ -35,16 +35,17 @@ To solve this issue you need to recompile zmq module.
 
 1. Go to ControGui directory
 2. Download zmq modue
-```
-curl `npm v zmq dist.tarball` | tar xvz && mv package/ node_modules/zmq/
-```
-3. Add follwoing line to *node_modules/zmq/binding.gyp* file after line 67
-```
-'-I/opt/hackathon-08-12-2016/include/'
-```
+     ```
+     curl `npm v zmq dist.tarball` | tar xvz && mv package/ node_modules/zmq/
+     ```
+3. Add ZeroMQ include directory to *node_modules/zmq/binding.gyp* file after line 67
+     ```
+     '-I/<ZeroMQPath>/include/'
+     ```
 4. Run *npm install* again
 
 ## Configuration file
+I
 
 ## Run
 ```
