@@ -46,7 +46,7 @@ To solve this issue you need to recompile zmq module.
      ```
      npm install
      ```
-
+.
 
 ## Configuration file
 Edit config.json and recplace *&lt;tags&gt;* with corresponding data:
