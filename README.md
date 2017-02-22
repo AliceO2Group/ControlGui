@@ -61,5 +61,5 @@ Rename *config.json-default* to *config.json* and recplace *&lt;tags&gt;* with c
 
 ## Run
 ```
-node app.js
+npm start
 ```

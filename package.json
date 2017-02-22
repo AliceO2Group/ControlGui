@@ -16,5 +16,6 @@
     "simple-oauth2": "^1.0.0",
     "ws": "^1.1.1",
     "zmq": "^2.15.3"
-  }
+  },
+  "scripts": { "start": "node app.js" }
 }
