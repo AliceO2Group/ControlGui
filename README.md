@@ -1,26 +1,52 @@
 # Prototype of Control GUI
-
-## Technologies
-- node.js
-- ZeroMQ
-- WebSockets
-- OAuth 2
-- JSON Web Tokens
-- jQuery
-
-## Functional modules
-1. Client side application that consists of custom jQuery widgets
-2. HTTP server/REST API
-3. WebSocket server that communicates with Control subsystem via ZeroMQ
-
-## Features
-- HTTPS and WSS
-- HTTP Authentication via CERN OAuth 2 and authorization via e-groups
-- Custom WebSocket authentication based on JSON Web Tokens (as it is not standarized in RFC 6455)
+The goal of Prototype Control GUI is to identify library and framework sets and develope the core functionalities of common O2 Web Applications:
+- Server-side (node.js)
+  - HTTPS / REST API
+  - Authentication via CERN OAuth 2 and authorization via e-groups
+- WebSocket (node.js)
+  - WebSocket server that can communicate with C++ processes via ZeroMQ (C++ library available)
+  - Custom WebSocket authentication based on JSON Web Tokens
+- Front-end (JavaScript/jQuery)
+  - Core modules as custom jQuery widgets
 
 ## Architecture
 ![Control GUI Architecture](./docs/images/architecture.png "Prototype of Control GUI - Architecture")
 
 ## Authentication and authorization flow
-
 ![Control GUI Authentication](./docs/images/auth.png "Authentication and authorization flow")
+
+## Control specific functionality developed so far
+1. Padlock module - only single user that owns lock is allowed to execute commands, other connected users act as spectators
+
+## Installation
+1. Install ZeroMQ > 4.0
+2. Clone repository
+```
+git clone https://github.com/AliceO2Group/ControlGui && cd ControlGui
+```
+3. Install dependecies
+```
+npm install
+```
+
+### ZeroMQ custom installation
+If you've installed ZeroMQ under custom path, npm install will fail with : *fatal error: zmq.h: No such file or directory*
+To solve this issue you need to recompile zmq module.
+
+1. Go to ControGui directory
+2. Download zmq modue
+```
+curl `npm v zmq dist.tarball` | tar xvz && mv package/ node_modules/zmq/
+```
+3. Add follwoing line to *node_modules/zmq/binding.gyp* file after line 67
+```
+'-I/opt/hackathon-08-12-2016/include/'
+```
+4. Run *npm install* again
+
+## Configuration file
+
+## Run
+```
+node app.js
+```
