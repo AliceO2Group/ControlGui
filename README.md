@@ -43,12 +43,13 @@ To solve this issue you need to recompile zmq module.
      '-I/<ZeroMQPath>/include/'
      ```
 4. Run again 
-    ```
-    npm install
-    ```
+     ```
+     npm install
+     ```
+
 
 ## Configuration file
-Edit config.json and recplace &lt;tags&gt; with corresponding data:
+Edit config.json and recplace *&lt;tags&gt;* with corresponding data:
 1. jwtSecret   -  Specify JWT secret passphrase
 2. oAuthSecret -  OAuth secret
 3. host        -  OAuth hostname
