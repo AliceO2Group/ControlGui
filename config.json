@@ -1,0 +1,25 @@
+{
+  "jwtSecret": "<jwtSecret>",
+  "oAuth": {
+    "secret": "<oAuthSecret>",
+    "id": "<oAuthId>",
+    "tokenHost": "https://<host>",
+    "tokenPath": "/OAuth/Token",
+    "authorizePath": "/OAuth/Authorize",
+    "redirect_uri": "https://<appHost>/callback",
+    "scope": "https://<host>/api/User",
+    "state": "3(#0/!~"
+  },
+  "key": "<privateKey>.key",
+  "cert": "<certificate>.pem",
+  "zeromq": {
+    "sub": {
+      "ip": "<pushServer>",
+      "port": 3000
+    }, 
+    "req": {
+      "ip": "<replyServer>",
+      "port": 3001
+    }
+  }
+}
