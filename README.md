@@ -48,15 +48,15 @@ To solve this issue you need to recompile zmq module.
     ```
 
 ## Configuration file
-Edit config.json and recplace <tags> with corresponding data:
-1. <jwtSecret>   -  Specify JWT secret passphrase
-2. <oAuthSecret> -  OAuth secret
-3. <host>        -  OAuth hostname
-4. <appHost>     -  Hostname you are running application on
-5. <privateKey>  -  Private key path
-6. <certificate> -  PEM ceritficate path
-7. <pushServer>  -  hostname that pushes commands
-8. <replyServer> -  hostname that replies to your requests
+Edit config.json and recplace &lt;tags&gt; with corresponding data:
+1. jwtSecret   -  Specify JWT secret passphrase
+2. oAuthSecret -  OAuth secret
+3. host        -  OAuth hostname
+4. appHost     -  Hostname you are running application on
+5. privateKey  -  Private key path
+6. certificate -  PEM ceritficate path
+7. pushServer  -  hostname that pushes commands
+8. replyServer -  hostname that replies to your requests
 
 ## Run
 ```
