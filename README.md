@@ -46,10 +46,9 @@ To solve this issue you need to recompile zmq module.
      ```
      npm install
      ```
-.
-
 ## Configuration file
 Edit config.json and recplace *&lt;tags&gt;* with corresponding data:
+
 1. jwtSecret   -  Specify JWT secret passphrase
 2. oAuthSecret -  OAuth secret
 3. host        -  OAuth hostname
