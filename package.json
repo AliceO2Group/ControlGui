@@ -4,9 +4,13 @@
   "description": "Prototype of Control GUI",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "Adam Wegrzynek",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AliceO2Group/ControlGui"
+  },
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
@@ -14,8 +18,13 @@
     "passport": "^0.3.2",
     "passport-saml": "^0.15.0",
     "simple-oauth2": "^1.0.0",
-    "ws": "^1.1.1",
+    "ws": "^2.2.0",
     "zmq": "^2.15.3"
   },
-  "scripts": { "start": "node app.js" }
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.0.4",
+    "gulp-uglify": "^2.1.0",
+    "jshint": "^2.9.4"
+  }
 }
