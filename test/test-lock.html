@@ -17,6 +17,10 @@ $(function() {
   var padlock = $.o2.padlock({}, $('#padlock') );
   QUnit.test('padlock widget', function(assert) {
     assert.equal($('#padlock').attr("class"), "fa fa-2x", "default css style");
+    padlock.lock();
+    assert.equal($('#padlock').attr("class"), "fa fa-2x fa-lock", "lock css style");
+    padlock.unlock();
+    assert.equal($('#padlock').attr("class"), "fa fa-2x fa-unlock", "unlock css style");
   });
 });
 </script>
