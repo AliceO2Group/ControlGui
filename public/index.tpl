@@ -34,7 +34,6 @@ $(function() {
   }, $('#ws') );
 
   var padlock = $.o2.padlock({
-    temp: 'dupa'
   }, $('#padlock') );
 
   $('#ws').bind('websocketlock-get', function(evt, data) { if (data.success) padlock.lock() });
