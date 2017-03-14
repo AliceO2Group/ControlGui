@@ -31,7 +31,7 @@ module.exports = class Padlock {
   }
 
   lock(id) {
-    if (this.lockedId == null) {
+    if (this.lockedId === null) {
       this.lockedId = id;
       log.info('%d : locked', id);
       return true;
@@ -48,4 +48,4 @@ module.exports = class Padlock {
     }   
     return false;
   }   
-}
+};

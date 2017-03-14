@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const WebSocketServer = require('ws').Server
+const WebSocketServer = require('ws').Server;
 const url = require('url');
 const config = require('./../config.json');
 const log = require('./../log.js');
@@ -33,11 +33,9 @@ module.exports = class WebSocket extends EventEmitter {
       switch(message.command.split('-')[0]) {
         case 'lock':
           return this.padlock.process(message.command, id);
-          break;
         case 'test':
           this.emit('textmessage', JSON.stringify(message));
           return this.message.create(message.command, 1, 'Command executed');
-          break;
         default:
           return this.message.createError(message.command, 404, 'Unknown command');
       }
@@ -46,7 +44,6 @@ module.exports = class WebSocket extends EventEmitter {
       switch(message.command.split('-')[0]) {
         case 'lock':
           return this.padlock.privileged(message.command, id);
-          break;
         default: 
           return this.message.createError(message.command, 403, 'Unauthorized');
       }
@@ -65,7 +62,7 @@ module.exports = class WebSocket extends EventEmitter {
   onconnection(client) {
     var token = url.parse(client.upgradeReq.url, true).query.token;
     var jwtFeedback = this.jwt.verify(token);
-    if (jwtFeedback.success == false) {
+    if (jwtFeedback.success === false) {
       client.close(4000, jwtFeedback.message);
     }
     log.info('%d : connected', jwtFeedback.decoded.id);
@@ -91,4 +88,4 @@ module.exports = class WebSocket extends EventEmitter {
       client.send(message);
     });
   }
-}
+};

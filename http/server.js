@@ -85,4 +85,4 @@ module.exports = class HTTPServer {
    runs(req, res) {
       res.json({run: 123});
    }
-}
+};

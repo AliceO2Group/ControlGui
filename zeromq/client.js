@@ -1,4 +1,3 @@
-"use strict";
 const EventEmitter = require('events'),
                zmq = require('zmq'),
                log = require('./../log.js');
@@ -17,8 +16,9 @@ module.exports = class ZeroMQClient extends EventEmitter {
     this.socket.monitor(1000, 0);
 
     this.socket.connect('tcp://' + ip + ':' + port);
-    (type) ? this.socket.subscribe('') : null;
-
+    if (type) {
+      this.socket.subscribe('');
+    }
     this.socket.on('message', this.onmessage.bind(this));
   }
 
@@ -50,4 +50,4 @@ module.exports = class ZeroMQClient extends EventEmitter {
     }
     this.socket.send(message);
   }
-}
+};
