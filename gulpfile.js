@@ -1,12 +1,13 @@
-const gulp   = require('gulp'),
-      uglify = require('gulp-uglify'),
-      jshint = require('gulp-jshint'),
-      qunit  = require('gulp-qunit');
+const gulp = require('gulp'),
+    uglify = require('gulp-uglify'),
+    jshint = require('gulp-jshint'),
+     qunit = require('gulp-qunit'),
+     mocha = require('gulp-mocha');
 
 
 var jsSource = ['http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
 
-gulp.task('default', ['jshint']);
+gulp.task('default', ['jshint', 'test-backend', 'test-frontend']);
 
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
@@ -17,12 +18,19 @@ gulp.task('uglify', function() {
 
 // JavaScirpt syntax check
 gulp.task('jshint', function() {
-  return gulp.src(jsSource)
+  gulp.src(jsSource)
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
 
-gulp.task('test', function() {
-  return gulp.src('./test/qunit-lock.html')
-             .pipe(qunit());
+// Test frontend with QUnit
+gulp.task('test-frontend', function() {
+  gulp.src('./test/qunit-*.html')
+      .pipe(qunit());
+});
+
+// Test backend with Mocha
+gulp.task('test-backend', function() {
+  gulp.src('./test/mocha-*.js')
+      .pipe(mocha());
 });

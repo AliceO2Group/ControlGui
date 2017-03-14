@@ -4,7 +4,7 @@
   "description": "Prototype of Control GUI",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "test": "mocha"
   },
   "author": "Adam Wegrzynek",
   "repository": {
@@ -12,9 +12,6 @@
     "url": "https://github.com/AliceO2Group/ControlGui"
   },
   "license": "ISC",
-  "scripts": {
-    "test": "mocha"
-  },
   "dependencies": {
     "express": "^4.15.2",
     "mustache": "^2.3.0",
@@ -27,6 +24,7 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-jshint": "^2.0.4",
+    "gulp-mocha": "^4.1.0",
     "gulp-qunit": "^1.5.0",
     "gulp-uglify": "^2.1.0",
     "jshint": "^2.9.4",
