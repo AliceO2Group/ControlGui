@@ -32,7 +32,7 @@ module.exports = class OAuth {
 
     this.oauthCreds.authorizationCode.getToken(options, function(error, result) {
       if (error) {
-        console.error('Access Token Error', error.message);
+        log.warn('Access Token Error', error.message);
         return error.message;
       }   
 
@@ -58,7 +58,7 @@ module.exports = class OAuth {
           return emitter.emit('userdata', JSON.parse(chunk));
       }); 
       res.on('error', function (e) {
-        console.log(e);
+        log.warn(e);
       }); 
     }); 
 

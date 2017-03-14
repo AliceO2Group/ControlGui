@@ -1,6 +1,7 @@
 "use strict";
-const EventEmitter = require('events');
-const zmq = require('zmq');
+const EventEmitter = require('events'),
+               zmq = require('zmq'),
+               log = require('./../log.js');
 
 module.exports = class ZeroMQClient extends EventEmitter {
 
@@ -22,14 +23,14 @@ module.exports = class ZeroMQClient extends EventEmitter {
   }
 
   connect(fd, endpoint) {
-    console.log('ZMQ: Connected to', endpoint);
+    log.debug('ZMQ: Connected to', endpoint);
     this.connected = true;
     this.emit('notification', {code: 6000, message: 'Connected to ZMQ endpoint: ' + endpoint});
   }
 
   disconnect(fd, endpoint) {
     if (this.connected) {
-      console.log('ZMQ: Disconnected from', endpoint);
+      log.debug('ZMQ: Disconnected from', endpoint);
       this.emit('_error', { code: 5000, message: 'Server disconnected from ZMQ endpoint: ' + endpoint});
     }
     this.connected = false;

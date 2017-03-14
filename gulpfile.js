@@ -23,6 +23,6 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('test', function() {
-   return gulp.src('./test/test-lock.html')
-              .pipe(qunit());
+  return gulp.src('./test/qunit-lock.html')
+             .pipe(qunit());
 });
