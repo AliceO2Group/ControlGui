@@ -23,14 +23,14 @@
     "zmq": "^2.15.3"
   },
   "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-google": "^0.7.1",
     "gulp": "^3.9.1",
-    "gulp-jshint": "^2.0.4",
+    "gulp-eslint": "^3.0.1",
     "gulp-mocha": "^4.1.0",
     "gulp-qunit": "^1.5.0",
     "gulp-uglify": "^2.1.0",
-    "jshint": "^2.9.4",
-    "jshint-stylish": "^2.2.1",
     "mocha": "^3.2.0",
-    "qunit": "^1.0.0",
+    "qunit": "^1.0.0"
   }
 }

@@ -2,7 +2,8 @@ const gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     jshint = require('gulp-jshint'),
      qunit = require('gulp-qunit'),
-     mocha = require('gulp-mocha');
+     mocha = require('gulp-mocha'),
+    eslint = require('gulp-eslint');
 
 
 var jsSource = ['*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
@@ -16,12 +17,14 @@ gulp.task('uglify', function() {
       .pipe(gulp.dest('minjs'));
 });
 
-// JavaScirpt syntax check
-gulp.task('jshint', function() {
+// JavaScirpt syntax check and coding guidline enforced
+gulp.task('eslint', function() {
   gulp.src(jsSource)
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
+
 
 gulp.task('test', ['test-frontend', 'test-backend']);
 
