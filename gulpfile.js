@@ -23,6 +23,8 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('default'));
 });
 
+gulp.task('test', ['test-frontend', 'test-backend']);
+
 // Test frontend with QUnit
 gulp.task('test-frontend', function() {
   gulp.src('./test/qunit-*.html')
