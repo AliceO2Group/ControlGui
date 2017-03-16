@@ -4,7 +4,8 @@
   "description": "Prototype of Control GUI",
   "main": "app.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node app.js"
   },
   "author": "Adam Wegrzynek",
   "repository": {

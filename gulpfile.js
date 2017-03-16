@@ -5,7 +5,7 @@ const gulp = require('gulp'),
      mocha = require('gulp-mocha');
 
 
-var jsSource = ['http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
+var jsSource = ['*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
 
 gulp.task('default', ['jshint', 'test-backend', 'test-frontend']);
 
