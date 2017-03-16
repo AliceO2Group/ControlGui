@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "gulp test",
-    "start": "node app.js"
+    "start": "node app.js --trace-sync-io"
   },
   "author": "Adam Wegrzynek",
   "repository": {
@@ -31,6 +31,6 @@
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
     "mocha": "^3.2.0",
-    "qunit": "^1.0.0"
+    "qunit": "^1.0.0",
   }
 }
