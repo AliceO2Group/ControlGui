@@ -1,17 +1,17 @@
-$.widget("o2.websocket", {
+$.widget('o2.websocket', {
   options: {
     username: undefined,
     name: undefined,
     id: undefined,
     token: undefined,
     connection: undefined,
-    url: undefined,
+    url: undefined
   },
   _create: function() {
     this._connect();
   },
   _connect: function() {
-    this.options.connection = new WebSocket(this.options.url + "?token=" + this.options.token);
+    this.options.connection = new WebSocket(this.options.url + '?token=' + this.options.token);
 
     this.options.connection.onopen = $.proxy(function() {
       this._trigger('open', null, null);
@@ -22,11 +22,13 @@ $.widget("o2.websocket", {
     }, this);
 
     this.options.connection.onmessage = $.proxy(function(evt) {
-      $((~evt.data.indexOf('testmessage')) ? '#messages' : '#console').append(evt.data + "\n");
+      $((~evt.data.indexOf('testmessage')) ? '#messages' : '#console').append(evt.data + '\n');
       try {
-        var parsed = $.parseJSON(evt.data);
+        let parsed = $.parseJSON(evt.data);
         this._trigger(parsed.command, evt, parsed);
-      } catch(e) {}
+      } catch(e) {
+        // continue even though message parsing failed
+      }
     }, this);
 
     this.options.connection.onclose = $.proxy(function(code) {
@@ -36,5 +38,5 @@ $.widget("o2.websocket", {
   send: function(message) {
     message.token = this.options.token;
     this.options.connection.send(JSON.stringify(message));
-  },
+  }
 });

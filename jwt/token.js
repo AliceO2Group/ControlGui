@@ -7,9 +7,9 @@ module.exports = class JwtToken {
   }
 
   generateToken(userId, accessLevel) {
-    var user = { id: userId, access: accessLevel };
-    var token = jwt.sign(user, this.secret, {
-        expiresIn: '2m'
+    const user = {id: userId, access: accessLevel};
+    let token = jwt.sign(user, this.secret, {
+      expiresIn: '2m'
     });
     return token;
   }
@@ -22,11 +22,11 @@ module.exports = class JwtToken {
       };
     }
     try {
-      var decoded = jwt.verify(token, this.secret);
+      let decoded = jwt.verify(token, this.secret);
       return {
-          success: true,
-          decoded: decoded
-        }; 
+        success: true,
+        decoded: decoded
+      };
     } catch(err) {
       return {
         success: false,

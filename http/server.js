@@ -1,13 +1,13 @@
-const config = require('./../config.json');
-const fs = require('fs');
-const http = require('http');
-const https = require('https');
-const express = require('express');
-const mustache = require('mustache');
-const EventEmitter = require("events").EventEmitter;
+const config = require('./../config.json'),
+  fs = require('fs'),
+  http = require('http'),
+  https = require('https'),
+  express = require('express'),
+  mustache = require('mustache'),
+  EventEmitter = require('events').EventEmitter,
 
-const JwtToken = require('./../jwt/token.js');
-const OAuth = require('./oauth.js');
+  JwtToken = require('./../jwt/token.js'),
+  OAuth = require('./oauth.js');
 
 module.exports = class HTTPServer {
 
@@ -16,10 +16,10 @@ module.exports = class HTTPServer {
 
     this.jwt = new JwtToken(config.jwtSecret);
     this.oauth = new OAuth();
- 
+
     this.enableHttpRedirect();
     this.specifyRoutes();
-    
+
     // HTTP server, just to redirect to HTTPS
     http.createServer(app).listen(8081);
 
@@ -27,7 +27,7 @@ module.exports = class HTTPServer {
     this.httpsServer = https.createServer(credentials, app);
     this.httpsServer.listen(8080);
   }
-  
+
   specifyRoutes() {
     this.app.get('/', this.oAuthAuthorize.bind(this));
     this.app.use(express.static('public'));
@@ -37,11 +37,10 @@ module.exports = class HTTPServer {
     this.router.use(this.jwtVerify);
     this.app.use('/api', this.router);
     this.router.use('/runs', this.runs);
-
   }
 
   enableHttpRedirect() {
-    this.app.use(function (req, res, next) {
+    this.app.use(function(req, res, next) {
       if (!req.secure) {
         return res.redirect('https://' + req.headers.host + req.url);
       }
@@ -54,16 +53,16 @@ module.exports = class HTTPServer {
   }
 
   oAuthCallback(req, res) {
-    var emitter = new EventEmitter();
+    let emitter = new EventEmitter();
     this.oauth.oAuthCallback(emitter, req.query.code);
     emitter.on('userdata', function(data) {
       data.token = this.jwt.generateToken(data.personid, 1);
       return res.status(200).send(this.renderPage('public/index.tpl', data));
     }.bind(this));
   }
-  
+
   renderPage(page, data) {
-    var template = fs.readFileSync(page).toString();
+    let template = fs.readFileSync(page).toString();
     return mustache.to_html(template, data);
   }
 
@@ -72,8 +71,8 @@ module.exports = class HTTPServer {
   }
 
   jwtVerify(req, res, next) {
-    /// jwt.verify is called synchronously; to improve performance call it in async way
-    var jwtFeedback = this.jwt.verify(req.query.token);
+    // jwt.verify is called synchronously; to improve performance call it in async way
+    let jwtFeedback = this.jwt.verify(req.query.token);
     if (jwtFeedback.success) {
       req.decoded = jwtFeedback.decoded;
       next();
@@ -82,7 +81,7 @@ module.exports = class HTTPServer {
     }
   }
 
-   runs(req, res) {
-      res.json({run: 123});
-   }
+  runs(req, res) {
+    res.json({run: 123});
+  }
 };

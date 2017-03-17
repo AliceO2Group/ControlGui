@@ -1,11 +1,11 @@
 const gulp = require('gulp'),
-    uglify = require('gulp-uglify'),
-     qunit = require('gulp-qunit'),
-     mocha = require('gulp-mocha'),
-    eslint = require('gulp-eslint');
+  uglify = require('gulp-uglify'),
+  qunit = require('gulp-qunit'),
+  mocha = require('gulp-mocha'),
+  eslint = require('gulp-eslint');
 
 
-var jsSource = ['*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
+let jsSource = ['./*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
 
 gulp.task('default', ['test-backend', 'test-frontend']);
 

@@ -1,4 +1,4 @@
-$.widget("o2.padlock", {
+$.widget('o2.padlock', {
   options: {
     locked: undefined
   },
@@ -20,5 +20,4 @@ $.widget("o2.padlock", {
     this.lock();
     this.element.css('color', 'red');
   }
- 
 });

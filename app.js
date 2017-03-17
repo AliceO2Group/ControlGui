@@ -1,23 +1,20 @@
-const express = require('express');
-const app = express();
-const config = require('./config.json');
+const express = require('express'),
+  app = express(),
+  config = require('./config.json'),
+  fs = require('fs'),
+  credentials = {
+    key: fs.readFileSync(config.key),
+    cert: fs.readFileSync(config.cert)
+  },
 
-const fs = require('fs');
-const credentials = { 
-  key:  fs.readFileSync(config.key),
-  cert: fs.readFileSync(config.cert)
-};
+  ZeroMQClient = require('./zeromq/client'),
+  WebSocket = require('./websocket/server'),
+  HTTPServer = require('./http/server'),
 
-const ZeroMQClient = require('./zeromq/client');
-const WebSocket = require('./websocket/server');
-const HTTPServer = require('./http/server');
-
-
-var zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port, true);
-var zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port);
-
-var http = new HTTPServer(credentials, app);
-var websocketServer = new WebSocket(http.server);
+  zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port, true),
+  zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port),
+  http = new HTTPServer(credentials, app),
+  websocketServer = new WebSocket(http.server);
 
 zmqSub.on('message', function(message) {
   websocketServer.broadcast(message);

@@ -1,6 +1,6 @@
 const EventEmitter = require('events'),
-               zmq = require('zmq'),
-               log = require('./../log.js');
+  zmq = require('zmq'),
+  log = require('./../log.js');
 
 module.exports = class ZeroMQClient extends EventEmitter {
 
@@ -9,7 +9,7 @@ module.exports = class ZeroMQClient extends EventEmitter {
 
     this.connected = true;
     this.socket = type ? zmq.socket('sub') : zmq.socket('req');
-    
+
     this.socket.on('connect', this.connect.bind(this));
     this.socket.on('close', this.disconnect.bind(this));
     this.socket.on('disconnect', this.disconnect.bind(this));
@@ -25,17 +25,23 @@ module.exports = class ZeroMQClient extends EventEmitter {
   connect(fd, endpoint) {
     log.debug('ZMQ: Connected to', endpoint);
     this.connected = true;
-    this.emit('notification', {code: 6000, message: 'Connected to ZMQ endpoint: ' + endpoint});
+    this.emit('notification', {
+      code: 6000,
+      message: 'Connected to ZMQ endpoint: ' + endpoint
+    });
   }
 
   disconnect(fd, endpoint) {
     if (this.connected) {
       log.debug('ZMQ: Disconnected from', endpoint);
-      this.emit('_error', { code: 5000, message: 'Server disconnected from ZMQ endpoint: ' + endpoint});
+      this.emit('_error', {
+        code: 5000,
+        message: 'Server disconnected from ZMQ endpoint: ' + endpoint
+      });
     }
     this.connected = false;
   }
-  
+
   onmessage(message) {
     if (typeof message === 'undefined') {
       return;
@@ -45,7 +51,10 @@ module.exports = class ZeroMQClient extends EventEmitter {
 
   send(message) {
     if (!this.connected) {
-      this.emit('_error', {code: 5000, message: 'Connection to ZeroMQ-master in not estabilished. Request discarded'});
+      this.emit('_error', {
+        code: 5000,
+        message: 'Connection to ZeroMQ-master in not estabilished. Request discarded'
+      });
       return false;
     }
     this.socket.send(message);

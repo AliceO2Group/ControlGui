@@ -1,6 +1,7 @@
-const https = require('https');
-const oauth2 = require('simple-oauth2');
-const config = require('./../config.json');
+const https = require('https'),
+  oauth2 = require('simple-oauth2'),
+  config = require('./../config.json'),
+  log = require('./../log.js');
 
 module.exports = class OAuth {
 
@@ -8,13 +9,13 @@ module.exports = class OAuth {
     this.oauthCreds = oauth2.create({
       client: {
         id: config.oAuth.id,
-        secret: config.oAuth.secret,
-      },  
+        secret: config.oAuth.secret
+      },
       auth: {
         tokenHost: config.oAuth.tokenHost,
         tokenPath: config.oAuth.tokenPath,
         authorizePath: config.oAuth.authorizePath
-      },
+      }
     });
 
     this.authorizationUri = this.oauthCreds.authorizationCode.authorizeURL({
@@ -25,42 +26,42 @@ module.exports = class OAuth {
   }
 
   oAuthCallback(emitter, code) {
-    const options = { 
+    const options = {
       code,
       redirect_uri: config.oAuth.redirect_uri
-    };  
+    };
 
     this.oauthCreds.authorizationCode.getToken(options, function(error, result) {
       if (error) {
         log.warn('Access Token Error', error.message);
         return error.message;
-      }   
+      }
 
-      var oAuthToken = this.oauthCreds.accessToken.create(result);
+      const oAuthToken = this.oauthCreds.accessToken.create(result);
       this.oAuthGetUserDetails(oAuthToken.token.access_token, emitter);
-    }.bind(this));    
+    }.bind(this));
   }
 
   oAuthGetUserDetails(token, emitter) {
-    var postOptions = { 
+    const postOptions = {
       host: 'oauthresource.web.cern.ch',
       port: 443,
       path: '/api/User',
       method: 'GET',
       headers: {
-          'Content-Type': 'text',
-          'Authorization': 'Bearer ' + token
-      }   
-    };  
-    var postRequest = https.request(postOptions, function(res) {
+        'Content-Type': 'text',
+        'Authorization': 'Bearer ' + token
+      }
+    };
+    let postRequest = https.request(postOptions, function(res) {
       res.setEncoding('utf8');
-      res.on('data', function (chunk) {
-          return emitter.emit('userdata', JSON.parse(chunk));
-      }); 
-      res.on('error', function (e) {
+      res.on('data', function(chunk) {
+        return emitter.emit('userdata', JSON.parse(chunk));
+      });
+      res.on('error', function(e) {
         log.warn(e);
-      }); 
-    }); 
+      });
+    });
 
     postRequest.write('');
     postRequest.end();
