@@ -5,6 +5,8 @@ const assert = require('assert'),
 describe('error-log', function() {
   it('should generate error file', function() {
     log.error('Test error log entry');
-    assert.ok(fs.existsSync("./error.log"));
+    setTimeout(function(){
+      assert.ok(fs.existsSync("./error.log"));
+    },2000);
   });
 });
