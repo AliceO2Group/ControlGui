@@ -14,7 +14,7 @@ module.exports = class WebSocket extends EventEmitter {
     super();
     this.jwt = new JwtToken(config.jwtSecret);
     this.server = new WebSocketServer({server: httpsServer, clientTracking: true});
-    this.server.on('connection', this.onconnection.bind(this));
+    //this.server.on('connection', this.onconnection.bind(this));
     this.server.on('close', this.onclose.bind(this));
     this.message = new MessageFactory();
     this.padlock = new Padlock(this.message);
@@ -52,7 +52,7 @@ module.exports = class WebSocket extends EventEmitter {
   }
 
   verify(token) {
-    let verified = this.jwt.verify(token);
+    const verified = this.jwt.verify(token);
     if (verified.success && verified.decoded.access == 1) {
       return verified.decoded.id;
     }
@@ -62,13 +62,13 @@ module.exports = class WebSocket extends EventEmitter {
 
   ononnection(client) {
     const token = url.parse(client.upgradeReq.url, true).query.token;
-    let jwtFeedback = this.jwt.verify(token);
+    const jwtFeedback = this.jwt.verify(token);
     if (jwtFeedback.success === false) {
       client.close(4000, jwtFeedback.message);
     }
     log.info('%d : connected', jwtFeedback.decoded.id);
     client.on('message', function(message, flags) {
-      let response = this.onmessage(JSON.parse(message));
+      const response = this.onmessage(JSON.parse(message));
       if (response.broadcast) {
         log.debug('broadcast : command %s sent', response.command);
         this.broadcast(JSON.stringify(response));

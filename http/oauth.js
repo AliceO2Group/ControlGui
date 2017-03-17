@@ -53,7 +53,7 @@ module.exports = class OAuth {
         'Authorization': 'Bearer ' + token
       }
     };
-    let postRequest = https.request(postOptions, function(res) {
+    const postRequest = https.request(postOptions, function(res) {
       res.setEncoding('utf8');
       res.on('data', function(chunk) {
         return emitter.emit('userdata', JSON.parse(chunk));

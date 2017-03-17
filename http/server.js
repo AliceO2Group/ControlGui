@@ -53,7 +53,7 @@ module.exports = class HTTPServer {
   }
 
   oAuthCallback(req, res) {
-    let emitter = new EventEmitter();
+    const emitter = new EventEmitter();
     this.oauth.oAuthCallback(emitter, req.query.code);
     emitter.on('userdata', function(data) {
       data.token = this.jwt.generateToken(data.personid, 1);
@@ -62,7 +62,7 @@ module.exports = class HTTPServer {
   }
 
   renderPage(page, data) {
-    let template = fs.readFileSync(page).toString();
+    const template = fs.readFileSync(page).toString();
     return mustache.to_html(template, data);
   }
 
@@ -72,7 +72,7 @@ module.exports = class HTTPServer {
 
   jwtVerify(req, res, next) {
     // jwt.verify is called synchronously; to improve performance call it in async way
-    let jwtFeedback = this.jwt.verify(req.query.token);
+    const jwtFeedback = this.jwt.verify(req.query.token);
     if (jwtFeedback.success) {
       req.decoded = jwtFeedback.decoded;
       next();
