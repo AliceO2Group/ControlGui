@@ -14,7 +14,7 @@ module.exports = class WebSocket extends EventEmitter {
     super();
     this.jwt = new JwtToken(config.jwtSecret);
     this.server = new WebSocketServer({server: httpsServer, clientTracking: true});
-    //this.server.on('connection', this.onconnection.bind(this));
+    this.server.on('connection', this.onconnection.bind(this));
     this.server.on('close', this.onclose.bind(this));
     this.message = new MessageFactory();
     this.padlock = new Padlock(this.message);
@@ -60,7 +60,7 @@ module.exports = class WebSocket extends EventEmitter {
     return false;
   }
 
-  ononnection(client) {
+  onconnection(client) {
     const token = url.parse(client.upgradeReq.url, true).query.token;
     const jwtFeedback = this.jwt.verify(token);
     if (jwtFeedback.success === false) {
