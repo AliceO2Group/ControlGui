@@ -7,7 +7,7 @@ const gulp = require('gulp'),
 
 let jsSource = ['./*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
 
-gulp.task('default', ['test-backend', 'test-frontend']);
+gulp.task('default', ['test', 'eslint']);
 
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
