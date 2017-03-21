@@ -29,9 +29,9 @@ module.exports = class HTTPServer {
   }
 
   specifyRoutes() {
-    this.app.get('/', this.oAuthAuthorize.bind(this));
+    this.app.get('/', (req, res) => this.oAuthAuthorize(res));
     this.app.use(express.static('public'));
-    this.app.get('/callback', this.oAuthCallback.bind(this));
+    this.app.get('/callback', (req, res) => this.oAuthCallback(req, res));
 
     this.router = express.Router();
     this.router.use(this.jwtVerify);
@@ -48,7 +48,7 @@ module.exports = class HTTPServer {
     });
   }
 
-  oAuthAuthorize(req, res) {
+  oAuthAuthorize(res) {
     res.redirect(this.oauth.authorizationUri);
   }
 

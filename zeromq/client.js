@@ -10,19 +10,19 @@ module.exports = class ZeroMQClient extends EventEmitter {
     this.connected = true;
     this.socket = type ? zmq.socket('sub') : zmq.socket('req');
 
-    this.socket.on('connect', this.connect.bind(this));
-    this.socket.on('close', this.disconnect.bind(this));
-    this.socket.on('disconnect', this.disconnect.bind(this));
+    this.socket.on('connect', (fd, endpoint) => this.connect(endpoint));
+    this.socket.on('close', (fd, endpoint) => this.disconnect(endpoint));
+    this.socket.on('disconnect', (fd, endpoint) => this.disconnect(endpoint));
     this.socket.monitor(1000, 0);
 
     this.socket.connect('tcp://' + ip + ':' + port);
     if (type) {
       this.socket.subscribe('');
     }
-    this.socket.on('message', this.onmessage.bind(this));
+    this.socket.on('message', (message) => this.onmessage(message));
   }
 
-  connect(fd, endpoint) {
+  connect(endpoint) {
     log.debug('ZMQ: Connected to', endpoint);
     this.connected = true;
     this.emit('notification', {
@@ -31,7 +31,7 @@ module.exports = class ZeroMQClient extends EventEmitter {
     });
   }
 
-  disconnect(fd, endpoint) {
+  disconnect(endpoint) {
     if (this.connected) {
       log.debug('ZMQ: Disconnected from', endpoint);
       this.emit('_error', {
