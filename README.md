@@ -1,4 +1,8 @@
-# Prototype of Control GUI
+# prototype of Control GUI
+
+[![Dependencies Status](https://david-dm.org/AliceO2Group/ControlGui/status.svg)](https://david-dm.org/AliceO2Group/ControlGui)
+[![devDependencies Status](https://david-dm.org/AliceO2Group/ControlGui/dev-status.svg)](https://david-dm.org/AliceO2Group/ControlGui?type=dev)
+
 The goal of Prototype Control GUI is to identify library and framework sets and develope the core functionalities of common O2 Web Applications:
 - Server-side (node.js)
   - HTTPS / REST API
