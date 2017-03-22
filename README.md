@@ -1,9 +1,9 @@
-# prototype of Control GUI
+# Control GUI Prototype
 
 [![Dependencies Status](https://david-dm.org/AliceO2Group/ControlGui/status.svg)](https://david-dm.org/AliceO2Group/ControlGui)
 [![devDependencies Status](https://david-dm.org/AliceO2Group/ControlGui/dev-status.svg)](https://david-dm.org/AliceO2Group/ControlGui?type=dev)
 
-The goal of Prototype Control GUI is to identify library and framework sets and develope the core functionalities of common O2 Web Applications:
+The goal of Control GUI Prototype is to identify library and framework sets and develope the core functionalities of common O2 Web Applications:
 - Server-side (node.js)
   - HTTPS / REST API
   - Authentication via CERN OAuth 2 and authorization via e-groups
