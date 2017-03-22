@@ -11,7 +11,7 @@ module.exports = class JwtToken {
    * @param {string} secret - secret to sign and verfy token
    */
   constructor(secret) {
-    this.secret = secret;
+    this._secret = secret;
   }
 
   /**
@@ -23,7 +23,7 @@ module.exports = class JwtToken {
    */
   generateToken(userId, accessLevel) {
     const user = {id: userId, access: accessLevel},
-      token = jwt.sign(user, this.secret, {
+      token = jwt.sign(user, this._secret, {
         expiresIn: '2m'
       });
     return token;
@@ -42,7 +42,7 @@ module.exports = class JwtToken {
       };
     }
     try {
-      const decoded = jwt.verify(token, this.secret);
+      const decoded = jwt.verify(token, this._secret);
       return {
         success: true,
         decoded: decoded
