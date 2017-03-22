@@ -1,3 +1,7 @@
+before_install:
+  - sudo add-apt-repository -y ppa:anton+/dnscrypt
+  - sudo apt-get update
+  - sudo apt-get install -y -qq libzmq4-dev libsodium-dev
 before_script:
   - npm install -g gulp
 script: gulp
