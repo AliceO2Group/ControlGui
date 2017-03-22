@@ -22,8 +22,7 @@ env:
   global:
   - CXX=g++-4.9
   - CC=gcc-4.9
-
-matrix:
+  matrix:
   - ZMQ="4.1.6" ZMQ_REPO="zeromq4-1" SODIUM="1.0.5"
 
 before_install:
