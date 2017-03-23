@@ -1,5 +1,6 @@
 # Control GUI Prototype
 
+[![Build Status](https://travis-ci.org/AliceO2Group/ControlGui.svg?branch=master)](https://travis-ci.org/AliceO2Group/ControlGui)
 [![Dependencies Status](https://david-dm.org/AliceO2Group/ControlGui/status.svg)](https://david-dm.org/AliceO2Group/ControlGui)
 [![devDependencies Status](https://david-dm.org/AliceO2Group/ControlGui/dev-status.svg)](https://david-dm.org/AliceO2Group/ControlGui?type=dev)
 
