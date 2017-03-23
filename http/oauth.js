@@ -1,10 +1,18 @@
-const https = require('https'),
-  oauth2 = require('simple-oauth2'),
-  config = require('./../config.json'),
-  log = require('./../log.js');
+const https = require('https');
+const oauth2 = require('simple-oauth2');
+const config = require('./../config.json');
+const log = require('./../log.js');
 
+/**
+ * Authenticates users via CERN OAuth 2.0
+ * If successful, queries user account details
+ * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
+ */
 module.exports = class OAuth {
-
+  /**
+   * Creates oauth object based on id and secret stored in config file
+   * @constructor
+   */
   constructor() {
     this.oauthCreds = oauth2.create({
       client: {
@@ -25,6 +33,11 @@ module.exports = class OAuth {
     });
   }
 
+  /**
+   * OAuth redirection callback (called by library)
+   * @param {object} emitter
+   * @param {number} code
+   */
   oAuthCallback(emitter, code) {
     const options = {
       code,

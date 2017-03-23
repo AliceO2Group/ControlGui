@@ -33,6 +33,10 @@ module.exports = class ZeroMQClient extends EventEmitter {
     this.socket.on('message', (message) => this.onmessage(message));
   }
 
+  /**
+   * On-connect event handler
+   * @param {string} endpoint
+   */
   connect(endpoint) {
     log.debug('ZMQ: Connected to', endpoint);
     this.connected = true;
@@ -42,6 +46,10 @@ module.exports = class ZeroMQClient extends EventEmitter {
     });
   }
 
+  /**
+   * On-disconnect event handler
+   * @param {string} endpoint
+   */
   disconnect(endpoint) {
     if (this.connected) {
       log.debug('ZMQ: Disconnected from', endpoint);
@@ -53,6 +61,10 @@ module.exports = class ZeroMQClient extends EventEmitter {
     this.connected = false;
   }
 
+  /**
+   * On-message event handler
+   * @param {string} message
+   */
   onmessage(message) {
     if (typeof message === 'undefined') {
       return;
@@ -60,13 +72,17 @@ module.exports = class ZeroMQClient extends EventEmitter {
     this.emit('message', message.toString());
   }
 
+  /**
+   * Sends message via socket
+   * @param {string} message
+   * @todo disallow sending if the socket is sub type
+   */
   send(message) {
     if (!this.connected) {
       this.emit('_error', {
         code: 5000,
         message: 'Connection to ZeroMQ-master in not estabilished. Request discarded'
       });
-      return false;
     }
     this.socket.send(message);
   }

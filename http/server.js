@@ -63,10 +63,19 @@ module.exports = class HTTPServer {
     });
   }
 
+  /**
+   * OAuth redirection
+   * @param {object} res - HTTP response
+   */
   oAuthAuthorize(res) {
     res.redirect(this.oauth.authorizationUri);
   }
 
+  /**
+   * OAuth callback if authentication succeeds.
+   * @param {object} req - HTTP request
+   * @param {object} res - HTTP response
+   */
   oAuthCallback(req, res) {
     const emitter = new EventEmitter();
     this.oauth.oAuthCallback(emitter, req.query.code);
@@ -76,26 +85,48 @@ module.exports = class HTTPServer {
     }.bind(this));
   }
 
+  /**
+   * Renders template using mustache
+   * @param {string} page - template file path
+   * @param {object} data - data to fill the template with
+   * @return {string} - HTML page
+   */
   renderPage(page, data) {
     const template = fs.readFileSync(page).toString();
     return mustache.to_html(template, data);
   }
 
+  /**
+   * HTTPs server getter
+   * @return {object} - HTTPs server
+   */
   get server() {
     return this.httpsServer;
   }
 
+  /**
+   * Verified JWT token synchronously!
+   * @todo use promises or generators to call it asynchronously!
+   * @param {object} req - HTTP request
+   * @param {object} res - HTTP response
+   * @param {function} next - passes control to next matching route
+   */
   jwtVerify(req, res, next) {
-    // jwt.verify is called synchronously; to improve performance call it in async way
     const jwtFeedback = this.jwt.verify(req.query.token);
     if (jwtFeedback.success) {
       req.decoded = jwtFeedback.decoded;
       next();
     } else {
-      return res.status(403).json(jwtFeedback);
+      res.status(403).json(jwtFeedback);
     }
   }
 
+  /**
+   * For the test purposes
+   * Simply returns JSON encoded fixed run number
+   * @param {object} req - HTTP request
+   * @param {object} res - HTTP response
+   */
   runs(req, res) {
     res.json({run: 123});
   }

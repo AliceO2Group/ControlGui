@@ -14,8 +14,8 @@ module.exports = class WebSocket extends EventEmitter {
     super();
     this.jwt = new JwtToken(config.jwtSecret);
     this.server = new WebSocketServer({server: httpsServer, clientTracking: true});
-    this.server.on('connection', client => this.onconnection(client));
-    this.server.on('close', client => this.onclose(client));
+    this.server.on('connection', (client) => this.onconnection(client));
+    this.server.on('close', (client) => this.onclose(client));
     this.message = new MessageFactory();
     this.padlock = new Padlock(this.message);
   }
