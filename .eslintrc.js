@@ -20,4 +20,4 @@ module.exports = {
     }],
    "curly": [2, "all"] // enfornce curly braces even in single line if-else
   }
-};
+}
