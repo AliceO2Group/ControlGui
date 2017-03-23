@@ -30,24 +30,30 @@ module.exports = class HTTPServer {
     this.specifyRoutes();
 
     // HTTP server, just to redirect to HTTPS
-    http.createServer(app).listen(8081);
+    http.createServer(app).listen(config.http.port);
 
     // HTTPS server
     this.httpsServer = https.createServer(credentials, app);
-    this.httpsServer.listen(8080);
+    this.httpsServer.listen(config.http.portSecure);
   }
 
+  /**
+   * Specified routes and their callbacks
+   */
   specifyRoutes() {
     this.app.get('/', (req, res) => this.oAuthAuthorize(res));
     this.app.use(express.static('public'));
     this.app.get('/callback', (req, res) => this.oAuthCallback(req, res));
-
+    // eslint-disable-next-line
     this.router = express.Router();
     this.router.use(this.jwtVerify);
     this.app.use('/api', this.router);
     this.router.use('/runs', this.runs);
   }
 
+  /**
+   * Redirects HTTP to HTTPs
+   */
   enableHttpRedirect() {
     this.app.use(function(req, res, next) {
       if (!req.secure) {

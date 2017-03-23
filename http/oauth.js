@@ -42,11 +42,16 @@ module.exports = class OAuth {
     }.bind(this));
   }
 
+  /**
+   * Queries user details using received access token
+   * @param {string} token
+   * @param {object} emitter
+   */
   oAuthGetUserDetails(token, emitter) {
     const postOptions = {
-      host: 'oauthresource.web.cern.ch',
-      port: 443,
-      path: '/api/User',
+      host: config.oAuth.resource.hostname,
+      port: config.oAuth.resource.port,
+      path: config.oAuth.resource.path,
       method: 'GET',
       headers: {
         'Content-Type': 'text',

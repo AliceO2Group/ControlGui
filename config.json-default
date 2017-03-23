@@ -8,7 +8,12 @@
     "authorizePath": "/OAuth/Authorize",
     "redirect_uri": "https://<appHost>/callback",
     "scope": "https://<host>/api/User",
-    "state": "3(#0/!~"
+    "state": "3(#0/!~",
+    "resource": {
+      "hostname": "<resourceHost>",
+      "path": "/api/User",
+      "port": <resourcePort> 
+    }
   },
   "key": "<privateKey>.key",
   "cert": "<certificate>.pem",
@@ -21,5 +26,9 @@
       "ip": "<replyServer>",
       "port": 3001
     }
+  },
+  "http": {
+    "port": 8081,
+    "portSecure": 8080
   }
 }
