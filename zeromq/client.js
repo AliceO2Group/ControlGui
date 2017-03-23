@@ -15,19 +15,18 @@ module.exports = class ZeroMQClient extends EventEmitter {
    * @param {bool} type - socket type, true = sub. false = req
    * @construct
    */
-  constructor(ip, port, type = false) {
+  constructor(ip, port, type) {
     super();
 
     this.connected = true;
-    this.socket = type ? zmq.socket('sub') : zmq.socket('req');
+    this.socket = zmq.socket(type);
 
     this.socket.on('connect', (fd, endpoint) => this.connect(endpoint));
     this.socket.on('close', (fd, endpoint) => this.disconnect(endpoint));
     this.socket.on('disconnect', (fd, endpoint) => this.disconnect(endpoint));
-    this.socket.monitor(1000, 0);
 
     this.socket.connect('tcp://' + ip + ':' + port);
-    if (type) {
+    if (type == 'sub') {
       this.socket.subscribe('');
     }
     this.socket.on('message', (message) => this.onmessage(message));
@@ -40,10 +39,6 @@ module.exports = class ZeroMQClient extends EventEmitter {
   connect(endpoint) {
     log.debug('ZMQ: Connected to', endpoint);
     this.connected = true;
-    this.emit('notification', {
-      code: 6000,
-      message: 'Connected to ZMQ endpoint: ' + endpoint
-    });
   }
 
   /**
@@ -53,10 +48,6 @@ module.exports = class ZeroMQClient extends EventEmitter {
   disconnect(endpoint) {
     if (this.connected) {
       log.debug('ZMQ: Disconnected from', endpoint);
-      this.emit('_error', {
-        code: 5000,
-        message: 'Server disconnected from ZMQ endpoint: ' + endpoint
-      });
     }
     this.connected = false;
   }
@@ -67,6 +58,7 @@ module.exports = class ZeroMQClient extends EventEmitter {
    */
   onmessage(message) {
     if (typeof message === 'undefined') {
+      log.debug('ZMQ: Cannot send undefined message');
       return;
     }
     this.emit('message', message.toString());
@@ -75,14 +67,11 @@ module.exports = class ZeroMQClient extends EventEmitter {
   /**
    * Sends message via socket
    * @param {string} message
-   * @todo disallow sending if the socket is sub type
    */
   send(message) {
     if (!this.connected) {
-      this.emit('_error', {
-        code: 5000,
-        message: 'Connection to ZeroMQ-master in not estabilished. Request discarded'
-      });
+      log.debug('ZMQ: Could not send message as the connection is not estabilished');
+      return;
     }
     this.socket.send(message);
   }
