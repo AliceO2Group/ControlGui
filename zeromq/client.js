@@ -1,9 +1,20 @@
-const EventEmitter = require('events'),
-  zmq = require('zmq'),
-  log = require('./../log.js');
+const EventEmitter = require('events');
+const zmq = require('zmq');
+const log = require('./../log.js');
 
+/**
+ * ZeroMQ client that connects to O2 Control Master via on of two endpoints: sub or req
+ * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
+ */
 module.exports = class ZeroMQClient extends EventEmitter {
 
+  /**
+   * Creates ZeroMQ socket and binds class methods to basic events
+   * @param {string} ip - hostname
+   * @param {number} port - port number
+   * @param {bool} type - socket type, true = sub. false = req
+   * @construct
+   */
   constructor(ip, port, type = false) {
     super();
 

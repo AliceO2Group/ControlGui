@@ -22,17 +22,17 @@ module.exports = class JwtToken {
    * @return {object} encrypted token - authentication token
    */
   generateToken(userId, accessLevel) {
-    const user = {id: userId, access: accessLevel},
-      token = jwt.sign(user, this._secret, {
-        expiresIn: '2m'
-      });
+    const user = {id: userId, access: accessLevel};
+    const token = jwt.sign(user, this._secret, {
+      expiresIn: '2m'
+    });
     return token;
   }
 
   /**
    * Verifies user token using the same secret as in generateToken method
    * @param {object} token - token to be verified
-   * @return {object} wether operation was successful, if so decoded data are passed as well
+   * @return {object} whether operation was successful, if so decoded data are passed as well
    */
   verify(token) {
     if (!token) {

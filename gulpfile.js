@@ -1,12 +1,12 @@
-const gulp = require('gulp'),
-  uglify = require('gulp-uglify'),
-  qunit = require('gulp-qunit'),
-  mocha = require('gulp-mocha'),
-  eslint = require('gulp-eslint');
+const gulp = require('gulp');
+const uglify = require('gulp-uglify');
+const qunit = require('gulp-qunit');
+const mocha = require('gulp-mocha');
+const eslint = require('gulp-eslint');
 
-
-let jsSource = ['./*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
-
+const jsSource = [
+  './*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'
+];
 
 // Default task
 gulp.task('default', ['test', 'eslint']);

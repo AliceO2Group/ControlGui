@@ -1,12 +1,12 @@
-const EventEmitter = require('events'),
-  WebSocketServer = require('ws').Server,
-  url = require('url'),
-  config = require('./../config.json'),
-  log = require('./../log.js'),
+const EventEmitter = require('events');
+const WebSocketServer = require('ws').Server;
+const url = require('url');
+const config = require('./../config.json');
+const log = require('./../log.js');
 
-  JwtToken = require('./../jwt/token.js'),
-  Padlock = require('./padlock.js'),
-  MessageFactory = require('./message.js');
+const JwtToken = require('./../jwt/token.js');
+const Padlock = require('./padlock.js');
+const MessageFactory = require('./message.js');
 
 module.exports = class WebSocket extends EventEmitter {
 

@@ -1,16 +1,25 @@
-const config = require('./../config.json'),
-  fs = require('fs'),
-  http = require('http'),
-  https = require('https'),
-  express = require('express'),
-  mustache = require('mustache'),
-  EventEmitter = require('events').EventEmitter,
+const config = require('./../config.json');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const express = require('express');
+const mustache = require('mustache');
+const EventEmitter = require('events').EventEmitter;
 
-  JwtToken = require('./../jwt/token.js'),
-  OAuth = require('./oauth.js');
+const JwtToken = require('./../jwt/token.js');
+const OAuth = require('./oauth.js');
 
+/**
+ * HTTPs server needed by REST API
+ *  @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
+ */
 module.exports = class HTTPServer {
 
+  /**
+   * Sets up the server, routes and binds HTTP and HTTPs sockets
+   * @param {object} credentials - private and public key file paths
+   * @param {object} app
+   */
   constructor(credentials, app) {
     this.app = app;
 
