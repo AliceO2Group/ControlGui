@@ -1,8 +1,6 @@
 sudo: false
-
 os:
-  - linux
-
+- linux
 addons:
   apt:
     sources:
@@ -11,34 +9,34 @@ addons:
     - gcc-4.9
     - g++-4.9
     - uuid-dev
-
 language: node_js
 node_js:
-  - "7"
-  - "6"
-
+- '7'
+- '6'
 env:
   global:
   - CXX=g++-4.9
   - CC=gcc-4.9
   matrix:
   - ZMQ="4.1.6" ZMQ_REPO="zeromq4-1"
-
 before_install:
- - mkdir ldlocal
- - export LDHACK=`pwd`/ldlocal
- - export LD_RUN_PATH=$LDHACK/lib
- - export LD_LIBRARY_PATH=$LDHACK/lib
- - export PKG_CONFIG_PATH=$LDHACK/lib/pkgconfig
- - wget https://github.com/zeromq/$ZMQ_REPO/releases/download/v$ZMQ/zeromq-$ZMQ.tar.gz
- - tar xzvf zeromq-$ZMQ.tar.gz
- - cd zeromq-$ZMQ
- - ./autogen.sh
- - ./configure --prefix=$LDHACK --without-libsodium
- - make -j
- - make install
- - cd ..
-
+- mkdir ldlocal
+- export LDHACK=`pwd`/ldlocal
+- export LD_RUN_PATH=$LDHACK/lib
+- export LD_LIBRARY_PATH=$LDHACK/lib
+- export PKG_CONFIG_PATH=$LDHACK/lib/pkgconfig
+- wget https://github.com/zeromq/$ZMQ_REPO/releases/download/v$ZMQ/zeromq-$ZMQ.tar.gz
+- tar xzvf zeromq-$ZMQ.tar.gz
+- cd zeromq-$ZMQ
+- ./autogen.sh
+- ./configure --prefix=$LDHACK --without-libsodium
+- make -j
+- make install
+- cd ..
 before_script:
-  - npm install -g gulp
+- npm install -g gulp
 script: gulp
+notifications:
+  slack:
+    rooms:
+      secure: HTqSz8yl4g+/9IDs7jBxb8PoaTChBwK7Y2iGOB3m5SvQ9BipYlMegpLz0pFj4K6LtCavXt8W6oG+odAcUKa1PmH8Ed9cHFyqRC+qYcjyBn4sgLqwumMA4k1XELOIAwDCtzPMn9w6qQP2UDF4mkFe7sabvN35SEKnIFlA92sL7Jk6CYQNRhedj163w/CncpuJ8+M1IDEHS1I3wEXc+SypjaP1YPBOc9XU96+05jeD8QyPZA2enrMVSrspbj7sFjBYFUBgq42QoHTnFJAXCP9phB/mVHyXNETwRQmg8vILmsgnGM+1pk8bYDhhQk2BDT8EyEviY3r2LbjXiAbpJTup+YIayk9B+D12LIdCyPw5ZYRmhXk5JBhPMcbSUqaw+nabJ4FKy6m+2Y5C2mWSUeeN8Q3GQ1lM1DiUbGyKwt+Eh/Qx7bNfP63fWqGTtqgF/QEu4mR3FEIXbhErqL2h1oxdzJyWGR8XUqdh0G2Jy+AEzgG83LmOfZbTAq6dDkk/N2MUqZSNp0nZKOkX3u9zp6IFAaQSXOKvAiRWkltIYHue8pWELywZLdv6FhTujp074ZZDX9XO4do4CYX+baefDvIinBmesx1CGkguae3MnxcxSNfQOEShKtwWLa8eP8RIJZia2RLTIiMmxjLnbCGQWYfktN1OANaYAzEl0CByO6tgClQ=
