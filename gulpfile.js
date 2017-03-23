@@ -7,7 +7,12 @@ const gulp = require('gulp'),
 
 let jsSource = ['./*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'];
 
+
+// Default task
 gulp.task('default', ['test', 'eslint']);
+
+// Travis CI task
+gulp.task('travis', ['test']);
 
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
@@ -24,7 +29,7 @@ gulp.task('eslint', function() {
     .pipe(eslint.failAfterError());
 });
 
-
+// Run front-end and back-end tests
 gulp.task('test', ['test-frontend', 'test-backend']);
 
 // Test frontend with QUnit

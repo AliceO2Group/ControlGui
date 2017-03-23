@@ -35,7 +35,7 @@ before_install:
 - cd ..
 before_script:
 - npm install -g gulp
-script: gulp
+script: gulp travis
 notifications:
   slack:
     secure: e5fCrr1ANOJmY+QlErhaumGVK/Pyl4N/15iP/8cUa+TjIN8SveCaIfdnVds2fKNgNQA+yhLci1l29sB/6mxrN6lic0rg++MzNPToM3mLbsI3uUSzizv02zZuqLWaPAx3wUkIQdOKX266FKp6Y+JVMTQlYAC0Md0ApZ3ul640M+Yvl/usJ1+/kcg2BlzRD0YsK9Hl73gr1Sa7jJ5NiyMP2FWTcB2fXGMxMOOve+CEb6fs3KBAASybfbVBQk3ZJ80JlbAS4jP0+3/ZviNKCTCDkkzQOzZFObyQe3QQbJny1wrHVcqKDwB4Iyg2e71jhG21OuZcxibsEKsWvLTOVUR4OZpkYIoEdFf5oBujvbdHPPDstc6dqi7bLEw8hPz/aky3o7oGdyGcvMuB1+7gSu47c66RhJVS5KlX+MZCb8xzV1Y3+mmzNIvcGdJfbIYMw8gsUSzOnp9e11leUxFy+g9BIT0hiz/2/OilD8cmUgNK7KhQD1Qb3pVBwb7tHSlb52I8Bxzd2N5kIcEA0mlZPkb+6P7DOQPZZK60GBO3kYAd9Ybs++y4XzGZPmSpdi04J8ET4FKoCbCzKrz1seiUpJoWYKhXzlnlwpFecK+jqfKT8D2s1WQKk1j4w6ctTPIU4/Qj47UT6UWUSuU7GQIWObZ4uZC3O/Q09E4RH5ZefaOpXEI=
