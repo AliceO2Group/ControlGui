@@ -112,12 +112,12 @@ module.exports = class HTTPServer {
    * @param {function} next - passes control to next matching route
    */
   jwtVerify(req, res, next) {
-    const jwtFeedback = this.jwt.verify(req.query.token);
-    if (jwtFeedback.success) {
+    try {
+      const jwtFeedback = this.jwt.verify(req.query.token);
       req.decoded = jwtFeedback.decoded;
       next();
-    } else {
-      res.status(403).json(jwtFeedback);
+    } catch(err) {
+      res.status(403).json({success: false, message: err.name});
     }
   }
 
