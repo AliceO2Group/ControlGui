@@ -23,7 +23,7 @@ module.exports = class HTTPServer {
   constructor(credentials, app) {
     this.app = app;
 
-    this.jwt = new JwtToken(config.jwtSecret);
+    this.jwt = new JwtToken(config.jwt);
     this.oauth = new OAuth();
 
     this.enableHttpRedirect();

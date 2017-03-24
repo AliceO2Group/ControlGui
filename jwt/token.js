@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-
 /**
  * Contains Java Web Token functionality: generate, verify
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
@@ -10,8 +9,11 @@ module.exports = class JwtToken {
    * @constructor
    * @param {string} secret - secret to sign and verfy token
    */
-  constructor(secret) {
-    this._secret = secret;
+  constructor(config) {
+    this._expiration = config.expiration;
+    this._maxAge = config.maxAge;
+    this._secret = config.secret;
+    this._issuer = config.issuer;
   }
 
   /**
@@ -21,12 +23,27 @@ module.exports = class JwtToken {
    * @param {number} accessLevel - whether user can execute commands, etc..
    * @return {object} encrypted token - authentication token
    */
-  generateToken(userId, accessLevel) {
-    const user = {id: userId, access: accessLevel};
-    const token = jwt.sign(user, this._secret, {
-      expiresIn: '2m'
+  generateToken(personid, username, access) {
+    const payload = { id: personid, username: username, access: access};
+    const token = jwt.sign(payload, this._secret, {
+      expiresIn: this._expiration,
+      issuer: this._issuer,
     });
     return token;
+  }
+  
+  refreshToken(token) {
+    try {
+      const decoded = jwt.verify(token, this._secret, {
+        issuer: this._issuer,
+        ignoreExpiration: true,
+        maxAge: this._maxAge
+      });
+      return this.generateToken(decoded.id, decoded.username, decoded.access); 
+    } catch(err) {
+      return false;
+    } 
+
   }
 
   /**
@@ -35,23 +52,9 @@ module.exports = class JwtToken {
    * @return {object} whether operation was successful, if so decoded data are passed as well
    */
   verify(token) {
-    if (!token) {
-      return {
-        success: false,
-        message: 'Token not provided'
-      };
-    }
-    try {
-      const decoded = jwt.verify(token, this._secret);
-      return {
-        success: true,
-        decoded: decoded
-      };
-    } catch(err) {
-      return {
-        success: false,
-        message: err.name
-      };
-    }
+    const decoded = jwt.verify(token, this._secret, {
+      issuer: this._issuer,
+    });
+    return decoded;
   }
 };
