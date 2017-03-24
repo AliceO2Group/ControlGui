@@ -19,35 +19,30 @@ module.exports = class Padlock {
    * @param {number} id - user id
    * @return {object} - JSON message
    */
-  process(command, id) {
+  check(command, id) {
+    // release lock
     if (command == 'lock-release') {
       if (this.unlock(id)) {
-        return this._message.create(command, 'Unlocked by ' + id, true);
+        return new Response(200).payload({details: 'Unlocked by ' + id}).broadcast();
       } else {
-        return this._message.createError(command, 3, 'Not possible to execute command');
+        return new Response(403);
       }
-    } else {
-      return this._message.createError(command, 4, 'Not authorized to execute command');
-    }
-  }
-
-  privileged(command, id) {
-    if (command == 'lock-get') {
+    } else if (command == 'lock-get') {
       if (this.lock(id)) {
-        return this._message.create(command, 'Lock granted to ' + id, true);
+        return new Response(200).payload({details: 'Granted to ' + id, id: id}).broadcast();
       } else {
-        return this._message.createError( command, 4, 'Already locked/not authorized to lock');
+        return new Response(403).payload({details: 'Already locked/not authorized'});
       }
     } else if (command == 'lock-check') {
-      if (this._lockedId !== null) {
-        return this._message.create(
-          'lock-get', 'Locked by ' + this._lockedId, false, {locked: 1, id: this.lockedId}
-        );
+      if (this.isHoldingLock(id)) {
+        return new Response(200).command('lock-get').payload({details: 'Locked by you'});
+      } else if (this._lockedId !== null) {
+        return new Response(200).payload({details: 'Locked by ' + this._lockedId, locked: true, id: this.lockedId});
       } else {
-        return this._message.create('lock-release', 'Not locked', false, {locked: 0});
+        return new Response(200).payload({locked: false});
       }
     } else {
-      return this._message.createError(command, 4, 'Not authorized to execute command');
+      return new Response(401);
     }
   }
 

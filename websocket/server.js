@@ -36,26 +36,25 @@ module.exports = class WebSocket extends EventEmitter {
 
     log.debug('%d : command %s', id, message.command);
 
-    //if (this.padlock.isHoldingLock(id)) {
-      switch(message.command.split('-')[0]) {
-        case 'lock':
-          responseArray.push(new Response(202));//this.padlock.process(message.command, id);
-          break;
-        case 'test':
+    switch(message.command.split('-')[0]) {
+      case 'lock':
+        responseArray.push(this.padlock.check(message.command, id));
+        break;
+      case 'test':
+        this.emit('textmessage', JSON.stringify(message));
+        responseArray.push(new Response(202));
+        break;
+      case 'execute':
+        if (this.padlock.isHoldingLock(id)) {
           this.emit('textmessage', JSON.stringify(message));
           responseArray.push(new Response(202));
-          break;
-        default:
-          responseArray.push(new Response(404));
-      }
-    /*} else {
-      switch(message.command.split('-')[0]) {
-        case 'lock':
-          return this.padlock.privileged(message.command, id);
-        default:
-          return new Response(403);
-      }
-    }*/
+        } else {
+          responseArray.push(new Response(403));
+        }
+        break;
+      default:
+        responseArray.push(new Response(404));
+    }
     return responseArray;
   }
 

@@ -34,10 +34,21 @@ $(function() {
   }, $('#ws') );
 
   var padlock = $.o2.padlock({
+    id: {{personid}}
   }, $('#padlock') );
 
-  $('#ws').bind('websocketlock-get', function(evt, data) { if (data.success) padlock.lock() });
-  $('#ws').bind('websocketlock-release', function(evt, data) { if (data.success) padlock.unlock() });
+  $('#ws').bind('websocketlock-get', function(evt, data) {
+    if (!data.error) padlock.lock(data.id);
+  });
+
+  $('#ws').bind('websocketlock-release', function(evt, data) {
+    if (!data.error) padlock.unlock();
+  });
+
+  $('#ws').bind('websocketlock-check', function(evt, data) {
+    if (!data.error && data.locked) padlock.taken();
+    else padlock.unlock();
+  });
  
   /// button listener - sends commands to server
   $('button').on('click', function() {
@@ -58,7 +69,8 @@ $(function() {
 <button id="lock-get" class="ui-button ui-corner-all ui-widget">Lock</button>
 <button id="lock-release" class="ui-button ui-corner-all ui-widget">Unlock</button>
 <button id="lock-check" class="ui-button ui-corner-all ui-widget">Check lock</button>
-<button id="test-zeromq" class="ui-button ui-corner-all ui-widget">Send random value</button>
+<button id="test-zeromq" class="ui-button ui-corner-all ui-widget">Request test value</button>
+<button id="execute-zeromq" class="ui-button ui-corner-all ui-widget">Execute test command</button>
 <br><br>
 <h3>Lock icon</h3>
 <span id="padlock" class="fa fa-2x"></span>
