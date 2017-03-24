@@ -26,6 +26,7 @@ module.exports = class ZeroMQClient extends EventEmitter {
     this.socket.on('disconnect', (fd, endpoint) => this.disconnect(endpoint));
 
     this.socket.connect('tcp://' + ip + ':' + port);
+    log.debug('Connecting to tcp://' + ip + ':' + port + '...');
     if (type == 'sub') {
       this.socket.subscribe('');
     }

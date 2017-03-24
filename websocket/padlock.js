@@ -1,5 +1,5 @@
 const log = require('./../log.js');
-
+const Response = require('./response.js');
 /**
  * Manages locking mechanism (only single user can execute commands at the same time
  * The rest can only preview changes
@@ -8,10 +8,8 @@ const log = require('./../log.js');
 module.exports = class Padlock {
   /**
    * Initialized member variables
-   * @param {object} messageFactory
    */
-  constructor(messageFactory) {
-    this._message = messageFactory;
+  constructor() {
     this._lockedId = null;
   }
 

@@ -80,7 +80,7 @@ module.exports = class HTTPServer {
     const emitter = new EventEmitter();
     this.oauth.oAuthCallback(emitter, req.query.code);
     emitter.on('userdata', function(data) {
-      data.token = this.jwt.generateToken(data.personid, 1);
+      data.token = this.jwt.generateToken(data.personid, data.username, 1);
       return res.status(200).send(this.renderPage('public/index.tpl', data));
     }.bind(this));
   }
