@@ -6,75 +6,99 @@ const log = require('./../log.js');
 
 const JwtToken = require('./../jwt/token.js');
 const Padlock = require('./padlock.js');
-const MessageFactory = require('./message.js');
+const Response = require('./response.js');
 
 module.exports = class WebSocket extends EventEmitter {
 
   constructor(httpsServer) {
     super();
-    this.jwt = new JwtToken(config.jwtSecret);
+    this.jwt = new JwtToken(config.jwt);
     this.server = new WebSocketServer({server: httpsServer, clientTracking: true});
     this.server.on('connection', (client) => this.onconnection(client));
     this.server.on('close', (client) => this.onclose(client));
-    this.message = new MessageFactory();
-    this.padlock = new Padlock(this.message);
+    this.padlock = new Padlock();
+    log.debug('WebSocket server started');
   }
 
   onmessage(message) {
     if (typeof message === 'undefined') {
       return;
     }
-    const id = this.verify(message.token);
-    if (id === false) {
-      return this.message.createError(message.command, 403, 'Unauthorized');
+    const responseArray = [];
+    let feedback = this.jwtVerify(message.token);
+    if (feedback instanceof Response && feedback.getcode != 440) {
+      return [feedback];
+    } else if (feedback instanceof Response && feedback.getcode == 440) {
+      responseArray.push(feedback);
+      feedback = this.jwtVerify(feedback.getpayload.newtoken);
     }
+    const id = feedback.id;
 
     log.debug('%d : command %s', id, message.command);
 
-    if (this.padlock.isHoldingLock(id)) {
+    //if (this.padlock.isHoldingLock(id)) {
       switch(message.command.split('-')[0]) {
         case 'lock':
-          return this.padlock.process(message.command, id);
+          responseArray.push(new Response(202));//this.padlock.process(message.command, id);
+          break;
         case 'test':
           this.emit('textmessage', JSON.stringify(message));
-          return this.message.create(message.command, 1, 'Command executed');
+          responseArray.push(new Response(202));
+          break;
         default:
-          return this.message.createError(message.command, 404, 'Unknown command');
+          responseArray.push(new Response(404));
       }
-    } else {
+    /*} else {
       switch(message.command.split('-')[0]) {
         case 'lock':
           return this.padlock.privileged(message.command, id);
         default:
-          return this.message.createError(message.command, 403, 'Unauthorized');
+          return new Response(403);
+      }
+    }*/
+    return responseArray;
+  }
+
+  jwtVerify(token) {
+    try {
+      return this.jwt.verify(token);
+    } catch(err) { 
+      log.warn('jwt verify failed: %s', err.message);
+      if (err.name == 'TokenExpiredError') {
+        const newtoken = this.jwt.refreshToken(token);
+        if (newtoken === false) {
+          return new Response(403);
+        }
+        return new Response(440).command('new-token').payload({newtoken: newtoken});
+      } else {
+        return new Response(401);
       }
     }
   }
 
-  verify(token) {
-    const verified = this.jwt.verify(token);
-    if (verified.success && verified.decoded.access == 1) {
-      return verified.decoded.id;
-    }
-    log.warn('unknown : jwt verify failed: %s', verified.message);
-    return false;
-  }
-
   onconnection(client) {
     const token = url.parse(client.upgradeReq.url, true).query.token;
-    const jwtFeedback = this.jwt.verify(token);
-    if (jwtFeedback.success === false) {
-      client.close(4000, jwtFeedback.message);
+    const feedback = this.jwtVerify(token);
+    if (feedback instanceof Response) {
+      client.close(1008);
+      return;
     }
-    log.info('%d : connected', jwtFeedback.decoded.id);
+    const id = feedback.id;
+    log.info('%d : connected', id);
     client.on('message', function(message, flags) {
-      const response = this.onmessage(JSON.parse(message));
-      if (response.broadcast) {
-        log.debug('broadcast : command %s sent', response.command);
-        this.broadcast(JSON.stringify(response));
-      } else {
-        log.debug('%d : command %s sent', jwtFeedback.decoded.id, response.command);
-        client.send(JSON.stringify(response));
+      const parsed = JSON.parse(message);
+      const response = this.onmessage(parsed);
+      for (let message of response) {
+        if (message.getcommand == undefined) {
+          message.command(parsed.command);
+        }
+        if (message.getbroadcast) {
+          log.debug('broadcast : command %s sent', message.getcommand);
+          this.broadcast(JSON.stringify(message.json));
+        } else {
+          log.debug('%d : command %s sent', id, message.getcommand);
+          client.send(JSON.stringify(message.json));
+        }
       }
     }.bind(this));
   }
