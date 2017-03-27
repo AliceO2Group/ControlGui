@@ -12,7 +12,7 @@ const jsSource = [
 gulp.task('default', ['test', 'eslint']);
 
 // Travis CI task
-gulp.task('travis', ['test', 'eslint']);
+gulp.task('travis', ['qunit', 'mocha-sync', 'eslint']);
 
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
@@ -41,5 +41,11 @@ gulp.task('qunit', function() {
 // Test backend with Mocha
 gulp.task('mocha', function() {
   gulp.src('./test/mocha-*.js')
+      .pipe(mocha());
+});
+
+// Mocha synchronus test only
+gulp.task('mocha-sync', function() {
+  gulp.src(['./test/mocha-*.js', '!./test/mocha-async-*.js'])
       .pipe(mocha());
 });
