@@ -1,5 +1,10 @@
 {
-  "jwtSecret": "<jwtSecret>",
+"jwt": {
+    "secret": "<secret>",
+    "issuer": "alice-o2-gui",
+    "expiration": "Xd",
+    "maxAge": "Xd"
+  },
   "oAuth": {
     "secret": "<oAuthSecret>",
     "id": "<oAuthId>",
@@ -12,7 +17,7 @@
     "resource": {
       "hostname": "<resourceHost>",
       "path": "/api/User",
-      "port": <resourcePort> 
+      "port": <resourcePort>
     }
   },
   "key": "<privateKey>.key",
@@ -21,7 +26,7 @@
     "sub": {
       "ip": "<pushServer>",
       "port": 3000
-    }, 
+    },
     "req": {
       "ip": "<replyServer>",
       "port": 3001
