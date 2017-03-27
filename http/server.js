@@ -46,7 +46,7 @@ module.exports = class HTTPServer {
     this.app.get('/callback', (req, res) => this.oAuthCallback(req, res));
     // eslint-disable-next-line
     this.router = express.Router();
-    this.router.use(this.jwtVerify);
+    this.router.use((req, res, next) => this.jwtVerify(req, res, next));
     this.app.use('/api', this.router);
     this.router.use('/runs', this.runs);
   }
