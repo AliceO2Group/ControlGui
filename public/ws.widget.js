@@ -28,6 +28,8 @@ $.widget('o2.websocket', {
         // handling token refresh error
         if (parsed.code == 440) {
           this.options.token = parsed.payload.newtoken;
+        } else if (parsed.code >= 400) {
+          this._trigger('error', evt, parsed);
         } else {
           this._trigger(parsed.command, evt, parsed);
         }

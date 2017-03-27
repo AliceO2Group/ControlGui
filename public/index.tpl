@@ -29,8 +29,6 @@ $(function() {
     // token, cernid, name and username are provided by CERN SSO
     token: '{{token}}',
     id: {{personid}},
-    name: '{{name}}',
-    username: '{{username}}'
   }, $('#ws') );
 
   var padlock = $.o2.padlock({
@@ -38,15 +36,17 @@ $(function() {
   }, $('#padlock') );
 
   $('#ws').bind('websocketlock-get', function(evt, data) {
-    if (!data.error) padlock.lock(data.id);
+    padlock.lock(data.payload.id);
+    $('#execute-zeromq').prop('disabled', false).removeClass("ui-state-disabled");
   });
 
   $('#ws').bind('websocketlock-release', function(evt, data) {
-    if (!data.error) padlock.unlock();
+    padlock.unlock();
+    $('#execute-zeromq').prop('disabled', true).addClass("ui-state-disabled");
   });
 
   $('#ws').bind('websocketlock-check', function(evt, data) {
-    if (!data.error && data.locked) padlock.taken();
+    if (data.locked) padlock.taken();
     else padlock.unlock();
   });
  
@@ -65,12 +65,13 @@ $(function() {
 </script>
 </head>
 <body>
+<h2>Hello, {{name}} (@{{username}})</h2>
 <h3>Commands</h3>
 <button id="lock-get" class="ui-button ui-corner-all ui-widget">Lock</button>
 <button id="lock-release" class="ui-button ui-corner-all ui-widget">Unlock</button>
 <button id="lock-check" class="ui-button ui-corner-all ui-widget">Check lock</button>
 <button id="test-zeromq" class="ui-button ui-corner-all ui-widget">Request test value</button>
-<button id="execute-zeromq" class="ui-button ui-corner-all ui-widget">Execute test command</button>
+<button id="execute-zeromq" class="ui-button ui-corner-all ui-widget ui-state-disabled">Execute test command</button>
 <br><br>
 <h3>Lock icon</h3>
 <span id="padlock" class="fa fa-2x"></span>
