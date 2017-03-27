@@ -12,7 +12,7 @@ const jsSource = [
 gulp.task('default', ['test', 'eslint']);
 
 // Travis CI task
-gulp.task('travis', ['test']);
+gulp.task('travis', ['test', 'eslint']);
 
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
