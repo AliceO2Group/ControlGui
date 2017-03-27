@@ -3,13 +3,21 @@ const WebSocketServer = require('ws').Server;
 const url = require('url');
 const config = require('./../config.json');
 const log = require('./../log.js');
-
 const JwtToken = require('./../jwt/token.js');
 const Padlock = require('./padlock.js');
 const Response = require('./response.js');
 
+/**
+ * The class that represents WebSocket server
+ * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
+ */
 module.exports = class WebSocket extends EventEmitter {
 
+  /**
+   * Starts up the server and binds event handler
+   * @param {object} httpsServer - HTTPS server
+   * @constructor
+   */
   constructor(httpsServer) {
     super();
     this.jwt = new JwtToken(config.jwt);
@@ -20,6 +28,11 @@ module.exports = class WebSocket extends EventEmitter {
     log.debug('WebSocket server started');
   }
 
+  /**
+   * Handles incoming text messages: verifies token and processes request/command
+   * @param {object} message
+   * @return {object} message to be send back to the user
+   */
   onmessage(message) {
     if (typeof message === 'undefined') {
       return;
@@ -58,6 +71,11 @@ module.exports = class WebSocket extends EventEmitter {
     return responseArray;
   }
 
+  /**
+   * Verifies token, if expired request a new one
+   * @param {object} token - JWT token
+   * @return {object} includes either parsed token or response message
+   */
   jwtVerify(token) {
     try {
       return this.jwt.verify(token);
@@ -75,6 +93,10 @@ module.exports = class WebSocket extends EventEmitter {
     }
   }
 
+  /**
+   * Handles client connection and message receiving
+   * @param {object} client - connected client
+   */
   onconnection(client) {
     const token = url.parse(client.upgradeReq.url, true).query.token;
     const feedback = this.jwtVerify(token);
@@ -102,10 +124,18 @@ module.exports = class WebSocket extends EventEmitter {
     }.bind(this));
   }
 
+  /**
+   * Handles client disconnection
+   * @param {object} client - disconnected client
+   */
   onclose(client) {
     log.info('disconnected');
   }
 
+  /**
+   * Broadcasts the message to all connected clients
+   * @param {string} message
+   */
   broadcast(message) {
     this.server.clients.forEach(function(client) {
       client.send(message);

@@ -1,13 +1,15 @@
 const log = require('./../log.js');
 const Response = require('./response.js');
+
 /**
- * Manages locking mechanism (only single user can execute commands at the same time
- * The rest can only preview changes
+ * Manages locking mechanism (only single user can execute commands at the same time).
+ * Other users can preview changes only
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 module.exports = class Padlock {
   /**
    * Initialized member variables
+   * @constructor
    */
   constructor() {
     this._lockedId = null;
@@ -15,6 +17,7 @@ module.exports = class Padlock {
 
   /**
    * Processes "lock-*" commands
+   * Ensures that singe user to holds the lock
    * @param {string} command - command name
    * @param {number} id - user id
    * @return {object} - JSON message
@@ -48,10 +51,20 @@ module.exports = class Padlock {
     }
   }
 
+  /**
+   * Checks whether user with given id holds the lock
+   * @param {number} id - user id
+   * @return {bool} true if user holods the lock, false otherwise
+   */
   isHoldingLock(id) {
     return (this._lockedId == id);
   }
 
+  /**
+   * Sets the lock ownership to given user
+   * @param {number} id - user id
+   * @return {bool} true if succeeds, false otherwise
+   */
   lock(id) {
     if (this._lockedId === null) {
       this._lockedId = id;
@@ -62,6 +75,11 @@ module.exports = class Padlock {
     }
   }
 
+  /**
+   * Remove ownership of current holder of the lock
+   * @param {number} id - user id
+   * @return {bool} true if succeeds, false otherwise
+   */
   unlock(id) {
     if (this._lockedId == id) {
       this._lockedId = null;

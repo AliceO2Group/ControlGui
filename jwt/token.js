@@ -33,6 +33,15 @@ module.exports = class JwtToken {
     return token;
   }
 
+  /**
+   * When the token expires, this method allows to refresh it
+   * It skips expiration check and verifies (already expired) token based on maxAge parameter
+   * (maxAge >> expiration).
+   * Then it creates a new token using parameters of the old one and ships it to the user
+   * If maxAge timeouts, the user needs to re-login via OAuth
+   * @param {object} token - expired token
+   * @return {object} new token or false in case of failure
+   */
   refreshToken(token) {
     try {
       const decoded = jwt.verify(token, this._secret, {

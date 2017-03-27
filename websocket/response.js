@@ -1,6 +1,13 @@
-
+/**
+ * Helper class that allows to prepare response for users request
+ * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
+ */
 module.exports = class Response {
-
+  /**
+   * Sets initial variables
+   * @param {number} code response code (based on HTTP)
+   * @constructor
+   */
   constructor(code) {
     this._code = code;
     this._broadcast = false;
@@ -8,6 +15,11 @@ module.exports = class Response {
     this._command = undefined;
   }
 
+  /**
+   * Provides HTTP message based on code
+   * @param {number} code
+   * @return {string} message for given code
+   */
   _message(code) {
     const messages = {
       101: 'Switching Protocols',
@@ -24,37 +36,67 @@ module.exports = class Response {
     return messages[code];
   }
 
+  /**
+   * @return {number} code
+   */
   get getcode() {
     return this._code;
   }
 
+  /**
+   * Command setter
+   * @param {string} command - user request command
+   * @return {object} 'this' to allow function call chaining
+   */
   command(command) {
     this._command = command;
     return this;
   }
 
+  /**
+   * @return {string} command
+   */
   get getcommand() {
     return this._command;
   }
 
+  /**
+   * Set broadcast flag to true
+   * @return {object} 'this' to allow function call chaining
+   */
   broadcast() {
     this._broadcast = true;
     return this;
   }
 
+  /**
+   * @return {bool} broadcast flag
+   */
   get getbroadcast() {
     return this._broadcast;
   }
 
+  /**
+   * Payload setter
+   * @param {object} payload
+   * @return {object} 'this' to allow function call chaining
+   */
   payload(payload) {
     this._payload = payload;
     return this;
   }
 
+  /**
+  * @return {object} payload
+  */
   get getpayload() {
     return this._payload;
   }
 
+  /**
+   * Formats the reponse to object that is ready to be formatted into JSON
+   * @return {object} response
+   */
   get json() {
     let jsonResponse = {
       code: this._code
