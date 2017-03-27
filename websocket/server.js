@@ -61,7 +61,7 @@ module.exports = class WebSocket extends EventEmitter {
   jwtVerify(token) {
     try {
       return this.jwt.verify(token);
-    } catch(err) { 
+    } catch(err) {
       log.warn('jwt verify failed: %s', err.message);
       if (err.name == 'TokenExpiredError') {
         const newtoken = this.jwt.refreshToken(token);

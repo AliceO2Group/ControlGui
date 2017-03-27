@@ -7,7 +7,7 @@ module.exports = class JwtToken {
   /**
    * Stores secret
    * @constructor
-   * @param {string} secret - secret to sign and verfy token
+   * @param {object} config - jwt cofiguration object
    */
   constructor(config) {
     this._expiration = config.expiration;
@@ -19,19 +19,20 @@ module.exports = class JwtToken {
   /**
    * Generates encrypted token with user id and access level
    * Sets expiration time and sings it using secret
-   * @param {number} userId - CERN user id
-   * @param {number} accessLevel - whether user can execute commands, etc..
-   * @return {object} encrypted token - authentication token
+   * @param {number} personid - CERN user id
+   * @param {string} username - CERN username
+   * @param {number} access - level of access
+   * @return {object} generated token
    */
   generateToken(personid, username, access) {
-    const payload = { id: personid, username: username, access: access};
+    const payload = {id: personid, username: username, access: access};
     const token = jwt.sign(payload, this._secret, {
       expiresIn: this._expiration,
-      issuer: this._issuer,
+      issuer: this._issuer
     });
     return token;
   }
-  
+
   refreshToken(token) {
     try {
       const decoded = jwt.verify(token, this._secret, {
@@ -39,11 +40,10 @@ module.exports = class JwtToken {
         ignoreExpiration: true,
         maxAge: this._maxAge
       });
-      return this.generateToken(decoded.id, decoded.username, decoded.access); 
+      return this.generateToken(decoded.id, decoded.username, decoded.access);
     } catch(err) {
       return false;
-    } 
-
+    }
   }
 
   /**
@@ -53,7 +53,7 @@ module.exports = class JwtToken {
    */
   verify(token) {
     const decoded = jwt.verify(token, this._secret, {
-      issuer: this._issuer,
+      issuer: this._issuer
     });
     return decoded;
   }

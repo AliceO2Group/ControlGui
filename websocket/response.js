@@ -56,7 +56,7 @@ module.exports = class Response {
   }
 
   get json() {
-    let jsonResponse =  {
+    let jsonResponse = {
       code: this._code
     };
     const message = this._message(this._code);

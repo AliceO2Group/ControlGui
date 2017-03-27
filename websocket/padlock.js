@@ -37,7 +37,9 @@ module.exports = class Padlock {
       if (this.isHoldingLock(id)) {
         return new Response(200).command('lock-get').payload({details: 'Locked by you'});
       } else if (this._lockedId !== null) {
-        return new Response(200).payload({details: 'Locked by ' + this._lockedId, locked: true, id: this.lockedId});
+        return new Response(200).payload(
+          {details: 'Locked by ' + this._lockedId, locked: true, id: this.lockedId}
+        );
       } else {
         return new Response(200).payload({locked: false});
       }

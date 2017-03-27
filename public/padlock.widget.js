@@ -1,7 +1,7 @@
 $.widget('o2.padlock', {
   options: {
     locked: undefined,
-    id: undefined,
+    id: undefined
   },
   _clear: function() {
     this.element.removeClass('fa-lock').removeClass('fa-unlock');
@@ -19,5 +19,5 @@ $.widget('o2.padlock', {
     this.options.locked = false;
     this._clear();
     this.element.addClass('fa-unlock');
-  },
+  }
 });
