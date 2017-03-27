@@ -15,6 +15,21 @@ textarea {
   width: 500px;
   height: 150px;
 }
+
+#overlay {
+  position:fixed;
+  top:0;
+  left:0;
+  background:rgba(0,0,0,0.6);
+  z-index:5;
+  padding: 30%;
+  width:100%;
+  height:100%;
+  visibility: hidden;
+  font-size: 40px;
+  font-color: #fff;
+}
+
 </style>
 <script src="libs/jquery-3.1.1.js"></script>
 <script src="libs/jquery-ui.js"></script>
@@ -59,7 +74,10 @@ $(function() {
     ws.send({command: 'lock-check'});
   });
   $('#ws').bind('websocketclose', function() {
-    console.log('connection closed');
+    $('#overlay').css('visibility', 'visible');
+    const networkInterval = setInterval(function() {
+      window.location.href = location.protocol + '//' + location.host;
+    }, 2000);
   });
 });
 </script>
@@ -82,6 +100,7 @@ $(function() {
 <h3>Console log</h3>
 <textarea id="console" class="ui-widget ui-state-default ui-corner-all"></textarea>
 <div id="ws"></div>
+<div id="overlay"></div>
 </body>
 </html>
 
