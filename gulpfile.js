@@ -30,16 +30,16 @@ gulp.task('eslint', function() {
 });
 
 // Run front-end and back-end tests
-gulp.task('test', ['test-frontend', 'test-backend']);
+gulp.task('test', ['qunit', 'mocha']);
 
 // Test frontend with QUnit
-gulp.task('test-frontend', function() {
+gulp.task('qunit', function() {
   gulp.src('./test/qunit-*.html')
       .pipe(qunit());
 });
 
 // Test backend with Mocha
-gulp.task('test-backend', function() {
+gulp.task('mocha', function() {
   gulp.src('./test/mocha-*.js')
       .pipe(mocha());
 });
