@@ -57,7 +57,7 @@ module.exports = class Response {
 
   get json() {
     let jsonResponse =  {
-      code: this._code, error: (this._code >= 400), broadcast: this._broadcast
+      code: this._code
     };
     const message = this._message(this._code);
     if (message != undefined) {

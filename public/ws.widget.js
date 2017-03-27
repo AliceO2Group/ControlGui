@@ -25,7 +25,8 @@ $.widget('o2.websocket', {
       $((~evt.data.indexOf('testmessage')) ? '#messages' : '#console').append(evt.data + '\n');
       try {
         let parsed = $.parseJSON(evt.data);
-        if (parsed.error && parsed.code == 440) {
+        // handling token refresh error
+        if (parsed.code == 440) {
           this.options.token = parsed.payload.newtoken;
         } else {
           this._trigger(parsed.command, evt, parsed);
