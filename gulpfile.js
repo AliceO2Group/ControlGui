@@ -5,7 +5,7 @@ const mocha = require('gulp-mocha');
 const eslint = require('gulp-eslint');
 
 const jsSource = [
-  './*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js'
+  './*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js', 'test/*.js'
 ];
 
 // Default task

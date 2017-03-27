@@ -4,7 +4,8 @@ module.exports = {
   "env": {
     "node": true,
     "jquery" : true,
-    "browser": true
+    "browser": true,
+    "mocha": true
   },
   "parserOptions": {
     "ecmaVersion": 6
