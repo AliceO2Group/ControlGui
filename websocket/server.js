@@ -74,6 +74,7 @@ module.exports = class WebSocket extends EventEmitter {
   /**
    * Verifies token, if expired request a new one
    * @param {object} token - JWT token
+   * @param {bool} refresh - whether try to refresh token when expired or not
    * @return {object} includes either parsed token or response message
    */
   jwtVerify(token, refresh = true) {

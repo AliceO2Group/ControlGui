@@ -1,3 +1,4 @@
 node_modules
 config.json
 error.log
+test/test.json

@@ -18,11 +18,24 @@ const http = new HTTPServer(credentials, app);
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 chai.use(chaiHttp);
 
+
 describe('fail-request', () => {
   it('should fail as no token provided', (done) => {
     chai.request(http.httpsServer).get('/api/runs').end((err, res) => {
       assert.equal(res.status, 403, 'Wrong HTTP response code');
       done();
     });
+  });
+});
+
+describe('expired-token', () => {
+  it('should fail as token is expired', (done) => {
+    chai.request(http.httpsServer)
+      .get('/api/runs')
+      .query({token: test.token})
+      .end((err, res) => {
+        assert.equal(res.status, 403, 'Wrong HTTP response code');
+        done();
+      });
   });
 });
