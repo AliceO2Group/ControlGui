@@ -1,0 +1,43 @@
+{
+"jwt": {
+    "secret": "<secret>",
+    "issuer": "alice-o2-gui",
+    "expiration": "1m",
+    "maxAge": "2m"
+  },  
+  "oAuth": {
+    "secret": "<oAuthSecret>",
+    "id": "<oAuthId>",
+    "tokenHost": "https://token.host",
+    "tokenPath": "/OAuth/Token",
+    "authorizePath": "/OAuth/Authorize",
+    "redirect_uri": "https://redirect.uri/callback",
+    "scope": "https://scope.user/api/User",
+    "state": "3(#0/!~",
+    "resource": {
+      "hostname": "hostname.user",
+      "path": "/api/User",
+      "port": 443 
+    }   
+  },  
+  "key": "test.key",
+  "cert": "test.pem",
+  "zeromq": {
+    "sub": {
+      "ip": "localhost",
+      "port": 3000
+    },  
+    "req": {
+      "ip": "localhost",
+      "port": 3001
+    }   
+  },  
+  "http": {
+    "port": 8081,
+    "portSecure": 8080
+  },  
+  "log": {
+    "console": "debug",
+    "file": "error"
+  }
+}
