@@ -19,7 +19,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 chai.use(chaiHttp);
 
 const http = new HttpServer(credentials, app);
-new WebSocket(http.server);
+new WebSocket(http.httpsServer);
 const jwt = new JwtToken(config.jwt);
 const token = jwt.generateToken(0, 'test', 1);
 
