@@ -5,7 +5,7 @@ const https = require('https');
 const express = require('express');
 const mustache = require('mustache');
 const EventEmitter = require('events').EventEmitter;
-
+const log = require('./../log.js');
 const JwtToken = require('./../jwt/token.js');
 const OAuth = require('./oauth.js');
 
@@ -119,7 +119,8 @@ module.exports = class HTTPServer {
       req.decoded = jwtFeedback.decoded;
       next();
     } catch(err) {
-      res.status(403).json({success: false, message: err.name});
+      log.debug(this.constructor.name, ':', err.name);
+      res.status(403).json({message: err.name});
     }
   }
 

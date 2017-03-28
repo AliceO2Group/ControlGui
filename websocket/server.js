@@ -76,12 +76,12 @@ module.exports = class WebSocket extends EventEmitter {
    * @param {object} token - JWT token
    * @return {object} includes either parsed token or response message
    */
-  jwtVerify(token) {
+  jwtVerify(token, refresh = true) {
     try {
       return this.jwt.verify(token);
     } catch(err) {
       log.warn('jwt verify failed: %s', err.message);
-      if (err.name == 'TokenExpiredError') {
+      if (err.name == 'TokenExpiredError' && refresh) {
         const newtoken = this.jwt.refreshToken(token);
         if (newtoken === false) {
           return new Response(403);
@@ -99,7 +99,7 @@ module.exports = class WebSocket extends EventEmitter {
    */
   onconnection(client) {
     const token = url.parse(client.upgradeReq.url, true).query.token;
-    const feedback = this.jwtVerify(token);
+    const feedback = this.jwtVerify(token, false);
     if (feedback instanceof Response) {
       client.close(1008);
       return;

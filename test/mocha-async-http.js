@@ -4,6 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = express();
 const config = require('./../config.json');
+const test = require('./test.json');
 const fs = require('fs');
 const credentials = {
   key: fs.readFileSync(config.key),
