@@ -38,10 +38,11 @@ module.exports = class Padlock {
       }
     } else if (command == 'lock-check') {
       if (this.isHoldingLock(id)) {
-        return new Response(200).command('lock-get').payload({details: 'Locked by you'});
+        return new Response(200).command('lock-get').payload(
+          {details: 'Locked by you', locked: true, id: this._lockedId});
       } else if (this._lockedId !== null) {
         return new Response(200).payload(
-          {details: 'Locked by ' + this._lockedId, locked: true, id: this.lockedId}
+          {details: 'Locked by ' + this._lockedId, locked: true, id: this._lockedId}
         );
       } else {
         return new Response(200).payload({locked: false});
