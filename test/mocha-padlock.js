@@ -25,5 +25,5 @@ describe('padlock class', () => {
   });
   it('unlock', () => {
     assert.equal(lock.check('lock-release', id.alice).getcode, 200, 'Failed to unlock');
-  }); 
+  });
 });
