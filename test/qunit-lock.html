@@ -14,13 +14,23 @@
 <span id="padlock" class="fa fa-2x"></span>
 <script>
 $(function() {
-  var padlock = $.o2.padlock({}, $('#padlock') );
+  const id = 1;
+  const padlock = $.o2.padlock({
+    id: id
+  }, $('#padlock') );
   QUnit.test('padlock widget', function(assert) {
     assert.equal($('#padlock').attr("class"), "fa fa-2x", "default css style");
-    padlock.lock();
+
+    padlock.lock(id);
     assert.equal($('#padlock').attr("class"), "fa fa-2x fa-lock", "lock css style");
+    assert.equal($('#padlock').css("color"), "rgb(0, 0, 0)", "lock fill color");
+
     padlock.unlock();
     assert.equal($('#padlock').attr("class"), "fa fa-2x fa-unlock", "unlock css style");
+
+    padlock.lock(id + 1);
+    assert.equal($('#padlock').attr("class"), "fa fa-2x fa-lock", "lock css style");
+    assert.equal($('#padlock').css("color"), "rgb(255, 0, 0)", "lock fill color");
   });
 });
 </script>
