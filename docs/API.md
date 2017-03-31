@@ -2,38 +2,46 @@
 
 <dl>
 <dt><a href="#OAuth">OAuth</a></dt>
-<dd><p>Authenticates users via CERN OAuth 2.0
-If successful, queries user account details</p>
+<dd><p>Authenticates users via CERN OAuth 2.0.
+Gathers user account details</p>
 </dd>
-<dt><a href="#HTTPServer">HTTPServer</a></dt>
-<dd><p>HTTPs server needed by REST API</p>
+<dt><a href="#HttpServer">HttpServer</a></dt>
+<dd><p>HTTPS server that handles OAuth and provides REST API.
+Each request is authenticated with JWT token.</p>
 </dd>
 <dt><a href="#JwtToken">JwtToken</a></dt>
-<dd><p>Contains Java Web Token functionality: generate, verify</p>
+<dd><p>Provides JSON Web Token functionality such as token generation and verification.</p>
 </dd>
 <dt><a href="#Padlock">Padlock</a></dt>
-<dd><p>Manages locking mechanism (only single user can execute commands at the same time).
-Other users can preview changes only</p>
+<dd><p>WebSocket module that enforces that only single user is allowed to execute commands at the time.
+Remaining connected users behave as spectators.</p>
 </dd>
 <dt><a href="#Response">Response</a></dt>
-<dd><p>Helper class that allows to prepare response for users request</p>
+<dd><p>WebSocket module that allows to create response to user request.
+It&#39;s based on HTTP status codes.</p>
 </dd>
 <dt><a href="#WebSocket">WebSocket</a></dt>
-<dd><p>The class that represents WebSocket server</p>
+<dd><p>It represents WebSocket server (RFC 6455).
+In addition, it provides custom authentication with JWT tokens.</p>
 </dd>
 <dt><a href="#ZeroMQClient">ZeroMQClient</a></dt>
-<dd><p>ZeroMQ client that connects to O2 Control Master via on of two endpoints: sub or req</p>
+<dd><p>ZeroMQ client that communicates with Control Master prcess via one of two supported
+socket patterns (sub and req).</p>
 </dd>
 </dl>
 
 <a name="OAuth"></a>
 
 ## OAuth
-Authenticates users via CERN OAuth 2.0
-If successful, queries user account details
+Authenticates users via CERN OAuth 2.0.
+Gathers user account details
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
+**Todo**
+
+- [ ] e-group authorization
+
 
 * [OAuth](#OAuth)
     * [new OAuth()](#new_OAuth_new)
@@ -69,28 +77,29 @@ Queries user details using received access token
 | token | <code>string</code> | 
 | emitter | <code>object</code> | 
 
-<a name="HTTPServer"></a>
+<a name="HttpServer"></a>
 
-## HTTPServer
-HTTPs server needed by REST API
+## HttpServer
+HTTPS server that handles OAuth and provides REST API.
+Each request is authenticated with JWT token.
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
 
-* [HTTPServer](#HTTPServer)
-    * [new HTTPServer(credentials, app)](#new_HTTPServer_new)
-    * [.server](#HTTPServer+server) ⇒ <code>object</code>
-    * [.specifyRoutes()](#HTTPServer+specifyRoutes)
-    * [.enableHttpRedirect()](#HTTPServer+enableHttpRedirect)
-    * [.oAuthAuthorize(res)](#HTTPServer+oAuthAuthorize)
-    * [.oAuthCallback(req, res)](#HTTPServer+oAuthCallback)
-    * [.renderPage(page, data)](#HTTPServer+renderPage) ⇒ <code>string</code>
-    * [.jwtVerify(req, res, next)](#HTTPServer+jwtVerify)
-    * [.runs(req, res)](#HTTPServer+runs)
+* [HttpServer](#HttpServer)
+    * [new HttpServer(credentials, app)](#new_HttpServer_new)
+    * [.server](#HttpServer+server) ⇒ <code>object</code>
+    * [.specifyRoutes()](#HttpServer+specifyRoutes)
+    * [.enableHttpRedirect()](#HttpServer+enableHttpRedirect)
+    * [.oAuthAuthorize(res)](#HttpServer+oAuthAuthorize)
+    * [.oAuthCallback(req, res)](#HttpServer+oAuthCallback)
+    * [.renderPage(page, data)](#HttpServer+renderPage) ⇒ <code>string</code>
+    * [.jwtVerify(req, res, next)](#HttpServer+jwtVerify)
+    * [.runs(req, res)](#HttpServer+runs)
 
-<a name="new_HTTPServer_new"></a>
+<a name="new_HttpServer_new"></a>
 
-### new HTTPServer(credentials, app)
+### new HttpServer(credentials, app)
 Sets up the server, routes and binds HTTP and HTTPs sockets
 
 
@@ -99,54 +108,54 @@ Sets up the server, routes and binds HTTP and HTTPs sockets
 | credentials | <code>object</code> | private and public key file paths |
 | app | <code>object</code> |  |
 
-<a name="HTTPServer+server"></a>
+<a name="HttpServer+server"></a>
 
 ### httpServer.server ⇒ <code>object</code>
 HTTPs server getter
 
-**Kind**: instance property of <code>[HTTPServer](#HTTPServer)</code>  
+**Kind**: instance property of <code>[HttpServer](#HttpServer)</code>  
 **Returns**: <code>object</code> - - HTTPs server  
-<a name="HTTPServer+specifyRoutes"></a>
+<a name="HttpServer+specifyRoutes"></a>
 
 ### httpServer.specifyRoutes()
 Specified routes and their callbacks
 
-**Kind**: instance method of <code>[HTTPServer](#HTTPServer)</code>  
-<a name="HTTPServer+enableHttpRedirect"></a>
+**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+<a name="HttpServer+enableHttpRedirect"></a>
 
 ### httpServer.enableHttpRedirect()
 Redirects HTTP to HTTPs
 
-**Kind**: instance method of <code>[HTTPServer](#HTTPServer)</code>  
-<a name="HTTPServer+oAuthAuthorize"></a>
+**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+<a name="HttpServer+oAuthAuthorize"></a>
 
 ### httpServer.oAuthAuthorize(res)
 OAuth redirection
 
-**Kind**: instance method of <code>[HTTPServer](#HTTPServer)</code>  
+**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | res | <code>object</code> | HTTP response |
 
-<a name="HTTPServer+oAuthCallback"></a>
+<a name="HttpServer+oAuthCallback"></a>
 
 ### httpServer.oAuthCallback(req, res)
 OAuth callback if authentication succeeds.
 
-**Kind**: instance method of <code>[HTTPServer](#HTTPServer)</code>  
+**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | req | <code>object</code> | HTTP request |
 | res | <code>object</code> | HTTP response |
 
-<a name="HTTPServer+renderPage"></a>
+<a name="HttpServer+renderPage"></a>
 
 ### httpServer.renderPage(page, data) ⇒ <code>string</code>
 Renders template using mustache
 
-**Kind**: instance method of <code>[HTTPServer](#HTTPServer)</code>  
+**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 **Returns**: <code>string</code> - - HTML page  
 
 | Param | Type | Description |
@@ -154,12 +163,12 @@ Renders template using mustache
 | page | <code>string</code> | template file path |
 | data | <code>object</code> | data to fill the template with |
 
-<a name="HTTPServer+jwtVerify"></a>
+<a name="HttpServer+jwtVerify"></a>
 
 ### httpServer.jwtVerify(req, res, next)
 Verified JWT token synchronously!
 
-**Kind**: instance method of <code>[HTTPServer](#HTTPServer)</code>  
+**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 **Todo**
 
 - [ ] use promises or generators to call it asynchronously!
@@ -171,13 +180,13 @@ Verified JWT token synchronously!
 | res | <code>object</code> | HTTP response |
 | next | <code>function</code> | passes control to next matching route |
 
-<a name="HTTPServer+runs"></a>
+<a name="HttpServer+runs"></a>
 
 ### httpServer.runs(req, res)
 For the test purposes
 Simply returns JSON encoded fixed run number
 
-**Kind**: instance method of <code>[HTTPServer](#HTTPServer)</code>  
+**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -187,7 +196,7 @@ Simply returns JSON encoded fixed run number
 <a name="JwtToken"></a>
 
 ## JwtToken
-Contains Java Web Token functionality: generate, verify
+Provides JSON Web Token functionality such as token generation and verification.
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
@@ -254,8 +263,8 @@ Verifies user token using the same secret as in generateToken method
 <a name="Padlock"></a>
 
 ## Padlock
-Manages locking mechanism (only single user can execute commands at the same time).
-Other users can preview changes only
+WebSocket module that enforces that only single user is allowed to execute commands at the time.
+Remaining connected users behave as spectators.
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
@@ -325,7 +334,8 @@ Remove ownership of current holder of the lock
 <a name="Response"></a>
 
 ## Response
-Helper class that allows to prepare response for users request
+WebSocket module that allows to create response to user request.
+It's based on HTTP status codes.
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
@@ -425,7 +435,8 @@ Payload setter
 <a name="WebSocket"></a>
 
 ## WebSocket
-The class that represents WebSocket server
+It represents WebSocket server (RFC 6455).
+In addition, it provides custom authentication with JWT tokens.
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
@@ -509,7 +520,8 @@ Broadcasts the message to all connected clients
 <a name="ZeroMQClient"></a>
 
 ## ZeroMQClient
-ZeroMQ client that connects to O2 Control Master via on of two endpoints: sub or req
+ZeroMQ client that communicates with Control Master prcess via one of two supported
+socket patterns (sub and req).
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
