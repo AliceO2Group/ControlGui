@@ -2,8 +2,8 @@ const log = require('./../log.js');
 const Response = require('./response.js');
 
 /**
- * Manages locking mechanism (only single user can execute commands at the same time).
- * Other users can preview changes only
+ * WebSocket module that enforces that only single user is allowed to execute commands at the time.
+ * Remaining connected users behave as spectators.
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class Padlock {
@@ -89,5 +89,5 @@ class Padlock {
     }
     return false;
   }
-};
+}
 module.exports = Padlock;

@@ -85,5 +85,5 @@ class OAuth {
     postRequest.write('');
     postRequest.end();
   }
-};
+}
 module.exports = OAuth;

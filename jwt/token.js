@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 /**
- * Contains Java Web Token functionality: generate, verify
+ * Provides JSON Web Token functionality such as token generation and verification.
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class JwtToken {
@@ -66,5 +66,5 @@ class JwtToken {
     });
     return decoded;
   }
-};
+}
 module.exports = JwtToken;

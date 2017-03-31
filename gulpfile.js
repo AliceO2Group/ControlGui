@@ -45,6 +45,6 @@ gulp.task('mocha', function() {
 
 // Generate JSDoc in Markdown format
 gulp.task('doc', function() {
-  const output = jsdoc2md.renderSync({ files: jsSource });
+  const output = jsdoc2md.renderSync({files: jsSource});
   fs.writeFileSync('docs/API.md', output);
 });

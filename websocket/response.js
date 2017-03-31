@@ -1,5 +1,6 @@
 /**
- * Helper class that allows to prepare response for users request
+ * WebSocket module that allows to create response to user request.
+ * It's based on HTTP status codes.
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class Response {
@@ -113,5 +114,5 @@ class Response {
     }
     return jsonResponse;
   }
-};
+}
 module.exports = Response;

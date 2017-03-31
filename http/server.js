@@ -10,8 +10,9 @@ const JwtToken = require('./../jwt/token.js');
 const OAuth = require('./oauth.js');
 
 /**
- * HTTPs server needed by REST API
- *  @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
+ * HTTPS server that handles OAuth and provides REST API.
+ * Each request is authenticated with JWT token.
+ * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class HttpServer {
   /**
@@ -132,5 +133,5 @@ class HttpServer {
   runs(req, res) {
     res.json({run: 123});
   }
-};
+}
 module.exports = HttpServer;

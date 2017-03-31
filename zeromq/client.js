@@ -3,7 +3,8 @@ const zmq = require('zmq');
 const log = require('./../log.js');
 
 /**
- * ZeroMQ client that connects to O2 Control Master via on of two endpoints: sub or req
+ * ZeroMQ client that communicates with Control Master prcess via one of two supported
+ * socket patterns (sub and req).
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class ZeroMQClient extends EventEmitter {
@@ -75,5 +76,5 @@ class ZeroMQClient extends EventEmitter {
     }
     this.socket.send(message);
   }
-};
+}
 module.exports = ZeroMQClient;

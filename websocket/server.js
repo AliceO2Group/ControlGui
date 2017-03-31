@@ -8,7 +8,8 @@ const Padlock = require('./padlock.js');
 const Response = require('./response.js');
 
 /**
- * The class that represents WebSocket server
+ * It represents WebSocket server (RFC 6455).
+ * In addition, it provides custom authentication with JWT tokens.
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class WebSocket extends EventEmitter {
@@ -142,5 +143,5 @@ class WebSocket extends EventEmitter {
       client.send(message);
     });
   }
-};
+}
 module.exports = WebSocket;
