@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
  * Contains Java Web Token functionality: generate, verify
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
-module.exports = class JwtToken {
+class JwtToken {
   /**
    * Stores secret
    * @constructor
@@ -67,3 +67,4 @@ module.exports = class JwtToken {
     return decoded;
   }
 };
+module.exports = JwtToken;

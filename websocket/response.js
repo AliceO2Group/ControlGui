@@ -2,7 +2,7 @@
  * Helper class that allows to prepare response for users request
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
-module.exports = class Response {
+class Response {
   /**
    * Sets initial variables
    * @param {number} code response code (based on HTTP)
@@ -114,3 +114,4 @@ module.exports = class Response {
     return jsonResponse;
   }
 };
+module.exports = Response;

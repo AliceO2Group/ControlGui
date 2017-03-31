@@ -11,7 +11,7 @@ const Response = require('./response.js');
  * The class that represents WebSocket server
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
-module.exports = class WebSocket extends EventEmitter {
+class WebSocket extends EventEmitter {
 
   /**
    * Starts up the server and binds event handler
@@ -143,3 +143,4 @@ module.exports = class WebSocket extends EventEmitter {
     });
   }
 };
+module.exports = WebSocket;

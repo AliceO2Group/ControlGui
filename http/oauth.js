@@ -8,7 +8,7 @@ const log = require('./../log.js');
  * If successful, queries user account details
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
-module.exports = class OAuth {
+class OAuth {
   /**
    * Creates oauth object based on id and secret stored in config file
    * @constructor
@@ -85,3 +85,4 @@ module.exports = class OAuth {
     postRequest.end();
   }
 };
+module.exports = OAuth;

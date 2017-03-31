@@ -3,6 +3,8 @@ const uglify = require('gulp-uglify');
 const qunit = require('gulp-qunit');
 const mocha = require('gulp-mocha');
 const eslint = require('gulp-eslint');
+const fs = require('fs');
+const jsdoc2md = require('jsdoc-to-markdown');
 
 const jsSource = [
   './*.js', 'http/*.js', 'jwt/*.js', 'public/*.js', 'websocket/*.js', 'zeromq/*.js', 'test/*.js'
@@ -39,4 +41,10 @@ gulp.task('qunit', function() {
 gulp.task('mocha', function() {
   gulp.src('./test/mocha-*.js')
       .pipe(mocha());
+});
+
+// Generate JSDoc in Markdown format
+gulp.task('doc', function() {
+  const output = jsdoc2md.renderSync({ files: jsSource });
+  fs.writeFileSync('docs/API.md', output);
 });

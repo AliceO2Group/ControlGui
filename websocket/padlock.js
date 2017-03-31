@@ -6,7 +6,7 @@ const Response = require('./response.js');
  * Other users can preview changes only
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
-module.exports = class Padlock {
+class Padlock {
   /**
    * Initialized member variables
    * @constructor
@@ -90,3 +90,4 @@ module.exports = class Padlock {
     return false;
   }
 };
+module.exports = Padlock;
