@@ -13,7 +13,7 @@ const OAuth = require('./oauth.js');
  * HTTPs server needed by REST API
  *  @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
-class HTTPServer {
+class HttpServer {
   /**
    * Sets up the server, routes and binds HTTP and HTTPs sockets
    * @param {object} credentials - private and public key file paths
@@ -133,4 +133,4 @@ class HTTPServer {
     res.json({run: 123});
   }
 };
-module.exports = HTTPServer;
+module.exports = HttpServer;

@@ -9,11 +9,11 @@ const credentials = {
 
 const ZeroMQClient = require('./zeromq/client');
 const WebSocket = require('./websocket/server');
-const HTTPServer = require('./http/server');
+const HttpServer = require('./http/server');
 
 const zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port, 'sub');
 const zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, 'req');
-const http = new HTTPServer(credentials, app);
+const http = new HttpServer(credentials, app);
 const websocketServer = new WebSocket(http.server);
 
 zmqSub.on('message', function(message) {

@@ -4,8 +4,9 @@ const config = require('./../config.json');
 const log = require('./../log.js');
 
 /**
- * Authenticates users via CERN OAuth 2.0
- * If successful, queries user account details
+ * Authenticates users via CERN OAuth 2.0.
+ * Gathers user account details
+ * @todo e-group authorization
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class OAuth {
