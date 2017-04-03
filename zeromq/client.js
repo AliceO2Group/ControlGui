@@ -9,7 +9,7 @@ const log = require('./../log.js');
  */
 class ZeroMQClient extends EventEmitter {
   /**
-   * Creates ZeroMQ socket and binds class methods to basic events.
+   * Connects to ZeroMQ socket and binds class methods to ZeroMQ events.
    * @param {string} ip - hostname
    * @param {number} port - port number
    * @param {bool} type - socket type, true = sub. false = req

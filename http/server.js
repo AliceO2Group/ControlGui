@@ -88,7 +88,7 @@ class HttpServer {
   }
 
   /**
-   * Renders template using mustache
+   * Renders template using Mustache engine.
    * @param {string} page - template file path
    * @param {object} data - data to fill the template with
    * @return {string} - HTML page
@@ -99,7 +99,7 @@ class HttpServer {
   }
 
   /**
-   * HTTPs server getter
+   * HTTPs server getter.
    * @return {object} - HTTPs server
    */
   get server() {
@@ -107,7 +107,7 @@ class HttpServer {
   }
 
   /**
-   * Verified JWT token synchronously!
+   * Verifies JWT token synchronously.
    * @todo use promises or generators to call it asynchronously!
    * @param {object} req - HTTP request
    * @param {object} res - HTTP response
@@ -125,8 +125,8 @@ class HttpServer {
   }
 
   /**
-   * For the test purposes
-   * Simply returns JSON encoded fixed run number
+   * For the test purposes.
+   * Simply returns JSON encoded fixed run number.
    * @param {object} req - HTTP request
    * @param {object} res - HTTP response
    */

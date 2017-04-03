@@ -111,7 +111,7 @@ Sets up the server, routes and binds HTTP and HTTPS sockets.
 <a name="HttpServer+server"></a>
 
 ### httpServer.server ⇒ <code>object</code>
-HTTPs server getter
+HTTPs server getter.
 
 **Kind**: instance property of <code>[HttpServer](#HttpServer)</code>  
 **Returns**: <code>object</code> - - HTTPs server  
@@ -153,7 +153,7 @@ OAuth callback if authentication succeeds.
 <a name="HttpServer+renderPage"></a>
 
 ### httpServer.renderPage(page, data) ⇒ <code>string</code>
-Renders template using mustache
+Renders template using Mustache engine.
 
 **Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 **Returns**: <code>string</code> - - HTML page  
@@ -166,7 +166,7 @@ Renders template using mustache
 <a name="HttpServer+jwtVerify"></a>
 
 ### httpServer.jwtVerify(req, res, next)
-Verified JWT token synchronously!
+Verifies JWT token synchronously.
 
 **Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 **Todo**
@@ -183,8 +183,8 @@ Verified JWT token synchronously!
 <a name="HttpServer+runs"></a>
 
 ### httpServer.runs(req, res)
-For the test purposes
-Simply returns JSON encoded fixed run number
+For the test purposes.
+Simply returns JSON encoded fixed run number.
 
 **Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 
@@ -536,7 +536,7 @@ socket patterns (sub and req).
 <a name="new_ZeroMQClient_new"></a>
 
 ### new ZeroMQClient(ip, port, type)
-Creates ZeroMQ socket and binds class methods to basic events.
+Connects to ZeroMQ socket and binds class methods to ZeroMQ events.
 
 
 | Param | Type | Description |
