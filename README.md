@@ -9,22 +9,16 @@ The goal of Control GUI Prototype is to identify library and framework sets and 
   - HTTPS / REST API
   - Authentication via CERN OAuth 2 and authorization via e-groups
 - WebSocket (node.js)
-  - WebSocket server that can communicate with C++ processes via ZeroMQ (C++ library available)
+  - WebSocket server that can communicate with C++ processes via ZeroMQ (C++ library available in another repo)
   - Custom WebSocket authentication based on JSON Web Tokens
 - Front-end (JavaScript/jQuery)
   - Core modules as custom jQuery widgets
 
-## Architecture
-![Control GUI Architecture](./docs/images/architecture.png "Prototype of Control GUI - Architecture")
-
-## Authentication and authorization flow
-![Control GUI Authentication](./docs/images/auth.png "Authentication and authorization flow")
-
 ## Control specific functionality developed so far
-1. Padlock module - only single user that owns lock is allowed to execute commands, other connected users act as spectators
+1. Padlock module - single user that owns the lock is allowed to execute commands, other connected users act as spectators.
 
 ## Installation
-1. Install ZeroMQ > 4.0
+1. Install ZeroMQ >= 4.0
 2. Clone repository
      ```
      git clone https://github.com/AliceO2Group/ControlGui && cd ControlGui
@@ -36,7 +30,7 @@ The goal of Control GUI Prototype is to identify library and framework sets and 
 
 ### ZeroMQ custom installation
 If you've installed ZeroMQ under custom path, npm install will fail with : *fatal error: zmq.h: No such file or directory*
-To solve this issue you need to recompile zmq module.
+To resolve this issue you need to recompile zmq module.
 
 1. Go to ControGui directory
 2. Download zmq modue
@@ -55,16 +49,38 @@ To solve this issue you need to recompile zmq module.
 ## Configuration file
 Rename *config.json-default* to *config.json* and recplace *&lt;tags&gt;* with corresponding data:
 
-1. jwtSecret   -  Specify JWT secret passphrase
-2. oAuthSecret -  OAuth secret
-3. host        -  OAuth hostname
-4. appHost     -  Hostname you are running application on
-5. privateKey  -  Private key path
-6. certificate -  PEM ceritficate path
-7. pushServer  -  hostname that pushes commands
-8. replyServer -  hostname that replies to your requests
+1. jwt
+  * secret - JWT secret passphrase
+  * issuer - name of token issuer
+  * expiration - token expiration time (as time literal)
+  * maxAge - token refresh expiration time (as time literal)
+2. oAuth
+  * secret - oAuth secret
+  * id - oAuth ID
+  * tokenHost - hostname that provides tokens
+  * tokenPath - path to token provider
+  * authorizePath - verifies access token
+  * redirectUri - oAuth application callback
+  * scope - oAuth scope (to fetch user details)
+  * state - oAuth state (to prevent CSRF attacks)
+  * resource - details of resource server
+    * hostname - resource server hostname
+    * path - resource server path
+    * port - resource server port
+3. key - private key
+4. cert - certificate
+5. zeromq
+  * sub - details of control publisher endpoint
+  * req - details of control reply endpoint
+6. http
+  * port - http port
+  * portSecure - https port
+7. log - log filter
+  * console - level of logs displayed in console
+  * file - level of logs saved into log file
 
 ## Run
+Rename *config-default.ini* to *config.ini*.
 ```
 npm start
 ```
