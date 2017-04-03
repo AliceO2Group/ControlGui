@@ -2,7 +2,7 @@ const log = require('./../log.js');
 const Response = require('./response.js');
 
 /**
- * WebSocket module that enforces that only single user is allowed to execute commands at the time.
+ * WebSocket module enforcing that only single user is allowed to execute commands at the time.
  * Remaining connected users behave as spectators.
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
@@ -16,8 +16,8 @@ class Padlock {
   }
 
   /**
-   * Processes "lock-*" commands
-   * Ensures that singe user to holds the lock
+   * Processes "lock-*" commands.
+   * Ensures that singe user to holds the lock.
    * @param {string} command - command name
    * @param {number} id - user id
    * @return {object} - JSON message
@@ -53,7 +53,7 @@ class Padlock {
   }
 
   /**
-   * Checks whether user with given id holds the lock
+   * Checks whether user with given id holds the lock.
    * @param {number} id - user id
    * @return {bool} true if user holods the lock, false otherwise
    */
@@ -62,7 +62,7 @@ class Padlock {
   }
 
   /**
-   * Sets the lock ownership to given user
+   * Sets the lock ownership to given user.
    * @param {number} id - user id
    * @return {bool} true if succeeds, false otherwise
    */
@@ -77,7 +77,7 @@ class Padlock {
   }
 
   /**
-   * Remove ownership of current holder of the lock
+   * Removes lock  ownership from current holder.
    * @param {number} id - user id
    * @return {bool} true if succeeds, false otherwise
    */

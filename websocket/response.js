@@ -5,7 +5,7 @@
  */
 class Response {
   /**
-   * Sets initial variables
+   * Sets initial variables.
    * @param {number} code response code (based on HTTP)
    * @constructor
    */
@@ -17,7 +17,7 @@ class Response {
   }
 
   /**
-   * Provides HTTP message based on code
+   * Provides HTTP message based on code.
    * @param {number} code
    * @return {string} message for given code
    */
@@ -45,7 +45,7 @@ class Response {
   }
 
   /**
-   * Command setter
+   * Command setter.
    * @param {string} command - user request command
    * @return {object} 'this' to allow function call chaining
    */
@@ -62,7 +62,7 @@ class Response {
   }
 
   /**
-   * Set broadcast flag to true
+   * Set broadcast flag to true.
    * @return {object} 'this' to allow function call chaining
    */
   broadcast() {
@@ -78,7 +78,7 @@ class Response {
   }
 
   /**
-   * Payload setter
+   * Payload setter.
    * @param {object} payload
    * @return {object} 'this' to allow function call chaining
    */
@@ -95,7 +95,7 @@ class Response {
   }
 
   /**
-   * Formats the reponse to object that is ready to be formatted into JSON
+   * Formats the reponse to object that is ready to be formatted into JSON.
    * @return {object} response
    */
   get json() {

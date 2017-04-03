@@ -15,7 +15,7 @@ const Response = require('./response.js');
 class WebSocket extends EventEmitter {
 
   /**
-   * Starts up the server and binds event handler
+   * Starts up the server and binds event handler.
    * @param {object} httpsServer - HTTPS server
    * @constructor
    */
@@ -30,7 +30,7 @@ class WebSocket extends EventEmitter {
   }
 
   /**
-   * Handles incoming text messages: verifies token and processes request/command
+   * Handles incoming text messages: verifies token and processes request/command.
    * @param {object} message
    * @return {object} message to be send back to the user
    */
@@ -73,7 +73,7 @@ class WebSocket extends EventEmitter {
   }
 
   /**
-   * Verifies token, if expired request a new one
+   * Verifies token, if expired requests a new one.
    * @param {object} token - JWT token
    * @param {bool} refresh - whether try to refresh token when expired or not
    * @return {object} includes either parsed token or response message
@@ -96,7 +96,7 @@ class WebSocket extends EventEmitter {
   }
 
   /**
-   * Handles client connection and message receiving
+   * Handles client connection and message receiving.
    * @param {object} client - connected client
    */
   onconnection(client) {
@@ -127,7 +127,7 @@ class WebSocket extends EventEmitter {
   }
 
   /**
-   * Handles client disconnection
+   * Handles client disconnection.
    * @param {object} client - disconnected client
    */
   onclose(client) {
@@ -135,7 +135,7 @@ class WebSocket extends EventEmitter {
   }
 
   /**
-   * Broadcasts the message to all connected clients
+   * Broadcasts the message to all connected clients.
    * @param {string} message
    */
   broadcast(message) {

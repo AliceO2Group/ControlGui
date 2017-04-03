@@ -9,7 +9,7 @@ const log = require('./../log.js');
  */
 class ZeroMQClient extends EventEmitter {
   /**
-   * Creates ZeroMQ socket and binds class methods to basic events
+   * Creates ZeroMQ socket and binds class methods to basic events.
    * @param {string} ip - hostname
    * @param {number} port - port number
    * @param {bool} type - socket type, true = sub. false = req
@@ -34,7 +34,7 @@ class ZeroMQClient extends EventEmitter {
   }
 
   /**
-   * On-connect event handler
+   * On-connect event handler.
    * @param {string} endpoint
    */
   connect(endpoint) {
@@ -43,7 +43,7 @@ class ZeroMQClient extends EventEmitter {
   }
 
   /**
-   * On-disconnect event handler
+   * On-disconnect event handler.
    * @param {string} endpoint
    */
   disconnect(endpoint) {
@@ -54,7 +54,7 @@ class ZeroMQClient extends EventEmitter {
   }
 
   /**
-   * On-message event handler
+   * On-message event handler.
    * @param {string} message
    */
   onmessage(message) {
@@ -66,7 +66,7 @@ class ZeroMQClient extends EventEmitter {
   }
 
   /**
-   * Sends message via socket
+   * Sends message via socket.
    * @param {string} message
    */
   send(message) {

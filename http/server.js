@@ -16,7 +16,7 @@ const OAuth = require('./oauth.js');
  */
 class HttpServer {
   /**
-   * Sets up the server, routes and binds HTTP and HTTPs sockets
+   * Sets up the server, routes and binds HTTP and HTTPS sockets.
    * @param {object} credentials - private and public key file paths
    * @param {object} app
    */
@@ -38,12 +38,12 @@ class HttpServer {
   }
 
   /**
-   * Specified routes and their callbacks
+   * Specified routes and their callbacks.
    */
   specifyRoutes() {
     this.app.get('/', (req, res) => this.oAuthAuthorize(res));
     this.app.use(express.static('public'));
-    this.app.get('/callback', (req, res) => this.oAuthCallback(req, res));
+    this.app.get('/callback', (emitter, code) => this.oAuthCallback(emitter, code));
     // eslint-disable-next-line
     this.router = express.Router();
     this.router.use((req, res, next) => this.jwtVerify(req, res, next));
@@ -52,7 +52,7 @@ class HttpServer {
   }
 
   /**
-   * Redirects HTTP to HTTPs
+   * Redirects HTTP to HTTPS.
    */
   enableHttpRedirect() {
     this.app.use(function(req, res, next) {
@@ -64,7 +64,7 @@ class HttpServer {
   }
 
   /**
-   * OAuth redirection
+   * OAuth redirection.
    * @param {object} res - HTTP response
    */
   oAuthAuthorize(res) {

@@ -5,13 +5,13 @@ const log = require('./../log.js');
 
 /**
  * Authenticates users via CERN OAuth 2.0.
- * Gathers user account details
+ * Gathers user account details.
  * @todo e-group authorization
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class OAuth {
   /**
-   * Creates oauth object based on id and secret stored in config file
+   * Creates OAuth object based on id and secret stored in config file.
    * @constructor
    */
   constructor() {
@@ -35,9 +35,9 @@ class OAuth {
   }
 
   /**
-   * OAuth redirection callback (called by library)
+   * OAuth redirection callback (called by library).
    * @param {object} emitter
-   * @param {number} code
+   * @param {number} code - authorization code to request access token
    */
   oAuthCallback(emitter, code) {
     const options = {
@@ -57,8 +57,8 @@ class OAuth {
   }
 
   /**
-   * Queries user details using received access token
-   * @param {string} token
+   * Queries user details using received access token.
+   * @param {string} token - OAuth access token
    * @param {object} emitter
    */
   oAuthGetUserDetails(token, emitter) {

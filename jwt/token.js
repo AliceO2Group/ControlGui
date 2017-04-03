@@ -17,8 +17,8 @@ class JwtToken {
   }
 
   /**
-   * Generates encrypted token with user id and access level
-   * Sets expiration time and sings it using secret
+   * Generates encrypted token with user id and access level.
+   * Sets expiration time and sings it using secret.
    * @param {number} personid - CERN user id
    * @param {string} username - CERN username
    * @param {number} access - level of access
@@ -34,11 +34,11 @@ class JwtToken {
   }
 
   /**
-   * When the token expires, this method allows to refresh it
+   * When the token expires, this method allows to refresh it.
    * It skips expiration check and verifies (already expired) token based on maxAge parameter
    * (maxAge >> expiration).
-   * Then it creates a new token using parameters of the old one and ships it to the user
-   * If maxAge timeouts, the user needs to re-login via OAuth
+   * Then it creates a new token using parameters of the old one and ships it to the user.
+   * If maxAge timeouts, the user needs to re-login via OAuth.
    * @param {object} token - expired token
    * @return {object} new token or false in case of failure
    */
@@ -56,7 +56,7 @@ class JwtToken {
   }
 
   /**
-   * Verifies user token using the same secret as in generateToken method
+   * Decrypts user token to verify that is vaild.
    * @param {object} token - token to be verified
    * @return {object} whether operation was successful, if so decoded data are passed as well
    */
