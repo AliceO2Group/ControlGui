@@ -3,7 +3,7 @@
 <dl>
 <dt><a href="#OAuth">OAuth</a></dt>
 <dd><p>Authenticates users via CERN OAuth 2.0.
-Gathers user account details</p>
+Gathers user account details.</p>
 </dd>
 <dt><a href="#HttpServer">HttpServer</a></dt>
 <dd><p>HTTPS server that handles OAuth and provides REST API.
@@ -13,7 +13,7 @@ Each request is authenticated with JWT token.</p>
 <dd><p>Provides JSON Web Token functionality such as token generation and verification.</p>
 </dd>
 <dt><a href="#Padlock">Padlock</a></dt>
-<dd><p>WebSocket module that enforces that only single user is allowed to execute commands at the time.
+<dd><p>WebSocket module enforcing that only single user is allowed to execute commands at the time.
 Remaining connected users behave as spectators.</p>
 </dd>
 <dt><a href="#Response">Response</a></dt>
@@ -34,7 +34,7 @@ socket patterns (sub and req).</p>
 
 ## OAuth
 Authenticates users via CERN OAuth 2.0.
-Gathers user account details
+Gathers user account details.
 
 **Kind**: global class  
 **Author**: Adam Wegrzynek <adam.wegrzynek@cern.ch>  
@@ -51,31 +51,31 @@ Gathers user account details
 <a name="new_OAuth_new"></a>
 
 ### new OAuth()
-Creates oauth object based on id and secret stored in config file
+Creates OAuth object based on id and secret stored in config file.
 
 <a name="OAuth+oAuthCallback"></a>
 
 ### oAuth.oAuthCallback(emitter, code)
-OAuth redirection callback (called by library)
+OAuth redirection callback (called by library).
 
 **Kind**: instance method of <code>[OAuth](#OAuth)</code>  
 
-| Param | Type |
-| --- | --- |
-| emitter | <code>object</code> | 
-| code | <code>number</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| emitter | <code>object</code> |  |
+| code | <code>number</code> | authorization code to request access token |
 
 <a name="OAuth+oAuthGetUserDetails"></a>
 
 ### oAuth.oAuthGetUserDetails(token, emitter)
-Queries user details using received access token
+Queries user details using received access token.
 
 **Kind**: instance method of <code>[OAuth](#OAuth)</code>  
 
-| Param | Type |
-| --- | --- |
-| token | <code>string</code> | 
-| emitter | <code>object</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| token | <code>string</code> | OAuth access token |
+| emitter | <code>object</code> |  |
 
 <a name="HttpServer"></a>
 
@@ -100,7 +100,7 @@ Each request is authenticated with JWT token.
 <a name="new_HttpServer_new"></a>
 
 ### new HttpServer(credentials, app)
-Sets up the server, routes and binds HTTP and HTTPs sockets
+Sets up the server, routes and binds HTTP and HTTPS sockets.
 
 
 | Param | Type | Description |
@@ -118,19 +118,19 @@ HTTPs server getter
 <a name="HttpServer+specifyRoutes"></a>
 
 ### httpServer.specifyRoutes()
-Specified routes and their callbacks
+Specified routes and their callbacks.
 
 **Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 <a name="HttpServer+enableHttpRedirect"></a>
 
 ### httpServer.enableHttpRedirect()
-Redirects HTTP to HTTPs
+Redirects HTTP to HTTPS.
 
 **Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 <a name="HttpServer+oAuthAuthorize"></a>
 
 ### httpServer.oAuthAuthorize(res)
-OAuth redirection
+OAuth redirection.
 
 **Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
 
@@ -220,8 +220,8 @@ Stores secret
 <a name="JwtToken+generateToken"></a>
 
 ### jwtToken.generateToken(personid, username, access) ⇒ <code>object</code>
-Generates encrypted token with user id and access level
-Sets expiration time and sings it using secret
+Generates encrypted token with user id and access level.
+Sets expiration time and sings it using secret.
 
 **Kind**: instance method of <code>[JwtToken](#JwtToken)</code>  
 **Returns**: <code>object</code> - generated token  
@@ -235,11 +235,11 @@ Sets expiration time and sings it using secret
 <a name="JwtToken+refreshToken"></a>
 
 ### jwtToken.refreshToken(token) ⇒ <code>object</code>
-When the token expires, this method allows to refresh it
+When the token expires, this method allows to refresh it.
 It skips expiration check and verifies (already expired) token based on maxAge parameter
 (maxAge >> expiration).
-Then it creates a new token using parameters of the old one and ships it to the user
-If maxAge timeouts, the user needs to re-login via OAuth
+Then it creates a new token using parameters of the old one and ships it to the user.
+If maxAge timeouts, the user needs to re-login via OAuth.
 
 **Kind**: instance method of <code>[JwtToken](#JwtToken)</code>  
 **Returns**: <code>object</code> - new token or false in case of failure  
@@ -251,7 +251,7 @@ If maxAge timeouts, the user needs to re-login via OAuth
 <a name="JwtToken+verify"></a>
 
 ### jwtToken.verify(token) ⇒ <code>object</code>
-Verifies user token using the same secret as in generateToken method
+Decrypts user token to verify that is vaild.
 
 **Kind**: instance method of <code>[JwtToken](#JwtToken)</code>  
 **Returns**: <code>object</code> - whether operation was successful, if so decoded data are passed as well  
@@ -263,7 +263,7 @@ Verifies user token using the same secret as in generateToken method
 <a name="Padlock"></a>
 
 ## Padlock
-WebSocket module that enforces that only single user is allowed to execute commands at the time.
+WebSocket module enforcing that only single user is allowed to execute commands at the time.
 Remaining connected users behave as spectators.
 
 **Kind**: global class  
@@ -284,8 +284,8 @@ Initialized member variables
 <a name="Padlock+check"></a>
 
 ### padlock.check(command, id) ⇒ <code>object</code>
-Processes "lock-*" commands
-Ensures that singe user to holds the lock
+Processes "lock-*" commands.
+Ensures that singe user to holds the lock.
 
 **Kind**: instance method of <code>[Padlock](#Padlock)</code>  
 **Returns**: <code>object</code> - - JSON message  
@@ -298,7 +298,7 @@ Ensures that singe user to holds the lock
 <a name="Padlock+isHoldingLock"></a>
 
 ### padlock.isHoldingLock(id) ⇒ <code>bool</code>
-Checks whether user with given id holds the lock
+Checks whether user with given id holds the lock.
 
 **Kind**: instance method of <code>[Padlock](#Padlock)</code>  
 **Returns**: <code>bool</code> - true if user holods the lock, false otherwise  
@@ -310,7 +310,7 @@ Checks whether user with given id holds the lock
 <a name="Padlock+lock"></a>
 
 ### padlock.lock(id) ⇒ <code>bool</code>
-Sets the lock ownership to given user
+Sets the lock ownership to given user.
 
 **Kind**: instance method of <code>[Padlock](#Padlock)</code>  
 **Returns**: <code>bool</code> - true if succeeds, false otherwise  
@@ -322,7 +322,7 @@ Sets the lock ownership to given user
 <a name="Padlock+unlock"></a>
 
 ### padlock.unlock(id) ⇒ <code>bool</code>
-Remove ownership of current holder of the lock
+Removes lock  ownership from current holder.
 
 **Kind**: instance method of <code>[Padlock](#Padlock)</code>  
 **Returns**: <code>bool</code> - true if succeeds, false otherwise  
@@ -355,7 +355,7 @@ It's based on HTTP status codes.
 <a name="new_Response_new"></a>
 
 ### new Response(code)
-Sets initial variables
+Sets initial variables.
 
 
 | Param | Type | Description |
@@ -385,14 +385,14 @@ Sets initial variables
 <a name="Response+json"></a>
 
 ### response.json ⇒ <code>object</code>
-Formats the reponse to object that is ready to be formatted into JSON
+Formats the reponse to object that is ready to be formatted into JSON.
 
 **Kind**: instance property of <code>[Response](#Response)</code>  
 **Returns**: <code>object</code> - response  
 <a name="Response+_message"></a>
 
 ### response._message(code) ⇒ <code>string</code>
-Provides HTTP message based on code
+Provides HTTP message based on code.
 
 **Kind**: instance method of <code>[Response](#Response)</code>  
 **Returns**: <code>string</code> - message for given code  
@@ -404,7 +404,7 @@ Provides HTTP message based on code
 <a name="Response+command"></a>
 
 ### response.command(command) ⇒ <code>object</code>
-Command setter
+Command setter.
 
 **Kind**: instance method of <code>[Response](#Response)</code>  
 **Returns**: <code>object</code> - 'this' to allow function call chaining  
@@ -416,14 +416,14 @@ Command setter
 <a name="Response+broadcast"></a>
 
 ### response.broadcast() ⇒ <code>object</code>
-Set broadcast flag to true
+Set broadcast flag to true.
 
 **Kind**: instance method of <code>[Response](#Response)</code>  
 **Returns**: <code>object</code> - 'this' to allow function call chaining  
 <a name="Response+payload"></a>
 
 ### response.payload(payload) ⇒ <code>object</code>
-Payload setter
+Payload setter.
 
 **Kind**: instance method of <code>[Response](#Response)</code>  
 **Returns**: <code>object</code> - 'this' to allow function call chaining  
@@ -452,7 +452,7 @@ In addition, it provides custom authentication with JWT tokens.
 <a name="new_WebSocket_new"></a>
 
 ### new WebSocket(httpsServer)
-Starts up the server and binds event handler
+Starts up the server and binds event handler.
 
 
 | Param | Type | Description |
@@ -462,7 +462,7 @@ Starts up the server and binds event handler
 <a name="WebSocket+onmessage"></a>
 
 ### webSocket.onmessage(message) ⇒ <code>object</code>
-Handles incoming text messages: verifies token and processes request/command
+Handles incoming text messages: verifies token and processes request/command.
 
 **Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
 **Returns**: <code>object</code> - message to be send back to the user  
@@ -474,7 +474,7 @@ Handles incoming text messages: verifies token and processes request/command
 <a name="WebSocket+jwtVerify"></a>
 
 ### webSocket.jwtVerify(token, refresh) ⇒ <code>object</code>
-Verifies token, if expired request a new one
+Verifies token, if expired requests a new one.
 
 **Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
 **Returns**: <code>object</code> - includes either parsed token or response message  
@@ -487,7 +487,7 @@ Verifies token, if expired request a new one
 <a name="WebSocket+onconnection"></a>
 
 ### webSocket.onconnection(client)
-Handles client connection and message receiving
+Handles client connection and message receiving.
 
 **Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
 
@@ -498,7 +498,7 @@ Handles client connection and message receiving
 <a name="WebSocket+onclose"></a>
 
 ### webSocket.onclose(client)
-Handles client disconnection
+Handles client disconnection.
 
 **Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
 
@@ -509,7 +509,7 @@ Handles client disconnection
 <a name="WebSocket+broadcast"></a>
 
 ### webSocket.broadcast(message)
-Broadcasts the message to all connected clients
+Broadcasts the message to all connected clients.
 
 **Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
 
@@ -536,7 +536,7 @@ socket patterns (sub and req).
 <a name="new_ZeroMQClient_new"></a>
 
 ### new ZeroMQClient(ip, port, type)
-Creates ZeroMQ socket and binds class methods to basic events
+Creates ZeroMQ socket and binds class methods to basic events.
 
 
 | Param | Type | Description |
@@ -548,7 +548,7 @@ Creates ZeroMQ socket and binds class methods to basic events
 <a name="ZeroMQClient+connect"></a>
 
 ### zeroMQClient.connect(endpoint)
-On-connect event handler
+On-connect event handler.
 
 **Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
 
@@ -559,7 +559,7 @@ On-connect event handler
 <a name="ZeroMQClient+disconnect"></a>
 
 ### zeroMQClient.disconnect(endpoint)
-On-disconnect event handler
+On-disconnect event handler.
 
 **Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
 
@@ -570,7 +570,7 @@ On-disconnect event handler
 <a name="ZeroMQClient+onmessage"></a>
 
 ### zeroMQClient.onmessage(message)
-On-message event handler
+On-message event handler.
 
 **Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
 
@@ -581,7 +581,7 @@ On-message event handler
 <a name="ZeroMQClient+send"></a>
 
 ### zeroMQClient.send(message)
-Sends message via socket
+Sends message via socket.
 
 **Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
 
