@@ -1,4 +1,4 @@
-# Control GUI Prototype
+# Control GUI
 
 [![Build Status](https://travis-ci.org/AliceO2Group/ControlGui.svg?branch=master)](https://travis-ci.org/AliceO2Group/ControlGui)
 [![Dependencies Status](https://david-dm.org/AliceO2Group/ControlGui/status.svg)](https://david-dm.org/AliceO2Group/ControlGui)
@@ -91,7 +91,7 @@ npm start
 The JSDoc documentation in Markdown format is available [in here](docs/API.md).
 
 ### Application architecture and data flow
-The application consists of multiple functional modules on both server and client side. [This document](docs/ARCH.md) explains functional architecture and data flows used for in different scenarios.
+The Control GUI web-application consists of multiple modules on server and client side. [This document](docs/ARCH.md) explains applications' functional architecture and data flows used for in varoius scenarios.
 
 ### For developers
 * [Coding guideline](https://github.com/AliceO2Group/CodingGuidelines)
