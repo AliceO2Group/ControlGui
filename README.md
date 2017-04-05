@@ -4,7 +4,7 @@
 [![Dependencies Status](https://david-dm.org/AliceO2Group/ControlGui/status.svg)](https://david-dm.org/AliceO2Group/ControlGui)
 [![devDependencies Status](https://david-dm.org/AliceO2Group/ControlGui/dev-status.svg)](https://david-dm.org/AliceO2Group/ControlGui?type=dev)
 
-The goal of Control GUI Prototype is to identify library and framework sets and develope the core functionalities of common O2 Web Applications:
+The goal of Control GUI Prototype is to identify library and framework sets and develop the core functionalities of common O2 Web Applications:
 - Server-side (node.js)
   - HTTPS / REST API
   - Authentication via CERN OAuth 2 and authorization via e-groups
@@ -23,7 +23,7 @@ The goal of Control GUI Prototype is to identify library and framework sets and 
      ```
      git clone https://github.com/AliceO2Group/ControlGui && cd ControlGui
      ```
-3. Install dependecies
+3. Install dependencies
      ```
      npm install
      ```
@@ -47,7 +47,7 @@ To resolve this issue you need to recompile zmq module.
      ```
 
 ## Configuration file
-Rename *config.json-default* to *config.json* and recplace *&lt;tags&gt;* with corresponding data:
+Replace *&lt;tags&gt;* with corresponding data:
 
 1. jwt
   * secret - JWT secret passphrase
@@ -80,7 +80,19 @@ Rename *config.json-default* to *config.json* and recplace *&lt;tags&gt;* with c
   * file - level of logs saved into log file
 
 ## Run
-Rename *config-default.ini* to *config.ini*.
+Rename *config-default.ini* to *config.ini* and run:
 ```
 npm start
 ```
+
+## Documentation
+
+### API
+The JSDoc documentation in Markdown format is available [in here](docs/API.md).
+
+### Application architecture and data flow
+The application consists of multiple functional modules on both server and client side. [This document](docs/ARCH.md) explains functional architecture and data flows used for in different scenarios.
+
+### For developers
+* [Coding guideline](https://github.com/AliceO2Group/CodingGuidelines)
+* [Development environment](docs/DEV.md)
