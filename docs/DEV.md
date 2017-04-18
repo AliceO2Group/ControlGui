@@ -5,7 +5,7 @@ This document describes development environment for the project. It also mention
 Each class or widget should be covered by unit tests. The following frameworks are used in the project:
 
 * [QUnit](http://qunitjs.com) (front-end)
-* [Mocha](mocha test) with [Chai](http://chaijs.com) assertion library (back-end)
+* [Mocha](https://mochajs.org) with [Chai](http://chaijs.com) assertion library (back-end)
 
 The source code of unit tests is kept in `test/` directory. The filename should prefixed with either `qunit-` or `mocha-`. 
 
