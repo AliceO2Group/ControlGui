@@ -39,5 +39,8 @@
   "log": {
     "console": "debug",
     "file": "error"
+  },
+  "websocket": {
+    "hostname": "127.0.0.1"
   }
 }

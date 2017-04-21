@@ -40,7 +40,7 @@ $(function() {
   /// instance of websocket widget
   var ws = $.o2.websocket({
     // pass url of websocket server
-    url: 'wss://pcald03.cern.ch',
+    url: 'wss://{{websockethostname}}',
     // token, cernid, name and username are provided by CERN SSO
     token: '{{token}}',
     id: {{personid}},
