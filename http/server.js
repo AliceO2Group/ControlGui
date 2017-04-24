@@ -83,6 +83,7 @@ class HttpServer {
       /* !!! JUST FOR DEVELOPMENT !!! */
       data.personid += Math.floor(Math.random() * 100);
       data.token = this.jwt.generateToken(data.personid, data.username, 1);
+      data.websockethostname = config.websocket.hostname;
       return res.status(200).send(this.renderPage('public/index.tpl', data));
     }.bind(this));
   }

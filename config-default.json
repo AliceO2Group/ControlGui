@@ -33,11 +33,14 @@
     }   
   },  
   "http": {
-    "port": 8081,
-    "portSecure": 8080
+    "port": 8080,
+    "portSecure": 8443
   },  
   "log": {
     "console": "debug",
     "file": "error"
+  },
+  "websocket": {
+    "hostname": "127.0.0.1"
   }
 }
