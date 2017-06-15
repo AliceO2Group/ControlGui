@@ -33,7 +33,7 @@ $.widget('o2.websocket', {
         } else {
           this._trigger(parsed.command, evt, parsed);
         }
-      } catch(e) {
+      } catch (e) {
         // continue even though message parsing failed
       }
     }, this);

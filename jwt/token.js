@@ -50,7 +50,7 @@ class JwtToken {
         maxAge: this._maxAge
       });
       return this.generateToken(decoded.id, decoded.username, decoded.access);
-    } catch(err) {
+    } catch (err) {
       return false;
     }
   }
