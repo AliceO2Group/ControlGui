@@ -16,8 +16,8 @@ gulp.task('default', ['test', 'eslint']);
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
   gulp.src('*.js')
-      .pipe(uglify())
-      .pipe(gulp.dest('minjs'));
+    .pipe(uglify())
+    .pipe(gulp.dest('minjs'));
 });
 
 // JavaScirpt syntax check and coding guidline enforced
@@ -34,13 +34,13 @@ gulp.task('test', ['qunit', 'mocha']);
 // Test frontend with QUnit
 gulp.task('qunit', function() {
   gulp.src('./test/qunit-*.html')
-      .pipe(qunit());
+    .pipe(qunit());
 });
 
 // Test backend with Mocha
 gulp.task('mocha', function() {
   gulp.src('./test/mocha-*.js')
-      .pipe(mocha());
+    .pipe(mocha());
 });
 
 // Generate JSDoc in Markdown format

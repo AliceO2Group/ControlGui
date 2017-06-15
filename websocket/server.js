@@ -13,7 +13,6 @@ const Response = require('./response.js');
  * @author Adam Wegrzynek <adam.wegrzynek@cern.ch>
  */
 class WebSocket extends EventEmitter {
-
   /**
    * Starts up the server and binds event handler.
    * @param {object} httpsServer - HTTPS server
@@ -23,7 +22,7 @@ class WebSocket extends EventEmitter {
     super();
     this.jwt = new JwtToken(config.jwt);
     this.server = new WebSocketServer({server: httpsServer, clientTracking: true});
-    this.server.on('connection', (client) => this.onconnection(client));
+    this.server.on('connection', (client, request) => this.onconnection(client, request));
     this.server.on('close', (client) => this.onclose(client));
     this.padlock = new Padlock();
     log.debug('WebSocket server started');
@@ -50,7 +49,7 @@ class WebSocket extends EventEmitter {
 
     log.debug('%d : command %s', id, message.command);
 
-    switch(message.command.split('-')[0]) {
+    switch (message.command.split('-')[0]) {
       case 'lock':
         responseArray.push(this.padlock.check(message.command, id));
         break;
@@ -81,7 +80,7 @@ class WebSocket extends EventEmitter {
   jwtVerify(token, refresh = true) {
     try {
       return this.jwt.verify(token);
-    } catch(err) {
+    } catch (err) {
       log.warn('jwt verify failed: %s', err.message);
       if (err.name == 'TokenExpiredError' && refresh) {
         const newtoken = this.jwt.refreshToken(token);
@@ -98,9 +97,10 @@ class WebSocket extends EventEmitter {
   /**
    * Handles client connection and message receiving.
    * @param {object} client - connected client
+   * @param {object} request - connection request (new in v3.0.0, client.upgradeReq replacement)
    */
-  onconnection(client) {
-    const token = url.parse(client.upgradeReq.url, true).query.token;
+  onconnection(client, request) {
+    const token = url.parse(request.url, true).query.token;
     const feedback = this.jwtVerify(token, false);
     if (feedback instanceof Response) {
       client.close(1008);

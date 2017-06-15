@@ -45,7 +45,7 @@ describe('rest-api', () => {
 describe('websocket', () => {
   it('should successfully connect to websocket server', (done) => {
     const connection = new WebSocketClient(
-     'wss://localhost:' + config.http.portSecure +'/?token=' + token
+      'wss://localhost:' + config.http.portSecure +'/?token=' + token
     );
     connection.on('open', () => {
       setTimeout(() => {

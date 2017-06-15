@@ -119,7 +119,7 @@ class HttpServer {
       const jwtFeedback = this.jwt.verify(req.query.token);
       req.decoded = jwtFeedback.decoded;
       next();
-    } catch(err) {
+    } catch (err) {
       log.debug(this.constructor.name, ':', err.name);
       res.status(403).json({message: err.name});
     }

@@ -7,7 +7,7 @@ module.exports = new (winston.Logger)({
       {timestamp: true, colorize: true, level: config.log.console}
     ),
     new winston.transports.File(
-     {filename: './error.log', level: config.log.file}
+      {filename: './error.log', level: config.log.file}
     )
   ],
   exitOnError: true
