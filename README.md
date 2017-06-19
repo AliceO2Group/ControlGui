@@ -18,7 +18,7 @@ The goal of Control GUI Prototype is to identify library and framework sets and 
 1. Padlock module - single user that owns the lock is allowed to execute commands, other connected users act as spectators.
 
 ## Installation
-1. Install ZeroMQ >= 4.0
+1. Install ZeroMQ >= 4.0 (including zeromq-devel)
 2. Clone repository
      ```
      git clone https://github.com/AliceO2Group/ControlGui && cd ControlGui
