@@ -23,7 +23,6 @@ class WebSocket extends EventEmitter {
     this.jwt = new JwtToken(config.jwt);
     this.server = new WebSocketServer({server: httpsServer, clientTracking: true});
     this.server.on('connection', (client, request) => this.onconnection(client, request));
-    this.server.on('close', (client) => this.onclose(client));
     this.padlock = new Padlock();
     log.debug('WebSocket server started');
   }
@@ -124,6 +123,8 @@ class WebSocket extends EventEmitter {
         }
       }
     }.bind(this));
+
+    client.on('close', (client) => this.onclose(client));
   }
 
   /**
