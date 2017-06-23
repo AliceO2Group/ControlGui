@@ -35,6 +35,7 @@ textarea {
 <script src="libs/jquery-ui.js"></script>
 <script src="ws.widget.js"></script>
 <script src="padlock.widget.js"></script>
+<script src="pushnotif.widget.js"></script>
 <script>
 $(function() {
   /// instance of websocket widget
@@ -49,6 +50,8 @@ $(function() {
   var padlock = $.o2.padlock({
     id: {{personid}}
   }, $('#padlock') );
+
+  var notification = $.o2.pushNotification();
 
   $('#ws').bind('websocketlock-get', function(evt, data) {
     padlock.lock(data.payload.id);
@@ -78,6 +81,10 @@ $(function() {
     const networkInterval = setInterval(function() {
       window.location.href = location.protocol + '//' + location.host;
     }, 2000);
+  });
+
+  $('#ws').bind('websocketnotification', function(evt, parsed) {
+    notification.generate(parsed);
   });
 });
 </script>

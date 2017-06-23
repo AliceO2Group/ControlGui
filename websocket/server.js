@@ -7,6 +7,9 @@ const JwtToken = require('./../jwt/token.js');
 const Padlock = require('./padlock.js');
 const Response = require('./response.js');
 
+// array for storing live connections
+let connections = [];
+
 /**
  * It represents WebSocket server (RFC 6455).
  * In addition, it provides custom authentication with JWT tokens.
@@ -124,6 +127,26 @@ class WebSocket extends EventEmitter {
       }
     }.bind(this));
 
+    connections.push(client);
+    log.info('Connected: %s sockets connected...', connections.length);
+
+
+    // Subscriber for ZeroMQ
+    let zmq = require('zeromq');
+    let sock = zmq.socket('sub');
+
+    sock.connect('tcp://127.0.0.1:3000');
+    sock.subscribe('Notifications');
+    log.debug('Subscriber connected to port 3000');
+
+    sock.on('message', function(topic, message) {
+      for (let j = 0; j < connections.length; j++) {
+        if (connections[j].readyState == connections[0].OPEN) {
+          connections[j].send(message);
+        }
+      }
+    });
+
     client.on('close', (client) => this.onclose(client));
   }
 
@@ -133,6 +156,8 @@ class WebSocket extends EventEmitter {
    */
   onclose(client) {
     log.info('disconnected');
+    connections.splice(connections.indexOf(client), 1);
+    log.info('Disconnected: %s sockets connected...', connections.length);
   }
 
   /**
