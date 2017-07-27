@@ -42,5 +42,13 @@
   },
   "websocket": {
     "hostname": "127.0.0.1"
+  },
+  "pushNotifications": {    
+    "publicKey": "<application server public key>",
+    "privateKey": "<application server private key>",
+    "host": "<MySql Host>",
+    "user": "<MySql User>",
+    "password": "<MySql Password>",
+    "database": "<MySql Database Name>"
   }
 }

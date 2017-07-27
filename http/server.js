@@ -9,6 +9,42 @@ const log = require('./../log.js');
 const JwtToken = require('./../jwt/token.js');
 const OAuth = require('./oauth.js');
 
+const webpush = require('web-push');
+const app = express();
+const path = require('path');
+const bodyParser = require('body-parser');
+const db = require('./db.js');
+
+app.use(express.static(path.join(__dirname, '')));
+
+const vapidKeys = {
+  publicKey: config.pushNotifications.publicKey,
+  privateKey: config.pushNotifications.privateKey
+};
+
+webpush.setVapidDetails(
+  'mailto: anirudh.goel@cern.ch',
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
+);
+
+const isValidSaveRequest = (req, res) => {
+  // Check the request body has at least an endpoint.
+  if (!req.body || !req.body.endpoint) {
+    // Not a valid subscription.
+    res.status(400);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({
+      error: {
+        id: 'no-endpoint',
+        message: 'Subscription must have an endpoint.'
+      }
+    }));
+    return false;
+  }
+  return true;
+};
+
 /**
  * HTTPS server that handles OAuth and provides REST API.
  * Each request is authenticated with JWT token.
@@ -41,6 +77,8 @@ class HttpServer {
    * Specified routes and their callbacks.
    */
   specifyRoutes() {
+    this.app.use(bodyParser.json());
+
     this.app.get('/', (req, res) => this.oAuthAuthorize(res));
     this.app.use(express.static('public'));
     this.app.get('/callback', (emitter, code) => this.oAuthCallback(emitter, code));
@@ -49,6 +87,10 @@ class HttpServer {
     this.router.use((req, res, next) => this.jwtVerify(req, res, next));
     this.app.use('/api', this.router);
     this.router.use('/runs', this.runs);
+    this.router.post('/save-subscription', this.saveSubscription);
+    this.router.post('/update-preferences', this.updatePref);
+    this.router.post('/get-preferences', this.getPref);
+    this.router.post('/delete-subscription', this.deleteSubscription);
   }
 
   /**
@@ -84,6 +126,7 @@ class HttpServer {
       data.personid += Math.floor(Math.random() * 100);
       data.token = this.jwt.generateToken(data.personid, data.username, 1);
       data.websockethostname = config.websocket.hostname;
+      data.applicationServerPublicKey = vapidKeys.publicKey;
       return res.status(200).send(this.renderPage('public/index.tpl', data));
     }.bind(this));
   }
@@ -116,6 +159,7 @@ class HttpServer {
    */
   jwtVerify(req, res, next) {
     try {
+      // console.log(req.query);
       const jwtFeedback = this.jwt.verify(req.query.token);
       req.decoded = jwtFeedback.decoded;
       next();
@@ -133,6 +177,83 @@ class HttpServer {
    */
   runs(req, res) {
     res.json({run: 123});
+  }
+
+  /**
+   * Receives User Subscription object from 'web-push' server
+   * and saves it to Database
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  saveSubscription(req, res) {
+    if (!isValidSaveRequest(req, res)) {
+      return;
+    }
+
+    db.insertSubscription(req.body)
+      .then(function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({data: {success: true}}));
+      })
+      .catch(function(err) {
+        res.status(500);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
+          error: {
+            id: 'unable-to-save-subscription',
+            message: 'The subscription was received but we were unable to save it to our database.'
+          }
+        }));
+      });
+  }
+
+  /**
+   * Receives User Notification Preferences and updates it in Database
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  updatePref(req, res) {
+    db.updatePreferences(req.body)
+      .then(function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({data: {success: true}}));
+      })
+      .catch(function(err) {
+        res.send(err);
+      });
+  }
+
+  /**
+   * Gets User Notification Preferences from Database
+   * and passes it to browser
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  getPref(req, res) {
+    db.getPreferences(req.body)
+      .then(function(preferences) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(preferences);
+      })
+      .catch(function(err) {
+        res.send(err);
+      });
+  }
+
+  /**
+   * Deletes user subscription from database
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  deleteSubscription(req, res) {
+    db.deleteSubscription(req.body.endpoint)
+      .then(function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({data: {success: true}}));
+      })
+      .catch(function(err) {
+        res.send(err);
+      });
   }
 }
 module.exports = HttpServer;

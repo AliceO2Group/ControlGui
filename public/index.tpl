@@ -30,11 +30,15 @@ textarea {
   font-color: #fff;
 }
 
+.is-invisible {
+  display: none;
+}
 </style>
 <script src="libs/jquery-3.1.1.js"></script>
 <script src="libs/jquery-ui.js"></script>
 <script src="ws.widget.js"></script>
 <script src="padlock.widget.js"></script>
+<script src="socketnotif.widget.js"></script>
 <script src="pushnotif.widget.js"></script>
 <script>
 $(function() {
@@ -51,7 +55,16 @@ $(function() {
     id: {{personid}}
   }, $('#padlock') );
 
-  var notification = $.o2.pushNotification();
+  var notification = $.o2.socketNotification();
+
+  var pushNotif = $.o2.pushNotification({
+    applicationServerPublicKey: '{{applicationServerPublicKey}}',
+    pushButton: $('.js-push-btn'),
+    preferencesForm: $('.preferences-form'),
+    preferenceOptionsSection: $('#preferenceOptions'),
+    result: $('.result'),
+    jwtToken: '{{token}}'
+  });
 
   $('#ws').bind('websocketlock-get', function(evt, data) {
     padlock.lock(data.payload.id);
@@ -108,6 +121,21 @@ $(function() {
 <textarea id="console" class="ui-widget ui-state-default ui-corner-all"></textarea>
 <div id="ws"></div>
 <div id="overlay"></div>
+<hr>
+<p>
+  <h3>Push Notification Controls</h3>
+  <button disabled class="js-push-btn ui-button ui-corner-all ui-widget">
+    Enable Push Messaging
+  </button>
+</p>
+<br>
+<form class="is-invisible preferences-form">
+  <h3>Notification Preferences</h3>
+  <div id="preferenceOptions"></div>
+  <input type="submit" class="ui-button ui-corner-all ui-widget" value="Update Notification Preferences">
+</form>
+<br><br>
+<div class="result"></div>
 </body>
 </html>
 

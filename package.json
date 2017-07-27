@@ -14,14 +14,18 @@
   },
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.2",
     "jsonwebtoken": "^7.3.0",
     "mustache": "^2.3.0",
+    "mysql": "^2.13.0",
     "passport": "^0.3.2",
     "passport-saml": "^0.15.0",
     "simple-oauth2": "^1.1.0",
+    "web-push": "^3.2.2",
     "winston": "^2.3.1",
     "ws": "^3.0.0",
+    "yargs": "^8.0.2",
     "zeromq": "^4.3.0"
   },
   "devDependencies": {

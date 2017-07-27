@@ -16,6 +16,7 @@ The goal of Control GUI Prototype is to identify library and framework sets and 
 
 ## Control specific functionality developed so far
 1. Padlock module - single user that owns the lock is allowed to execute commands, other connected users act as spectators.
+2. Notification module - The users can subscribe to notifications and choose the type of notifications that they want to receive.
 
 ## Installation
 1. Install ZeroMQ >= 4.0 (including zeromq-devel)
@@ -78,6 +79,25 @@ Replace *&lt;tags&gt;* with corresponding data:
 7. log - log filter
   * console - level of logs displayed in console
   * file - level of logs saved into log file
+8. websocket
+  * hostname - Websocket hostname
+9. pushNotifications
+  * publicKey - Application Server VAPID Public Key
+  * privateKey - Application Server VAPID Private key
+  (for steps to generate these keys, go to [Generating the VAPID keys](#generating-the-vapid-keys))
+  * host - MySQL Host
+  * user - MySQL User
+  * password - MySQL Password
+  * database - MySQL Database Name
+
+## Generating the VAPID keys
+You can generate a set of Private and Public VAPID keys using any of the two methods mentioned below-
+  1. By installing 'web-push' globally and generating keys directly in the terminal.
+     ```
+     npm install -g web-push
+     web-push generate-vapid-keys
+     ```
+  2. By going to [Google CodeLab](https://web-push-codelab.appspot.com) (use Chrome or Mozilla, not Safari).
 
 ## Run
 Rename *config-default.ini* to *config.ini* and run:
@@ -92,6 +112,9 @@ The JSDoc documentation in Markdown format is available [in here](docs/API.md).
 
 ### Application architecture and data flow
 The Control GUI web-application consists of multiple modules on server and client side. [This document](docs/ARCH.md) explains applications' functional architecture and data flows used for in varoius scenarios.
+
+### Push Notification
+The Control GUI web-application Push Notifications work using several components. The description of all components and the workflow of notification widget is provided [here](docs/PUSHNOTIF.md).
 
 ### For developers
 * [Coding guideline](https://github.com/AliceO2Group/CodingGuidelines)
