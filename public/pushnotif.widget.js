@@ -1,3 +1,5 @@
+/* global Uint8Array */
+
 $.widget('o2.pushNotification', {
   options: {
     applicationServerPublicKey: undefined,
@@ -98,8 +100,8 @@ $.widget('o2.pushNotification', {
   generatePreferencesOptions: function() {
     let prefOptionsHTML = '';
     for (let i = 1; i <= this.options.preferenceOptions.length; i++) {
-      prefOptionsHTML += '<input type="checkbox" id="type' + i +'">\
-      <label for="type' + i + '">' + this.options.preferenceOptions[i-1] + '</label><br><br>';
+      prefOptionsHTML += '<input type="checkbox" id="type' + i +'">'
+        + '<label for="type' + i + '">' + this.options.preferenceOptions[i-1] + '</label><br><br>';
     }
 
     this.options.preferenceOptionsSection.html(prefOptionsHTML);
@@ -263,8 +265,8 @@ $.widget('o2.pushNotification', {
                         : ($('#type' + i).prop('checked', false));
                     }
                   } else {
-                    throw new Error('Number of preferences on HTML page and Database don\'t match.\
-                      Please see the database structure.');
+                    throw new Error('Number of preferences on HTML page and Database don\'t match.'
+                      + 'Please see the database structure.');
                   }
                 });
             });
@@ -288,7 +290,7 @@ $.widget('o2.pushNotification', {
   urlB64ToUint8Array: function(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
-      .replace(/\-/g, '+')
+      .replace(/-/g, '+')
       .replace(/_/g, '/');
 
     const rawData = window.atob(base64);

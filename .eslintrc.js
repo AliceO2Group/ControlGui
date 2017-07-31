@@ -7,6 +7,9 @@ module.exports = {
     "browser": true,
     "mocha": true
   },
+  "globals": {
+    "Promise": true
+  },
   "parserOptions": {
     "ecmaVersion": 6
   }, 

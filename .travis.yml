@@ -40,7 +40,7 @@ before_script:
 - npm install -g gulp
 - openssl req -new  -newkey rsa:2048 -days 365 -nodes -x509 -subj "/C=CH/ST=Test/L=Test/O=Tst/CN=www.test.com" -keyout test.key -out test.pem
 - mv config-default.json config.json
-script: gulp
+script: gulp travis
 notifications:
   email: false
   slack:

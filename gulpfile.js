@@ -13,6 +13,9 @@ const jsSource = [
 // Default task
 gulp.task('default', ['test', 'eslint']);
 
+// Default task for Travis CI
+gulp.task('travis', ['test', 'eslintfail']);
+
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
   gulp.src('*.js')
@@ -26,6 +29,13 @@ gulp.task('eslint', function() {
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
+});
+
+gulp.task('eslintfail', function() {
+  gulp.src(jsSource)
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failOnError());
 });
 
 // Run front-end and back-end tests
