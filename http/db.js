@@ -13,7 +13,7 @@ con.connect(function(err) {
   if (err) {
     throw err;
   }
-  log.debug('Connected');
+  log.debug('Connected to the database');
 });
 
 

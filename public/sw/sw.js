@@ -5,12 +5,11 @@
 // Receiving push and showing notification
 self.addEventListener('push', function(event) {
   console.log('[Service Worker] Push Received.');
-  console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
-  console.log(event);
+  console.log(`[Service Worker] Push had this data: "${event.data.json()}"`);
 
-  const title = 'Push Codelab';
+  const title = `${event.data.json().title}`;
   const options = {
-    body: `${event.data.text()}`,
+    body: `${event.data.json().message}`,
     icon: 'images/icon.png',
     badge: 'images/badge.png'
   };

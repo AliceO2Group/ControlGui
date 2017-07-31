@@ -10,6 +10,19 @@ const con = mysql.createConnection({
   database: config.pushNotifications.database
 });
 
+/*
+
+To run this file, use command:
+
+node test/notification-trigger.js --type <type> --title "<title>" --message "<message>"
+
+Replace <type> with 1, 2 or 3.
+(If more types are added then use the corresponding number)
+
+<title> and <message> should be replaced by the Title and Message of notification respectively.
+
+*/
+
 con.connect(function(err) {
   if (err) {
     throw err;
@@ -19,10 +32,8 @@ con.connect(function(err) {
 /*
 For using 'web-push' package you need to generate a VAPID Public and Private Key Pair.
 You can generate the VAPID keys by 2 methods
-1. By installing 'web-push' globally and generating keys from terminal using these commands-
-
-npm install -g web-push
-web-push generate-vapid-keys
+1. By using 'web-push' package from the terminal.
+  ./node_modules/web-push/src/cli.js generate-vapid-keys
 
 2. By going to Google CodeLab - https://web-push-codelab.appspot.com/
 (Use Chrome or Mozilla, not Safari)
@@ -37,37 +48,6 @@ webpush.setVapidDetails(
   vapidKeys.publicKey,
   vapidKeys.privateKey
 );
-
-/**
- * Fetches subscriptions from db then verifies them and sends notifications.
- * @return {promise}
- */
-function sendNotif() {
-  const type = argv.type;
-  const dataToSend = argv.message;
-
-  return getSubscriptions()
-    .then(function(subscriptions) {
-      let promiseChain = Promise.resolve();
-
-      for (let i = 0; i < subscriptions.length; i++) {
-        let subscription = subscriptions[i];
-        subscription = formatSubscription(subscription);
-
-        let pref = subscription.preferences.split('');
-
-        if (pref[type - 1] == 1) {
-          promiseChain = promiseChain.then(() => {
-            return triggerPushMsg(subscription, dataToSend);
-          });
-        }
-      }
-    })
-    .catch(function(err) {
-      throw new Error(err);
-    });
-}
-sendNotif();
 
 /**
  * Sends push notifications to subscribed users
@@ -139,3 +119,42 @@ function formatSubscription(sub) {
   };
   return formattedSubscription;
 }
+
+/**
+ * Fetches subscriptions from db then verifies them and sends notifications.
+ * @return {promise}
+ */
+function sendNotif() {
+  const type = argv.type;
+  const dataToSend = {
+    'title': argv.title,
+    'message': argv.message
+  };
+
+  return getSubscriptions()
+    .then(function(subscriptions) {
+      let promiseChain = Promise.resolve();
+
+      for (let i = 0; i < subscriptions.length; i++) {
+        let subscription = subscriptions[i];
+        subscription = formatSubscription(subscription);
+
+        let pref = subscription.preferences.split('');
+
+        if (pref[type - 1] == 1) {
+          promiseChain = promiseChain.then(() => {
+            return triggerPushMsg(subscription, JSON.stringify(dataToSend));
+          });
+        }
+      }
+
+      return promiseChain;
+    })
+    .then(() => {
+      con.end();
+    })
+    .catch(function(err) {
+      throw err;
+    });
+}
+sendNotif();

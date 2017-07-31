@@ -1,14 +1,13 @@
 // Publisher server for zeromq
-let zmq = require('zeromq');
-let sock = zmq.socket('pub');
+const zmq = require('zeromq');
+const sock = zmq.socket('pub');
+const log = require('./../log.js');
 
 sock.bindSync('tcp://127.0.0.1:3000');
-// console.log('Publisher bound to port 3000');
 
 setInterval(function() {
-  // console.log('Sending a dummy notification');
   sendDummy();
-}, 10000);
+}, 7000);
 
 
 /**
@@ -27,5 +26,6 @@ function sendDummy() {
   response.title = titles[i];
   response.message = messages[i];
 
+  log.info('Sending a dummy notification\n', response.title, response.message);
   sock.send(JSON.stringify(response));
 }

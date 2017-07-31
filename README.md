@@ -25,9 +25,22 @@ The goal of Control GUI Prototype is to identify library and framework sets and 
      git clone https://github.com/AliceO2Group/ControlGui && cd ControlGui
      ```
 3. Install dependencies
+    ```
+    npm install
      ```
-     npm install
-     ```
+4.  MySQL setup instructions
+  Run this command in your MySQL command line-
+    ```sql
+    CREATE TABLE `subscriptions` (
+      `sub_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+      `endpoint` varchar(300) NOT NULL,
+      `auth_key` varchar(200) NOT NULL,
+      `p256dh_key` varchar(200) NOT NULL,
+      `preferences` varchar(20) NOT NULL DEFAULT '000',
+      PRIMARY KEY (`sub_id`)
+    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+    ```
+
 
 ### ZeroMQ custom installation
 If you've installed ZeroMQ under custom path, npm install will fail with : *fatal error: zmq.h: No such file or directory*
@@ -92,10 +105,9 @@ Replace *&lt;tags&gt;* with corresponding data:
 
 ## Generating the VAPID keys
 You can generate a set of Private and Public VAPID keys using any of the two methods mentioned below-
-  1. By installing 'web-push' globally and generating keys directly in the terminal.
-     ```
-     npm install -g web-push
-     web-push generate-vapid-keys
+  1. By using 'web-push' package from the terminal.
+     ```bash
+     ./node_modules/web-push/src/cli.js generate-vapid-keys
      ```
   2. By going to [Google CodeLab](https://web-push-codelab.appspot.com) (use Chrome or Mozilla, not Safari).
 
