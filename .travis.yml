@@ -20,7 +20,10 @@ env:
   - CC=gcc-4.9
   matrix:
   - ZMQ="4.1.6" ZMQ_REPO="zeromq4-1"
+services:
+  - mysql
 before_install:
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install mariadb && mysql.server start; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install zeromq; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CC=/usr/bin/clang; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CXX=/usr/bin/clang++; fi
@@ -36,10 +39,12 @@ before_install:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./configure --prefix=$LDHACK --without-libsodium; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make -j install; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd ..; fi
+- mysql -uroot -e 'CREATE DATABASE notifications;'
 before_script:
 - npm install -g gulp
 - openssl req -new  -newkey rsa:2048 -days 365 -nodes -x509 -subj "/C=CH/ST=Test/L=Test/O=Tst/CN=www.test.com" -keyout test.key -out test.pem
 - mv config-default.json config.json
+- node -e "const urlBase64 = require('urlsafe-base64'); const config = require('./config.json'); const pubKey = urlBase64.encode(new Buffer(65)); const privKey = urlBase64.encode(new Buffer(32)); config.pushNotifications.publicKey = pubKey; config.pushNotifications.privateKey = privKey; fs.writeFileSync('./config.json', JSON.stringify(config));"
 script: gulp travis
 notifications:
   email: false

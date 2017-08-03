@@ -14,7 +14,10 @@ const jsSource = [
 gulp.task('default', ['test', 'eslint']);
 
 // Default task for Travis CI
-gulp.task('travis', ['test', 'eslintfail']);
+gulp.task('travis', ['mocha', 'qunit', 'eslintfail'])
+  .once('error', function() {
+    this.once('finish', () => process.exit(1));
+  });
 
 // Minify JavaScript source coude
 gulp.task('uglify', function() {
@@ -50,7 +53,10 @@ gulp.task('qunit', function() {
 // Test backend with Mocha
 gulp.task('mocha', function() {
   gulp.src('./test/mocha-*.js')
-    .pipe(mocha());
+    .pipe(mocha())
+    .once('error', function() {
+      process.exit(1);
+    });
 });
 
 // Generate JSDoc in Markdown format

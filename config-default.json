@@ -2,7 +2,7 @@
 "jwt": {
     "secret": "<secret>",
     "issuer": "alice-o2-gui",
-    "expiration": "1s",
+    "expiration": "45s",
     "maxAge": "2m"
   },  
   "oAuth": {
@@ -46,9 +46,9 @@
   "pushNotifications": {    
     "publicKey": "<application server public key>",
     "privateKey": "<application server private key>",
-    "host": "<MySql Host>",
-    "user": "<MySql User>",
-    "password": "<MySql Password>",
-    "database": "<MySql Database Name>"
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "notifications"
   }
 }

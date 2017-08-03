@@ -3,11 +3,9 @@ const JwtToken = require('./../jwt/token.js');
 
 describe('json web token', () => {
   let verified;
-  const jwt = new JwtToken(config.jwt);
   const username = 'test';
   const id = 1111;
   const access = 1;
-  const token = jwt.generateToken(id, username, access);
 
   afterEach(() => {
     if (verified.id !== id) {
@@ -22,14 +20,18 @@ describe('json web token', () => {
   });
 
   it('should generate and verify token', () => {
+    const jwt = new JwtToken(config.jwt);
+    const token = jwt.generateToken(id, username, access);
     verified = jwt.verify(token);
   });
 
   it('should refresh token', (done) => {
+    const jwt = new JwtToken(config.jwt);
+    const token = jwt.generateToken(id, username, access);
     setTimeout(() => {
       const newtoken = jwt.refreshToken(token);
       verified = jwt.verify(newtoken);
       done();
-    }, 1100);
+    }, 1200);
   });
 });
