@@ -12,8 +12,8 @@ addons:
     - uuid-dev
 language: node_js
 node_js:
+- '8'
 - '7'
-- '6'
 env:
   global:
   - CXX=g++-4.9
