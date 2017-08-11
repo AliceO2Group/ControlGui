@@ -81,6 +81,10 @@ class HttpServer {
 
     this.app.get('/', (req, res) => this.oAuthAuthorize(res));
     this.app.use(express.static('public'));
+    this.app.use('/jquery', express.static(path.join(__dirname, '../node_modules/jquery/dist')));
+    this.app.use('/jquery-ui', express.static(
+      path.join(__dirname, '../node_modules/jquery-ui-dist/')
+    ));
     this.app.get('/callback', (emitter, code) => this.oAuthCallback(emitter, code));
     // eslint-disable-next-line
     this.router = express.Router();

@@ -1,7 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" href="libs/jquery-ui.css">
-<link rel="stylesheet" href="libs/font-awesome.css">
+<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
 <style>
 body {
   margin: 20px;
@@ -34,8 +33,8 @@ textarea {
   display: none;
 }
 </style>
-<script src="libs/jquery-3.1.1.js"></script>
-<script src="libs/jquery-ui.js"></script>
+<script src="/jquery/jquery.js"></script>
+<script src="/jquery-ui/jquery-ui.js"></script>
 <script src="ws.widget.js"></script>
 <script src="padlock.widget.js"></script>
 <script src="socketnotif.widget.js"></script>
@@ -112,7 +111,7 @@ $(function() {
 <button id="execute-zeromq" class="ui-button ui-corner-all ui-widget ui-state-disabled">Execute test command</button>
 <br><br>
 <h3>Lock icon</h3>
-<span id="padlock" class="fa fa-2x"></span>
+<span id="padlock" class="ui-icon ui-icon-locked"></span>
 <br><br>
 <h3>Messages arrived</h3>
 <textarea id="messages" class="ui-widget ui-state-default ui-corner-all"></textarea>

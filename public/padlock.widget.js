@@ -4,7 +4,7 @@ $.widget('o2.padlock', {
     id: undefined
   },
   _clear: function() {
-    this.element.removeClass('fa-lock').removeClass('fa-unlock');
+    this.element.removeClass('ui-icon-locked').removeClass('ui-icon-unlocked');
     this.element.css('color', 'black');
   },
   lock: function(id) {
@@ -13,11 +13,11 @@ $.widget('o2.padlock', {
       this.element.css('color', 'red');
     }
     this.options.locked = true;
-    this.element.addClass('fa-lock');
+    this.element.addClass('ui-icon-locked');
   },
   unlock: function() {
     this.options.locked = false;
     this._clear();
-    this.element.addClass('fa-unlock');
+    this.element.addClass('ui-icon-unlocked');
   }
 });

@@ -1,8 +1,7 @@
 <html>
 <head>
-
-<script src="../public/libs/jquery-3.1.1.js"></script>
-<script src="../public/libs/jquery-ui.js"></script>
+<script src="../node_modules/jquery/dist/jquery.js"></script>
+<script src="../node_modules/jquery-ui-dist/jquery-ui.js"></script>
 <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" type="text/css" media="screen">
 <script type="text/javascript" src="../node_modules/qunitjs/qunit/qunit.js"></script>
 <script src="../public/padlock.widget.js"></script>
@@ -11,7 +10,7 @@
 <body>
 <div id="qunit"></div>
 <div id="qunit-fixture"></div>
-<span id="padlock" class="fa fa-2x"></span>
+<span id="padlock" class="ui-icon"></span>
 <script>
 $(function() {
   const id = 1;
@@ -19,17 +18,17 @@ $(function() {
     id: id
   }, $('#padlock') );
   QUnit.test('padlock widget', function(assert) {
-    assert.equal($('#padlock').attr("class"), "fa fa-2x", "default css style");
+    assert.equal($('#padlock').attr("class"), "ui-icon", "default css style");
 
     padlock.lock(id);
-    assert.equal($('#padlock').attr("class"), "fa fa-2x fa-lock", "lock css style");
+    assert.equal($('#padlock').attr("class"), "ui-icon ui-icon-locked", "lock css style");
     assert.equal($('#padlock').css("color"), "rgb(0, 0, 0)", "lock fill color");
 
     padlock.unlock();
-    assert.equal($('#padlock').attr("class"), "fa fa-2x fa-unlock", "unlock css style");
+    assert.equal($('#padlock').attr("class"), "ui-icon ui-icon-unlocked", "unlock css style");
 
     padlock.lock(id + 1);
-    assert.equal($('#padlock').attr("class"), "fa fa-2x fa-lock", "lock css style");
+    assert.equal($('#padlock').attr("class"), "ui-icon ui-icon-locked", "lock css style");
     assert.equal($('#padlock').css("color"), "rgb(255, 0, 0)", "lock fill color");
   });
 });
