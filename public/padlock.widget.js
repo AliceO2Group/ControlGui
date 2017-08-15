@@ -19,6 +19,7 @@ $.widget('o2.padlock', {
 
   /**
    * Sets icon to locked, stored the id
+   * @param {number} id - person ID
    */ 
   lock: function(id) {
     this._clear();
