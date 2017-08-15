@@ -4,8 +4,9 @@
   "description": "Prototype of Control GUI",
   "main": "app.js",
   "scripts": {
-    "test": "gulp test",
-    "start": "node app.js --trace-sync-io"
+    "test": "gulp",
+    "start": "node app.js --trace-sync-io",
+    "coverage": "./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha"
   },
   "author": "Adam Wegrzynek",
   "repository": {
@@ -42,6 +43,7 @@
     "gulp-uglify": "^3.0.0",
     "jsdoc-to-markdown": "^3.0.0",
     "mocha": "^3.2.0",
+    "nyc": "^11.1.0",
     "qunit": "^1.0.0"
   }
 }

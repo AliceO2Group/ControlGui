@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/AliceO2Group/ControlGui.svg?branch=master)](https://travis-ci.org/AliceO2Group/ControlGui)
 [![Dependencies Status](https://david-dm.org/AliceO2Group/ControlGui/status.svg)](https://david-dm.org/AliceO2Group/ControlGui)
 [![devDependencies Status](https://david-dm.org/AliceO2Group/ControlGui/dev-status.svg)](https://david-dm.org/AliceO2Group/ControlGui?type=dev)
+[![codecov](https://codecov.io/gh/AliceO2Group/ControlGui/branch/master/graph/badge.svg)](https://codecov.io/gh/AliceO2Group/ControlGui)
 
 The goal of Control GUI Prototype is to identify library and framework sets and develop the core functionalities of common [ALICE O<sup>2</sup>](https://alice-o2.web.cern.ch) Web Applications:
 - Server-side (node.js)
