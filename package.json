@@ -22,7 +22,7 @@
     "jsonwebtoken": "^7.3.0",
     "mustache": "^2.3.0",
     "mysql": "^2.13.0",
-    "passport": "^0.3.2",
+    "passport": "^0.4.0",
     "passport-saml": "^0.15.0",
     "simple-oauth2": "^1.1.0",
     "web-push": "^3.2.2",
