@@ -4,9 +4,13 @@
   "description": "Prototype of Control GUI",
   "main": "app.js",
   "scripts": {
-    "test": "gulp",
+    "test": "npm run eslint && npm run mocha && npm run qunit",
     "start": "node app.js --trace-sync-io",
-    "coverage": "./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/mocha"
+    "coverage": "./node_modules/.bin/nyc ./node_modules/mocha/bin/mocha",
+    "mocha": "./node_modules/.bin/mocha test/",
+    "qunit": "./node_modules/.bin/phantomjs ./node_modules/qunit-phantomjs-runner/runner-list.js file://`pwd`/test/qunit-lock.html",
+    "eslint": "./node_modules/.bin/eslint ./*.js http/*.js jwt/*.js public/*.js websocket/*.js zeromq/*.js test/*.js",
+    "doc": "./node_modules/.bin/jsdoc2md --files ./*.js http/*.js jwt/*.js public/*.js websocket/*.js zeromq/*.js test/*.js > docs/API.md"
   },
   "author": "Adam Wegrzynek",
   "repository": {
@@ -19,7 +23,7 @@
     "express": "^4.15.2",
     "jquery": "^3.2.1",
     "jquery-ui-dist": "^1.12.1",
-    "jsonwebtoken": "^7.3.0",
+    "jsonwebtoken": "^7.4.3",
     "mustache": "^2.3.0",
     "mysql": "^2.13.0",
     "passport": "^0.4.0",
@@ -34,16 +38,13 @@
   "devDependencies": {
     "chai": "^4.0.2",
     "chai-http": "^3.0.0",
-    "eslint": "^4.0.0",
+    "eslint": "^4.5.0",
     "eslint-config-google": "^0.9.1",
-    "gulp": "^3.9.1",
-    "gulp-eslint": "^4.0.0",
-    "gulp-mocha": "^4.1.0",
-    "gulp-qunit": "^1.5.0",
-    "gulp-uglify": "^3.0.0",
     "jsdoc-to-markdown": "^3.0.0",
     "mocha": "^3.2.0",
     "nyc": "^11.1.0",
-    "qunit": "^1.0.0"
+    "phantom": "^4.0.5",
+    "qunit": "^1.0.0",
+    "qunit-phantomjs-runner": "^2.3.0"
   }
 }

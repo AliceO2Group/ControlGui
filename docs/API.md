@@ -30,6 +30,44 @@ socket patterns (sub and req).</p>
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#_clear">_clear()</a></dt>
+<dd><p>Clear all classes from the element, sets back default color</p>
+</dd>
+<dt><a href="#lock">lock(id)</a></dt>
+<dd><p>Sets icon to locked, stored the id</p>
+</dd>
+<dt><a href="#unlock">unlock()</a></dt>
+<dd><p>Sets icon to unlocked</p>
+</dd>
+<dt><a href="#_create">_create()</a></dt>
+<dd><p>Create widget instance</p>
+</dd>
+<dt><a href="#_connect">_connect()</a></dt>
+<dd><p>Connect to Websocket endpoint and specyfies WebSocket event listeners</p>
+</dd>
+<dt><a href="#send">send(message)</a></dt>
+<dd><p>Send message to WebSocket server</p>
+</dd>
+<dt><a href="#triggerPushMsg">triggerPushMsg(subscription, dataToSend)</a> ⇒ <code>promise</code></dt>
+<dd><p>Sends push notifications to subscribed users</p>
+</dd>
+<dt><a href="#deleteSubscriptionFromDatabase">deleteSubscriptionFromDatabase(endpoint)</a> ⇒ <code>promise</code></dt>
+<dd><p>Deletes user subscriptions from Database</p>
+</dd>
+<dt><a href="#getSubscriptions">getSubscriptions()</a> ⇒ <code>promise</code></dt>
+<dd><p>Fetches subscriptions from Database</p>
+</dd>
+<dt><a href="#formatSubscription">formatSubscription(sub)</a> ⇒ <code>object</code></dt>
+<dd><p>Formats the subscription to a suitable format to be sent to &#39;web-push&#39; server</p>
+</dd>
+<dt><a href="#sendNotif">sendNotif()</a> ⇒ <code>promise</code></dt>
+<dd><p>Fetches subscriptions from db then verifies them and sends notifications.</p>
+</dd>
+</dl>
+
 <a name="OAuth"></a>
 
 ## OAuth
@@ -58,7 +96,7 @@ Creates OAuth object based on id and secret stored in config file.
 ### oAuth.oAuthCallback(emitter, code)
 OAuth redirection callback (called by library).
 
-**Kind**: instance method of <code>[OAuth](#OAuth)</code>  
+**Kind**: instance method of [<code>OAuth</code>](#OAuth)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -70,7 +108,7 @@ OAuth redirection callback (called by library).
 ### oAuth.oAuthGetUserDetails(token, emitter)
 Queries user details using received access token.
 
-**Kind**: instance method of <code>[OAuth](#OAuth)</code>  
+**Kind**: instance method of [<code>OAuth</code>](#OAuth)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -96,6 +134,10 @@ Each request is authenticated with JWT token.
     * [.renderPage(page, data)](#HttpServer+renderPage) ⇒ <code>string</code>
     * [.jwtVerify(req, res, next)](#HttpServer+jwtVerify)
     * [.runs(req, res)](#HttpServer+runs)
+    * [.saveSubscription(req, res)](#HttpServer+saveSubscription)
+    * [.updatePref(req, res)](#HttpServer+updatePref)
+    * [.getPref(req, res)](#HttpServer+getPref)
+    * [.deleteSubscription(req, res)](#HttpServer+deleteSubscription)
 
 <a name="new_HttpServer_new"></a>
 
@@ -113,26 +155,26 @@ Sets up the server, routes and binds HTTP and HTTPS sockets.
 ### httpServer.server ⇒ <code>object</code>
 HTTPs server getter.
 
-**Kind**: instance property of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance property of [<code>HttpServer</code>](#HttpServer)  
 **Returns**: <code>object</code> - - HTTPs server  
 <a name="HttpServer+specifyRoutes"></a>
 
 ### httpServer.specifyRoutes()
 Specified routes and their callbacks.
 
-**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
 <a name="HttpServer+enableHttpRedirect"></a>
 
 ### httpServer.enableHttpRedirect()
 Redirects HTTP to HTTPS.
 
-**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
 <a name="HttpServer+oAuthAuthorize"></a>
 
 ### httpServer.oAuthAuthorize(res)
 OAuth redirection.
 
-**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -143,7 +185,7 @@ OAuth redirection.
 ### httpServer.oAuthCallback(req, res)
 OAuth callback if authentication succeeds.
 
-**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -155,7 +197,7 @@ OAuth callback if authentication succeeds.
 ### httpServer.renderPage(page, data) ⇒ <code>string</code>
 Renders template using Mustache engine.
 
-**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
 **Returns**: <code>string</code> - - HTML page  
 
 | Param | Type | Description |
@@ -168,7 +210,7 @@ Renders template using Mustache engine.
 ### httpServer.jwtVerify(req, res, next)
 Verifies JWT token synchronously.
 
-**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
 **Todo**
 
 - [ ] use promises or generators to call it asynchronously!
@@ -186,12 +228,62 @@ Verifies JWT token synchronously.
 For the test purposes.
 Simply returns JSON encoded fixed run number.
 
-**Kind**: instance method of <code>[HttpServer](#HttpServer)</code>  
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | req | <code>object</code> | HTTP request |
 | res | <code>object</code> | HTTP response |
+
+<a name="HttpServer+saveSubscription"></a>
+
+### httpServer.saveSubscription(req, res)
+Receives User Subscription object from 'web-push' server
+and saves it to Database
+
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | request object |
+| res | <code>object</code> | response object |
+
+<a name="HttpServer+updatePref"></a>
+
+### httpServer.updatePref(req, res)
+Receives User Notification Preferences and updates it in Database
+
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | request object |
+| res | <code>object</code> | response object |
+
+<a name="HttpServer+getPref"></a>
+
+### httpServer.getPref(req, res)
+Gets User Notification Preferences from Database
+and passes it to browser
+
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | request object |
+| res | <code>object</code> | response object |
+
+<a name="HttpServer+deleteSubscription"></a>
+
+### httpServer.deleteSubscription(req, res)
+Deletes user subscription from database
+
+**Kind**: instance method of [<code>HttpServer</code>](#HttpServer)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | request object |
+| res | <code>object</code> | response object |
 
 <a name="JwtToken"></a>
 
@@ -223,7 +315,7 @@ Stores secret
 Generates encrypted token with user id and access level.
 Sets expiration time and sings it using secret.
 
-**Kind**: instance method of <code>[JwtToken](#JwtToken)</code>  
+**Kind**: instance method of [<code>JwtToken</code>](#JwtToken)  
 **Returns**: <code>object</code> - generated token  
 
 | Param | Type | Description |
@@ -241,7 +333,7 @@ It skips expiration check and verifies (already expired) token based on maxAge p
 Then it creates a new token using parameters of the old one and ships it to the user.
 If maxAge timeouts, the user needs to re-login via OAuth.
 
-**Kind**: instance method of <code>[JwtToken](#JwtToken)</code>  
+**Kind**: instance method of [<code>JwtToken</code>](#JwtToken)  
 **Returns**: <code>object</code> - new token or false in case of failure  
 
 | Param | Type | Description |
@@ -253,7 +345,7 @@ If maxAge timeouts, the user needs to re-login via OAuth.
 ### jwtToken.verify(token) ⇒ <code>object</code>
 Decrypts user token to verify that is vaild.
 
-**Kind**: instance method of <code>[JwtToken](#JwtToken)</code>  
+**Kind**: instance method of [<code>JwtToken</code>](#JwtToken)  
 **Returns**: <code>object</code> - whether operation was successful, if so decoded data are passed as well  
 
 | Param | Type | Description |
@@ -287,7 +379,7 @@ Initialized member variables
 Processes "lock-*" commands.
 Ensures that singe user to holds the lock.
 
-**Kind**: instance method of <code>[Padlock](#Padlock)</code>  
+**Kind**: instance method of [<code>Padlock</code>](#Padlock)  
 **Returns**: <code>object</code> - - JSON message  
 
 | Param | Type | Description |
@@ -300,7 +392,7 @@ Ensures that singe user to holds the lock.
 ### padlock.isHoldingLock(id) ⇒ <code>bool</code>
 Checks whether user with given id holds the lock.
 
-**Kind**: instance method of <code>[Padlock](#Padlock)</code>  
+**Kind**: instance method of [<code>Padlock</code>](#Padlock)  
 **Returns**: <code>bool</code> - true if user holods the lock, false otherwise  
 
 | Param | Type | Description |
@@ -312,7 +404,7 @@ Checks whether user with given id holds the lock.
 ### padlock.lock(id) ⇒ <code>bool</code>
 Sets the lock ownership to given user.
 
-**Kind**: instance method of <code>[Padlock](#Padlock)</code>  
+**Kind**: instance method of [<code>Padlock</code>](#Padlock)  
 **Returns**: <code>bool</code> - true if succeeds, false otherwise  
 
 | Param | Type | Description |
@@ -324,7 +416,7 @@ Sets the lock ownership to given user.
 ### padlock.unlock(id) ⇒ <code>bool</code>
 Removes lock  ownership from current holder.
 
-**Kind**: instance method of <code>[Padlock](#Padlock)</code>  
+**Kind**: instance method of [<code>Padlock</code>](#Padlock)  
 **Returns**: <code>bool</code> - true if succeeds, false otherwise  
 
 | Param | Type | Description |
@@ -365,36 +457,36 @@ Sets initial variables.
 <a name="Response+getcode"></a>
 
 ### response.getcode ⇒ <code>number</code>
-**Kind**: instance property of <code>[Response](#Response)</code>  
+**Kind**: instance property of [<code>Response</code>](#Response)  
 **Returns**: <code>number</code> - code  
 <a name="Response+getcommand"></a>
 
 ### response.getcommand ⇒ <code>string</code>
-**Kind**: instance property of <code>[Response](#Response)</code>  
+**Kind**: instance property of [<code>Response</code>](#Response)  
 **Returns**: <code>string</code> - command  
 <a name="Response+getbroadcast"></a>
 
 ### response.getbroadcast ⇒ <code>bool</code>
-**Kind**: instance property of <code>[Response](#Response)</code>  
+**Kind**: instance property of [<code>Response</code>](#Response)  
 **Returns**: <code>bool</code> - broadcast flag  
 <a name="Response+getpayload"></a>
 
 ### response.getpayload ⇒ <code>object</code>
-**Kind**: instance property of <code>[Response](#Response)</code>  
+**Kind**: instance property of [<code>Response</code>](#Response)  
 **Returns**: <code>object</code> - payload  
 <a name="Response+json"></a>
 
 ### response.json ⇒ <code>object</code>
 Formats the reponse to object that is ready to be formatted into JSON.
 
-**Kind**: instance property of <code>[Response](#Response)</code>  
+**Kind**: instance property of [<code>Response</code>](#Response)  
 **Returns**: <code>object</code> - response  
 <a name="Response+_message"></a>
 
 ### response._message(code) ⇒ <code>string</code>
 Provides HTTP message based on code.
 
-**Kind**: instance method of <code>[Response](#Response)</code>  
+**Kind**: instance method of [<code>Response</code>](#Response)  
 **Returns**: <code>string</code> - message for given code  
 
 | Param | Type |
@@ -406,7 +498,7 @@ Provides HTTP message based on code.
 ### response.command(command) ⇒ <code>object</code>
 Command setter.
 
-**Kind**: instance method of <code>[Response](#Response)</code>  
+**Kind**: instance method of [<code>Response</code>](#Response)  
 **Returns**: <code>object</code> - 'this' to allow function call chaining  
 
 | Param | Type | Description |
@@ -418,14 +510,14 @@ Command setter.
 ### response.broadcast() ⇒ <code>object</code>
 Set broadcast flag to true.
 
-**Kind**: instance method of <code>[Response](#Response)</code>  
+**Kind**: instance method of [<code>Response</code>](#Response)  
 **Returns**: <code>object</code> - 'this' to allow function call chaining  
 <a name="Response+payload"></a>
 
 ### response.payload(payload) ⇒ <code>object</code>
 Payload setter.
 
-**Kind**: instance method of <code>[Response](#Response)</code>  
+**Kind**: instance method of [<code>Response</code>](#Response)  
 **Returns**: <code>object</code> - 'this' to allow function call chaining  
 
 | Param | Type |
@@ -445,7 +537,7 @@ In addition, it provides custom authentication with JWT tokens.
     * [new WebSocket(httpsServer)](#new_WebSocket_new)
     * [.onmessage(message)](#WebSocket+onmessage) ⇒ <code>object</code>
     * [.jwtVerify(token, refresh)](#WebSocket+jwtVerify) ⇒ <code>object</code>
-    * [.onconnection(client)](#WebSocket+onconnection)
+    * [.onconnection(client, request)](#WebSocket+onconnection)
     * [.onclose(client)](#WebSocket+onclose)
     * [.broadcast(message)](#WebSocket+broadcast)
 
@@ -464,7 +556,7 @@ Starts up the server and binds event handler.
 ### webSocket.onmessage(message) ⇒ <code>object</code>
 Handles incoming text messages: verifies token and processes request/command.
 
-**Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
+**Kind**: instance method of [<code>WebSocket</code>](#WebSocket)  
 **Returns**: <code>object</code> - message to be send back to the user  
 
 | Param | Type |
@@ -476,7 +568,7 @@ Handles incoming text messages: verifies token and processes request/command.
 ### webSocket.jwtVerify(token, refresh) ⇒ <code>object</code>
 Verifies token, if expired requests a new one.
 
-**Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
+**Kind**: instance method of [<code>WebSocket</code>](#WebSocket)  
 **Returns**: <code>object</code> - includes either parsed token or response message  
 
 | Param | Type | Default | Description |
@@ -486,21 +578,22 @@ Verifies token, if expired requests a new one.
 
 <a name="WebSocket+onconnection"></a>
 
-### webSocket.onconnection(client)
+### webSocket.onconnection(client, request)
 Handles client connection and message receiving.
 
-**Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
+**Kind**: instance method of [<code>WebSocket</code>](#WebSocket)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | client | <code>object</code> | connected client |
+| request | <code>object</code> | connection request (new in v3.0.0, client.upgradeReq replacement) |
 
 <a name="WebSocket+onclose"></a>
 
 ### webSocket.onclose(client)
 Handles client disconnection.
 
-**Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
+**Kind**: instance method of [<code>WebSocket</code>](#WebSocket)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -511,7 +604,7 @@ Handles client disconnection.
 ### webSocket.broadcast(message)
 Broadcasts the message to all connected clients.
 
-**Kind**: instance method of <code>[WebSocket](#WebSocket)</code>  
+**Kind**: instance method of [<code>WebSocket</code>](#WebSocket)  
 
 | Param | Type |
 | --- | --- |
@@ -550,7 +643,7 @@ Connects to ZeroMQ socket and binds class methods to ZeroMQ events.
 ### zeroMQClient.connect(endpoint)
 On-connect event handler.
 
-**Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
+**Kind**: instance method of [<code>ZeroMQClient</code>](#ZeroMQClient)  
 
 | Param | Type |
 | --- | --- |
@@ -561,7 +654,7 @@ On-connect event handler.
 ### zeroMQClient.disconnect(endpoint)
 On-disconnect event handler.
 
-**Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
+**Kind**: instance method of [<code>ZeroMQClient</code>](#ZeroMQClient)  
 
 | Param | Type |
 | --- | --- |
@@ -572,7 +665,7 @@ On-disconnect event handler.
 ### zeroMQClient.onmessage(message)
 On-message event handler.
 
-**Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
+**Kind**: instance method of [<code>ZeroMQClient</code>](#ZeroMQClient)  
 
 | Param | Type |
 | --- | --- |
@@ -583,9 +676,103 @@ On-message event handler.
 ### zeroMQClient.send(message)
 Sends message via socket.
 
-**Kind**: instance method of <code>[ZeroMQClient](#ZeroMQClient)</code>  
+**Kind**: instance method of [<code>ZeroMQClient</code>](#ZeroMQClient)  
 
 | Param | Type |
 | --- | --- |
 | message | <code>string</code> | 
 
+<a name="_clear"></a>
+
+## _clear()
+Clear all classes from the element, sets back default color
+
+**Kind**: global function  
+<a name="lock"></a>
+
+## lock(id)
+Sets icon to locked, stored the id
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>number</code> | person ID |
+
+<a name="unlock"></a>
+
+## unlock()
+Sets icon to unlocked
+
+**Kind**: global function  
+<a name="_create"></a>
+
+## _create()
+Create widget instance
+
+**Kind**: global function  
+<a name="_connect"></a>
+
+## _connect()
+Connect to Websocket endpoint and specyfies WebSocket event listeners
+
+**Kind**: global function  
+<a name="send"></a>
+
+## send(message)
+Send message to WebSocket server
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| message | <code>object</code> | message to be sent |
+
+<a name="triggerPushMsg"></a>
+
+## triggerPushMsg(subscription, dataToSend) ⇒ <code>promise</code>
+Sends push notifications to subscribed users
+
+**Kind**: global function  
+**Returns**: <code>promise</code> - webpush.sendNotification - Sends Notification  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| subscription | <code>object</code> | Subscription object with user endpoint |
+| dataToSend | <code>string</code> | String message to be sent in notification |
+
+<a name="deleteSubscriptionFromDatabase"></a>
+
+## deleteSubscriptionFromDatabase(endpoint) ⇒ <code>promise</code>
+Deletes user subscriptions from Database
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| endpoint | <code>string</code> | URL to identify each user |
+
+<a name="getSubscriptions"></a>
+
+## getSubscriptions() ⇒ <code>promise</code>
+Fetches subscriptions from Database
+
+**Kind**: global function  
+<a name="formatSubscription"></a>
+
+## formatSubscription(sub) ⇒ <code>object</code>
+Formats the subscription to a suitable format to be sent to 'web-push' server
+
+**Kind**: global function  
+**Returns**: <code>object</code> - formattedSubscription - Subscription object reformatted  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sub | <code>object</code> | Subscription object fetched from Database |
+
+<a name="sendNotif"></a>
+
+## sendNotif() ⇒ <code>promise</code>
+Fetches subscriptions from db then verifies them and sends notifications.
+
+**Kind**: global function  
