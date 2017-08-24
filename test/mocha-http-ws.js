@@ -4,6 +4,7 @@ const app = express();
 const config = require('./../config.json');
 const JwtToken = require('./../jwt/token.js');
 const chai = require('chai');
+const expect = chai.expect;
 const chaiHttp = require('chai-http');
 const fs = require('fs');
 const credentials = {
@@ -55,5 +56,111 @@ describe('websocket', () => {
     connection.on('close', () => {
       throw new Error('disconnected from ws server');
     });
+  });
+});
+
+describe('save-subscription', () => {
+  it('should throw error because save request does not have endpoint', () => {
+    chai.request(http.httpsServer)
+      .post('/api/save-subscription')
+      .query({token: token})
+      .send({
+        key: 'hello'
+      })
+      .end((err, res) => {
+        assert.equal(res.body.error.message, 'Subscription must have an endpoint.');
+      });
+  });
+
+  it('should save subscription', () => {
+    chai.request(http.httpsServer)
+      .post('/api/save-subscription')
+      .query({token: token})
+      .send({
+        endpoint: 'hello',
+        keys: {
+          auth: 'test',
+          p256dh: 'test'
+        }
+      })
+      .end((err, res) => {
+        assert.equal(res.body.data.success, true);
+      });
+  });
+});
+
+describe('update-preferences', () => {
+  // it('should throw error because save request is invalid', (done) => {
+  //   chai.request(http.httpsServer)
+  //   .post('/api/update-preferences')
+  //   .query({token: token})
+  //   .send({
+  //     endpoint: undefined,
+  //     preferences: undefined
+  //   })
+  //   .end((err, res) => {
+  //     assert.equal(err, true);
+  //   });
+  // });
+
+  it('should update preferences', () => {
+    chai.request(http.httpsServer)
+      .post('/api/update-preferences')
+      .query({token: token})
+      .send({
+        endpoint: 'hello',
+        preferences: '111'
+      })
+      .end((err, res) => {
+        assert.equal(res.body.data.success, true);
+      });
+  });
+});
+
+describe('get-preferences', () => {
+  // it('should throw error because save request is invalid', () => {
+  //   chai.request(http.httpsServer)
+  //     .post('/api/get-preferences')
+  //     .query({token: token})
+  //     .send({ key: 'hello'})
+  //     .end((err, res) => {
+  //       assert.equal(res.body.error.message, 'Subscription must have an endpoint.');
+  //   });
+  // });
+
+  it('should get preferences', () => {
+    chai.request(http.httpsServer)
+      .post('/api/get-preferences')
+      .query({token: token})
+      .send({
+        endpoint: 'hello'
+      })
+      .end((err, res) => {
+        expect(res.body).to.be.an('array');
+      });
+  });
+});
+
+describe('delete-subscription', () => {
+  // it('should throw error because save request is invalid', () => {
+  //   chai.request(http.httpsServer)
+  //     .post('/api/save-subscription')
+  //     .query({token: token})
+  //     .send({ key: 'hello'})
+  //     .end((err, res) => {
+  //       assert.equal(res.body.error.message, 'Subscription must have an endpoint.');
+  //   });
+  // });
+
+  it('should delete subscription', () => {
+    chai.request(http.httpsServer)
+      .post('/api/delete-subscription')
+      .query({token: token})
+      .send({
+        endpoint: 'hello'
+      })
+      .end((err, res) => {
+        assert.equal(res.body.data.success, true);
+      });
   });
 });
