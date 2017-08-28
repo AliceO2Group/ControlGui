@@ -4,9 +4,9 @@ $.widget('o2.pushNotification', {
   options: {
     applicationServerPublicKey: undefined,
     pushButton: undefined,
-    preferencesForm: undefined,
     result: undefined,
     jwtToken: undefined,
+    preferencesForm: undefined,
     preferenceOptionsSection: undefined,
     preferenceOptions: ['Type A', 'Type B', 'Type C'],
     // Change these options and the default value of 'preferences' in DB to modify the preferences
@@ -26,6 +26,13 @@ $.widget('o2.pushNotification', {
 
           this.options.swRegistration = swReg;
           this.initialiseUI();
+
+
+          this.options.preferencesForm.on('submit', (event) => {
+            this.updateSubscriptionPreferences(event);
+          });
+
+          this.generatePreferencesOptions();
         })
         .catch(function(error) {
           // console.error('Service Worker Error', error);
@@ -33,13 +40,10 @@ $.widget('o2.pushNotification', {
     } else {
       // console.warn('Push messaging is not supported');
       this.options.pushButton.text('Push Not Supported');
+      this.options.pushButton.css('display', 'none');
+
+      return;
     }
-
-    this.options.preferencesForm.on('submit', (event) => {
-      this.updateSubscriptionPreferences(event);
-    });
-
-    this.generatePreferencesOptions();
 
     if (Notification.permission === 'denied') {
       if (this.options.swRegistration != undefined) {
@@ -79,6 +83,17 @@ $.widget('o2.pushNotification', {
       });
   },
 
+  // The preferences options on the web page are generated dynamically from this function
+  generatePreferencesOptions: function() {
+    let prefOptionsHTML = '';
+    for (let i = 1; i <= this.options.preferenceOptions.length; i++) {
+      prefOptionsHTML += '<input type="checkbox" id="type' + i +'">'
+        + '<label for="type' + i + '">' + this.options.preferenceOptions[i-1] + '</label><br><br>';
+    }
+
+    this.options.preferenceOptionsSection.html(prefOptionsHTML);
+  },
+
   // Updates the button according to user subscribed or not
   updateBtn: function() {
     if (Notification.permission === 'denied') {
@@ -94,17 +109,6 @@ $.widget('o2.pushNotification', {
     }
 
     this.options.pushButton.prop('disabled', false);
-  },
-
-  // The preferences options on the web page are generated dynamically from this function
-  generatePreferencesOptions: function() {
-    let prefOptionsHTML = '';
-    for (let i = 1; i <= this.options.preferenceOptions.length; i++) {
-      prefOptionsHTML += '<input type="checkbox" id="type' + i +'">'
-        + '<label for="type' + i + '">' + this.options.preferenceOptions[i-1] + '</label><br><br>';
-    }
-
-    this.options.preferenceOptionsSection.html(prefOptionsHTML);
   },
 
   // Subscribes the user
@@ -239,6 +243,8 @@ $.widget('o2.pushNotification', {
       });
   },
 
+  // Gets current user preferences from the database and 
+  // updates the preferences form according to them.
   getPreferences: function() {
     this.options.swRegistration.pushManager.getSubscription()
       .then((subscription) => {

@@ -3,6 +3,7 @@ const argv = require('yargs').argv;
 const mysql = require('mysql');
 const config = require('./../config.json');
 const log = require('./../log.js');
+const apn = require('apn');
 const con = mysql.createConnection({
   host: config.pushNotifications.host,
   user: config.pushNotifications.user,
@@ -90,7 +91,24 @@ function deleteSubscriptionFromDatabase(endpoint) {
  * @return {promise}
  */
 function getSubscriptions() {
-  let sql = 'SELECT * FROM subscriptions';
+  let sql = 'SELECT * FROM subscriptions WHERE deviceToken IS NULL';
+
+  return new Promise(function(resolve, reject) {
+    con.query(sql, function(err, result) {
+      if (err) {
+        throw reject(err);
+      }
+      resolve(result);
+    });
+  });
+}
+
+/**
+ * Fetches APN subscriptions from Database
+ * @return {promise}
+ */
+function getAPNSubscriptions() {
+  let sql = 'SELECT * FROM subscriptions WHERE endpoint IS NULL';
 
   return new Promise(function(resolve, reject) {
     con.query(sql, function(err, result) {
@@ -151,10 +169,67 @@ function sendNotif() {
       return promiseChain;
     })
     .then(() => {
+      sendAPNNotif();
+    })
+    .catch(function(err) {
+      throw err;
+    });
+}
+
+/**
+ * Fetches APN subscriptions from db then verifies them and sends notifications.
+ * @return {promise}
+ */
+function sendAPNNotif() {
+  const type = argv.type;
+  let options = {
+    token: {
+      key: 'APNsAuthKey_M6F56D7FRJ.p8',
+      keyId: config.pushNotifications.APNKeyId,
+      teamId: config.pushNotifications.APNTeamId
+    },
+    production: true
+  };
+  let apnProvider = new apn.Provider(options);
+  let note = new apn.Notification();
+
+  note.expiry = Math.floor(Date.now() / 1000) + 3600;
+  note.badge = 3;
+  note.sound = 'ping.aiff';
+  note.payload = {
+    from: 'AliceO2 Control'
+  };
+  note.urlArgs = [];
+  note.body = argv.message;
+  note.title = argv.title;
+  note.topic = 'web.ch.cern.anirudh';
+
+  return getAPNSubscriptions()
+    .then(function(subscriptions) {
+      let promiseChain = Promise.resolve();
+
+      for (let i = 0; i < subscriptions.length; i++) {
+        let subscription = subscriptions[i];
+
+        let pref = subscription.preferences.split('');
+        let deviceToken = subscription.deviceToken;
+
+        if (pref[type - 1] == 1) {
+          promiseChain = promiseChain.then(() => {
+            return apnProvider.send(note, deviceToken);
+          });
+        }
+      }
+
+      return promiseChain;
+    })
+    .then(() => {
+      apnProvider.shutdown();
       con.end();
     })
     .catch(function(err) {
       throw err;
     });
 }
+
 sendNotif();

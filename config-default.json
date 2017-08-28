@@ -49,6 +49,8 @@
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": "notifications"
+    "database": "notifications",
+    "APNKeyId": "<APN Key ID>",
+    "APNTeamId": "<APN Team ID>"
   }
 }

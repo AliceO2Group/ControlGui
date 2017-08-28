@@ -19,6 +19,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "apn": "^2.1.5",
     "body-parser": "^1.17.2",
     "chai-as-promised": "^7.1.1",
     "express": "^4.15.2",

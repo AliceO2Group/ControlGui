@@ -82,6 +82,14 @@ class HttpServer {
     this.app.use(bodyParser.json());
 
     this.app.get('/', (req, res) => this.oAuthAuthorize(res));
+    this.app.post('/v1/pushPackages/web.ch.cern.anirudh', (req, res) => this.safariPermission(res));
+    this.app.post('/v1/devices/:deviceToken/registrations/:websitePushID',
+      (req, res) => this.safariSubscribe(req, res));
+    this.app.delete('/v1/devices/:deviceToken/registrations/:websitePushID',
+      (req, res) => this.safariUnsubscribe(req, res));
+    this.app.post('/v1/log', (req, res) => log.debug(req.body));
+
+
     this.app.use(express.static('public'));
     this.app.use('/jquery', express.static(path.join(__dirname, '../node_modules/jquery/dist')));
     this.app.use('/jquery-ui', express.static(
@@ -95,7 +103,9 @@ class HttpServer {
     this.router.use('/runs', this.runs);
     this.router.post('/save-subscription', this.saveSubscription);
     this.router.post('/update-preferences', this.updatePref);
+    this.router.post('/update-preferences-safari', this.updatePrefSafari);
     this.router.post('/get-preferences', this.getPref);
+    this.router.post('/get-preferences-safari', this.getPrefSafari);
     this.router.post('/delete-subscription', this.deleteSubscription);
   }
 
@@ -254,6 +264,91 @@ class HttpServer {
    */
   deleteSubscription(req, res) {
     db.deleteSubscription(req.body.endpoint)
+      .then(function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({data: {success: true}}));
+      })
+      .catch(function(err) {
+        res.send(err);
+      });
+  }
+
+  /**
+   * When the user clicks on 'Allow' in notification prompt box,
+   * a call is made to this function to receive a zipped push package.
+   * @param {object} res - response object
+   */
+  safariPermission(res) {
+    log.info(path.resolve('./pushpackage.zip'));
+    res.sendFile(path.resolve('./pushpackage.zip'));
+  }
+
+  /**
+   * Receives Device Token from APN server
+   * and saves it to Database
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  safariSubscribe(req, res) {
+    db.insertSubscriptionSafari(req.params.deviceToken)
+      .then(function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({data: {success: true}}));
+      })
+      .catch(function(err) {
+        res.status(500);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
+          error: {
+            id: 'unable-to-save-subscription',
+            message: 'The Safari subscription was received but' +
+            'we\'re unable to save it to our database.'
+          }
+        }));
+      });
+  }
+
+  /**
+   * When user removes/denies the notifications from Safari Preferences,
+   * a call to this function is made.
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  safariUnsubscribe(req, res) {
+    db.deleteSubscriptionSafari(req.params.deviceToken)
+      .then(function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({data: {success: true}}));
+      })
+      .catch(function(err) {
+        res.send(err);
+      });
+  }
+
+  /**
+   * Gets User Notification Preferences for APNs from Database
+   * and passes it to browser
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  getPrefSafari(req, res) {
+    db.getPreferencesSafari(req.body)
+      .then(function(preferences) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(preferences);
+      })
+      .catch(function(err) {
+        res.send(err);
+      });
+  }
+
+  /**
+   * Receives User APNs Notification Preferences and updates it in Database
+   * @param {object} req - request object
+   * @param {object} res - response object
+   */
+  updatePrefSafari(req, res) {
+    db.updatePreferencesSafari(req.body)
       .then(function() {
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify({data: {success: true}}));

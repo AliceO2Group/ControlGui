@@ -39,6 +39,7 @@ textarea {
 <script src="padlock.widget.js"></script>
 <script src="socketnotif.widget.js"></script>
 <script src="pushnotif.widget.js"></script>
+<script src="apn.widget.js"></script>
 <script>
 $(function() {
   /// instance of websocket widget
@@ -59,10 +60,18 @@ $(function() {
   var pushNotif = $.o2.pushNotification({
     applicationServerPublicKey: '{{applicationServerPublicKey}}',
     pushButton: $('.js-push-btn'),
-    preferencesForm: $('.preferences-form'),
-    preferenceOptionsSection: $('#preferenceOptions'),
     result: $('.result'),
-    jwtToken: '{{token}}'
+    jwtToken: '{{token}}',
+    preferencesForm: $('.preferences-form'),
+    preferenceOptionsSection: $('#preferenceOptions')
+  });
+
+  var apn = $.o2.apn({
+    pushButton: $('#safariSubscribe'),
+    result: $('.result'),
+    jwtToken: '{{token}}',
+    preferencesForm: $('.preferences-form'),
+    preferenceOptionsSection: $('#preferenceOptions')
   });
 
   $('#ws').bind('websocketlock-get', function(evt, data) {
@@ -126,6 +135,9 @@ $(function() {
   <button disabled class="js-push-btn ui-button ui-corner-all ui-widget">
     Enable Push Messaging
   </button>
+  <button disabled id="safariSubscribe" class="ui-button ui-corner-all ui-widget">
+    Enable Push Messaging
+  </button>
 </p>
 <br>
 <form class="is-invisible preferences-form">
@@ -137,4 +149,3 @@ $(function() {
 <div class="result"></div>
 </body>
 </html>
-
