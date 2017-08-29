@@ -4,7 +4,6 @@ const url = require('url');
 const config = require('./../config.json');
 const log = require('./../log.js');
 const JwtToken = require('./../jwt/token.js');
-const Padlock = require('./padlock.js');
 const Response = require('./response.js');
 
 /**
@@ -23,8 +22,21 @@ class WebSocket extends EventEmitter {
     this.jwt = new JwtToken(config.jwt);
     this.server = new WebSocketServer({server: httpsServer, clientTracking: true});
     this.server.on('connection', (client, request) => this.onconnection(client, request));
-    this.padlock = new Padlock();
     log.debug('WebSocket server started');
+    this.callbackArray = [];
+  }
+
+  /**
+   * Binds callback to websocket message (depending on message name)
+   * Message as an Object is passed to the callback
+   * @param {string} name - websocket message name
+   * @param {function} callback - callback function
+   */
+  bind(name, callback) {
+    if (typeof this.callbackArray[name] !== 'undefined') {
+      throw Error('WebSocket callback already exists.');
+    }
+    this.callbackArray[name] = callback;
   }
 
   /**
@@ -44,28 +56,14 @@ class WebSocket extends EventEmitter {
       responseArray.push(feedback);
       feedback = this.jwtVerify(feedback.getpayload.newtoken);
     }
-    const id = feedback.id;
+    message.id = feedback.id;
 
-    log.debug('%d : command %s', id, message.command);
-
-    switch (message.command.split('-')[0]) {
-      case 'lock':
-        responseArray.push(this.padlock.check(message.command, id));
-        break;
-      case 'test':
-        this.emit('textmessage', JSON.stringify(message));
-        responseArray.push(new Response(202));
-        break;
-      case 'execute':
-        if (this.padlock.isHoldingLock(id)) {
-          this.emit('textmessage', JSON.stringify(message));
-          responseArray.push(new Response(202));
-        } else {
-          responseArray.push(new Response(403));
-        }
-        break;
-      default:
-        responseArray.push(new Response(404));
+    log.debug('%d : command %s', message.id, message.command);
+    if (typeof this.callbackArray[message.command] !== 'undefined') {
+      const response = this.callbackArray[message.command](message);
+      responseArray.push(response);
+    } else {
+      responseArray.push(new Response(404));
     }
     return responseArray;
   }

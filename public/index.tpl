@@ -85,7 +85,7 @@ $(function() {
   });
 
   $('#ws').bind('websocketlock-check', function(evt, data) {
-    if (data.locked) padlock.taken();
+  if (data.payload.locked) padlock.lock(data.payload.id);
     else padlock.unlock();
   });
  

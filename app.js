@@ -16,10 +16,20 @@ const zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, 'r
 const http = new HttpServer(credentials, app);
 const websocketServer = new WebSocket(http.server);
 
-zmqSub.on('message', function(message) {
-  websocketServer.broadcast(message);
+const Padlock = require('./padlock.js');
+const padlock = new Padlock();
+websocketServer.bind('lock-release', (message) => padlock.check(message));
+websocketServer.bind('lock-get', (message) => padlock.get(message));
+websocketServer.bind('lock-check', (message) => padlock.release(message));
+websocketServer.bind('execute', (request) => {
+  if (padlock.isHoldingLock(request.id)) {
+    zmqReq.send(request);
+    return new Response(202);
+  } else {
+    return new Response(403);
+  }
 });
 
-websocketServer.on('textmessage', function(message) {
-  zmqReq.send(message);
+zmqSub.on('message', function(message) {
+  websocketServer.broadcast(message);
 });

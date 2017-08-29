@@ -22,14 +22,12 @@ $(function() {
 
     padlock.lock(id);
     assert.equal($('#padlock').attr("class"), "ui-icon ui-icon-locked", "lock css style");
-    assert.equal($('#padlock').css("color"), "rgb(0, 0, 0)", "lock fill color");
 
     padlock.unlock();
     assert.equal($('#padlock').attr("class"), "ui-icon ui-icon-unlocked", "unlock css style");
 
     padlock.lock(id + 1);
     assert.equal($('#padlock').attr("class"), "ui-icon ui-icon-locked", "lock css style");
-    assert.equal($('#padlock').css("color"), "rgb(255, 0, 0)", "lock fill color");
   });
 });
 </script>

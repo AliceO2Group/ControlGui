@@ -24,7 +24,7 @@ $.widget('o2.padlock', {
   lock: function(id) {
     this._clear();
     if (this.options.id != id) {
-      this.element.css('color', 'red');
+      // console.log('Locked by other user', id);
     }
     this.options.locked = true;
     this._addClass('ui-icon-locked');
