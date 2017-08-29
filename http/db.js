@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const config = require('./../config.json');
 const log = require('./../log.js');
 
-const con = mysql.createConnection({
+const connection = mysql.createConnection({
   host: config.pushNotifications.host,
   user: config.pushNotifications.user,
   password: config.pushNotifications.password,
@@ -10,7 +10,10 @@ const con = mysql.createConnection({
 });
 
 /**
- * Database Module containing all Database related functions
+ * Database Module containing functions for-
+ * Insertion and Deletion of Subscriptions for both, APN and other browsers
+ * Updating User Notification Preferences
+ * Fetching User Notification Preferences
  * @author Anirudh Goel <anirudh.goel@cern.ch>
  */
 class Database {
@@ -18,7 +21,7 @@ class Database {
    * Establishes connections with MySQL Database
    */
   constructor() {
-    con.connect(function(err) {
+    connection.connect(function(err) {
       if (err) {
         throw err;
       }
@@ -44,7 +47,7 @@ class Database {
     let sql = 'INSERT INTO subscriptions (endpoint, auth_key, p256dh_key) VALUES (?, ?, ?)';
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [endpoint, authKey, p256dhKey], function(err, result) {
+      connection.query(sql, [endpoint, authKey, p256dhKey], function(err, result) {
         if (err) {
           throw reject(err);
         }
@@ -67,7 +70,7 @@ class Database {
     }
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [endpoint], function(err, result) {
+      connection.query(sql, [endpoint], function(err, result) {
         if (err) {
           throw reject(err);
         }
@@ -93,7 +96,7 @@ class Database {
     let sql = 'UPDATE subscriptions SET preferences = ? WHERE endpoint = ?';
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [preferences, endpoint], function(err, result) {
+      connection.query(sql, [preferences, endpoint], function(err, result) {
         if (err) {
           throw reject(err);
         }
@@ -121,7 +124,7 @@ class Database {
     let sql = 'SELECT preferences FROM subscriptions WHERE endpoint = ?';
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [endpoint], function(err, result) {
+      connection.query(sql, [endpoint], function(err, result) {
         if (err) {
           throw reject(err);
         }
@@ -143,7 +146,7 @@ class Database {
     let sql = 'INSERT INTO subscriptions (deviceToken) VALUES (?)';
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [deviceToken], function(err, result) {
+      connection.query(sql, [deviceToken], function(err, result) {
         if (err) {
           throw reject(err);
         }
@@ -166,7 +169,7 @@ class Database {
     let sql = 'DELETE FROM subscriptions WHERE deviceToken = ?';
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [deviceToken], function(err, result) {
+      connection.query(sql, [deviceToken], function(err, result) {
         if (err) {
           throw reject(err);
         }
@@ -192,7 +195,7 @@ class Database {
     let sql = 'UPDATE subscriptions SET preferences = ? WHERE deviceToken = ?';
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [preferences, deviceToken], function(err, result) {
+      connection.query(sql, [preferences, deviceToken], function(err, result) {
         if (err) {
           throw reject(err);
         }
@@ -220,7 +223,7 @@ class Database {
     let sql = 'SELECT preferences FROM subscriptions WHERE deviceToken = ?';
 
     return new Promise(function(resolve, reject) {
-      con.query(sql, [deviceToken], function(err, result) {
+      connection.query(sql, [deviceToken], function(err, result) {
         if (err) {
           throw reject(err);
         }

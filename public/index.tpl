@@ -37,9 +37,9 @@ textarea {
 <script src="/jquery-ui/jquery-ui.js"></script>
 <script src="ws.widget.js"></script>
 <script src="padlock.widget.js"></script>
-<script src="socketnotif.widget.js"></script>
-<script src="pushnotif.widget.js"></script>
-<script src="apn.widget.js"></script>
+<script src="notification-ws.widget.js"></script>
+<script src="notification-settings.widget.js"></script>
+<script src="notification-apn.widget.js"></script>
 <script>
 $(function() {
   /// instance of websocket widget

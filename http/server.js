@@ -25,27 +25,10 @@ const vapidKeys = {
 };
 
 webpush.setVapidDetails(
-  'mailto: anirudh.goel@cern.ch',
+  'mailto: ' + config.pushNotifications.email,
   vapidKeys.publicKey,
   vapidKeys.privateKey
 );
-
-const isValidSaveRequest = (req, res) => {
-  // Check the request body has at least an endpoint.
-  if (!req.body || !req.body.endpoint) {
-    // Not a valid subscription.
-    res.status(400);
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({
-      error: {
-        id: 'no-endpoint',
-        message: 'Subscription must have an endpoint.'
-      }
-    }));
-    return false;
-  }
-  return true;
-};
 
 /**
  * HTTPS server that handles OAuth and provides REST API.
@@ -202,8 +185,16 @@ class HttpServer {
    * @param {object} res - response object
    */
   saveSubscription(req, res) {
-    if (!isValidSaveRequest(req, res)) {
-      res.send();
+    if (!req.body || !req.body.endpoint) {
+      // Not a valid subscription.
+      res.status(400);
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({
+        error: {
+          id: 'no-endpoint',
+          message: 'Subscription must have an endpoint.'
+        }
+      }));
       return;
     }
 

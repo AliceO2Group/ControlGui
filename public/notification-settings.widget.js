@@ -20,7 +20,7 @@ $.widget('o2.pushNotification', {
       // console.log('Service Worker and Push is supported');
 
 
-      navigator.serviceWorker.register('sw/sw.js')
+      navigator.serviceWorker.register('notification-vapid-sw.js')
         .then((swReg) => {
           // console.log('Service Worker is registered', swReg);
 

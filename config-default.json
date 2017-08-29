@@ -46,6 +46,7 @@
   "pushNotifications": {    
     "publicKey": "<application server public key>",
     "privateKey": "<application server private key>",
+    "email": "alice-o2-flp-prototype@cern.ch",
     "host": "localhost",
     "user": "root",
     "password": "",
