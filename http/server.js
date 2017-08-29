@@ -9,26 +9,10 @@ const log = require('./../log.js');
 const JwtToken = require('./../jwt/token.js');
 const OAuth = require('./oauth.js');
 
-const webpush = require('web-push');
-const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
-const Database = require('./db.js');
+const app = express();
 
-const db = new Database();
-
-app.use(express.static(path.join(__dirname, '')));
-
-const vapidKeys = {
-  publicKey: config.pushNotifications.vapid.publicKey,
-  privateKey: config.pushNotifications.vapid.privateKey
-};
-
-webpush.setVapidDetails(
-  'mailto: ' + config.pushNotifications.vapid.email,
-  vapidKeys.publicKey,
-  vapidKeys.privateKey
-);
 
 /**
  * HTTPS server that handles OAuth and provides REST API.
@@ -38,11 +22,10 @@ webpush.setVapidDetails(
 class HttpServer {
   /**
    * Sets up the server, routes and binds HTTP and HTTPS sockets.
-   * @param {object} credentials - private and public key file paths
    * @param {object} app
    */
-  constructor(credentials, app) {
-    this.app = app;
+  constructor() {
+    app.use(express.static(path.join(__dirname, '')));
 
     this.jwt = new JwtToken(config.jwt);
     this.oauth = new OAuth();
@@ -54,6 +37,10 @@ class HttpServer {
     http.createServer(app).listen(config.http.port);
 
     // HTTPS server
+    const credentials = {
+      key: fs.readFileSync(config.key),
+      cert: fs.readFileSync(config.cert)
+    };
     this.httpsServer = https.createServer(credentials, app);
     this.httpsServer.listen(config.http.portSecure);
   }
@@ -62,42 +49,50 @@ class HttpServer {
    * Specified routes and their callbacks.
    */
   specifyRoutes() {
-    this.app.use(bodyParser.json());
-
-    this.app.get('/', (req, res) => this.oAuthAuthorize(res));
-    this.app.post('/v1/pushPackages/' + config.pushNotifications.APN.pushId,
-      (req, res) => this.safariPermission(res));
-    this.app.post('/v1/devices/:deviceToken/registrations/:websitePushID',
-      (req, res) => this.safariSubscribe(req, res));
-    this.app.delete('/v1/devices/:deviceToken/registrations/:websitePushID',
-      (req, res) => this.safariUnsubscribe(req, res));
-    this.app.post('/v1/log', (req, res) => log.debug(req.body));
-
-
-    this.app.use(express.static('public'));
-    this.app.use('/jquery', express.static(path.join(__dirname, '../node_modules/jquery/dist')));
-    this.app.use('/jquery-ui', express.static(
+    app.use(bodyParser.json());
+    app.get('/', (req, res) => this.oAuthAuthorize(res));
+    app.use(express.static('public'));
+    app.use('/jquery', express.static(path.join(__dirname, '../node_modules/jquery/dist')));
+    app.use('/jquery-ui', express.static(
       path.join(__dirname, '../node_modules/jquery-ui-dist/')
     ));
-    this.app.get('/callback', (emitter, code) => this.oAuthCallback(emitter, code));
+    app.get('/callback', (emitter, code) => this.oAuthCallback(emitter, code));
     // eslint-disable-next-line
     this.router = express.Router();
     this.router.use((req, res, next) => this.jwtVerify(req, res, next));
-    this.app.use('/api', this.router);
+    app.use('/api', this.router);
     this.router.use('/runs', this.runs);
-    this.router.post('/save-subscription', this.saveSubscription);
-    this.router.post('/update-preferences', this.updatePref);
-    this.router.post('/update-preferences-safari', this.updatePrefSafari);
-    this.router.post('/get-preferences', this.getPref);
-    this.router.post('/get-preferences-safari', this.getPrefSafari);
-    this.router.post('/delete-subscription', this.deleteSubscription);
+  }
+
+  /** Adds POST route
+   * @param {string} path - path that the callback will be bound to
+   * @param {function} callback - function (that receives req and res parameters)
+   */
+  post(path, callback) {
+    this.router.post(path, callback);
+  }
+
+  /** Adds POST route without authentication
+   * @param {string} path - path that the callback will be bound to
+   * @param {function} callback - function (that receives req and res parameters)
+   */
+  postNoAuth(path, callback) {
+    app.post(path, callback);
+  }
+
+  /** Adds DELETE route without authentication
+   * @param {string} path - path that the callback will be bound to
+   * @param {function} callback - function (that receives req and res parameters)
+   */
+  deleteNoAuth(path, callback) {
+    app.delete(path, callback);
   }
 
   /**
    * Redirects HTTP to HTTPS.
    */
   enableHttpRedirect() {
-    this.app.use(function(req, res, next) {
+    app.use(function(req, res, next) {
       if (!req.secure) {
         return res.redirect('https://' + req.headers.host + req.url);
       }
@@ -126,7 +121,7 @@ class HttpServer {
       data.personid += Math.floor(Math.random() * 100);
       data.token = this.jwt.generateToken(data.personid, data.username, 1);
       data.websockethostname = config.websocket.hostname;
-      data.applicationServerPublicKey = vapidKeys.publicKey;
+      data.applicationServerPublicKey = config.pushNotifications.vapid.publicKey;
       data.pushId = config.pushNotifications.APN.pushId;
       return res.status(200).send(this.renderPage('public/index.tpl', data));
     }.bind(this));
@@ -178,177 +173,6 @@ class HttpServer {
    */
   runs(req, res) {
     res.json({run: 123});
-  }
-
-  /**
-   * Receives User Subscription object from 'web-push' server
-   * and saves it to Database
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  saveSubscription(req, res) {
-    if (!req.body || !req.body.endpoint) {
-      // Not a valid subscription.
-      res.status(400);
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify({
-        error: {
-          id: 'no-endpoint',
-          message: 'Subscription must have an endpoint.'
-        }
-      }));
-      return;
-    }
-
-    db.insertSubscription(req.body)
-      .then(function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({data: {success: true}}));
-      })
-      .catch(function(err) {
-        res.status(500);
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({
-          error: {
-            id: 'unable-to-save-subscription',
-            message: 'The subscription was received but we were unable to save it to our database.'
-          }
-        }));
-      });
-  }
-
-  /**
-   * Receives User Notification Preferences and updates it in Database
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  updatePref(req, res) {
-    db.updatePreferences(req.body)
-      .then(function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({data: {success: true}}));
-      })
-      .catch(function(err) {
-        res.send(err);
-      });
-  }
-
-  /**
-   * Gets User Notification Preferences from Database
-   * and passes it to browser
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  getPref(req, res) {
-    db.getPreferences(req.body)
-      .then(function(preferences) {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(preferences);
-      })
-      .catch(function(err) {
-        res.send(err);
-      });
-  }
-
-  /**
-   * Deletes user subscription from database
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  deleteSubscription(req, res) {
-    db.deleteSubscription(req.body.endpoint)
-      .then(function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({data: {success: true}}));
-      })
-      .catch(function(err) {
-        res.send(err);
-      });
-  }
-
-  /**
-   * When the user clicks on 'Allow' in notification prompt box,
-   * a call is made to this function to receive a zipped push package.
-   * @param {object} res - response object
-   */
-  safariPermission(res) {
-    log.info(path.resolve('./pushpackage.zip'));
-    res.sendFile(path.resolve('./pushpackage.zip'));
-  }
-
-  /**
-   * Receives Device Token from APN server
-   * and saves it to Database
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  safariSubscribe(req, res) {
-    db.insertSubscriptionSafari(req.params.deviceToken)
-      .then(function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({data: {success: true}}));
-      })
-      .catch(function(err) {
-        res.status(500);
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({
-          error: {
-            id: 'unable-to-save-subscription',
-            message: 'The Safari subscription was received but' +
-            'we\'re unable to save it to our database.'
-          }
-        }));
-      });
-  }
-
-  /**
-   * When user removes/denies the notifications from Safari Preferences,
-   * a call to this function is made.
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  safariUnsubscribe(req, res) {
-    db.deleteSubscriptionSafari(req.params.deviceToken)
-      .then(function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({data: {success: true}}));
-      })
-      .catch(function(err) {
-        res.send(err);
-      });
-  }
-
-  /**
-   * Gets User Notification Preferences for APNs from Database
-   * and passes it to browser
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  getPrefSafari(req, res) {
-    db.getPreferencesSafari(req.body)
-      .then(function(preferences) {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(preferences);
-      })
-      .catch(function(err) {
-        res.send(err);
-      });
-  }
-
-  /**
-   * Receives User APNs Notification Preferences and updates it in Database
-   * @param {object} req - request object
-   * @param {object} res - response object
-   */
-  updatePrefSafari(req, res) {
-    db.updatePreferencesSafari(req.body)
-      .then(function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({data: {success: true}}));
-      })
-      .catch(function(err) {
-        res.send(err);
-      });
   }
 }
 module.exports = HttpServer;
