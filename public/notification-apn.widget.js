@@ -5,7 +5,7 @@ $.widget('o2.apn', {
     jwtToken: undefined,
     preferencesForm: undefined,
     preferenceOptionsSection: undefined,
-    pushId: 'web.ch.cern.anirudh',
+    pushId: undefined,
     preferenceOptions: ['Type A', 'Type B', 'Type C'],
     // Change these options and the default value of 'preferences' in DB to modify the preferences
     isSubscribed: false

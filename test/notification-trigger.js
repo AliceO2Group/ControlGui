@@ -40,12 +40,12 @@ You can generate the VAPID keys by 2 methods
 (Use Chrome or Mozilla, not Safari)
 */
 const vapidKeys = {
-  publicKey: config.pushNotifications.publicKey,
-  privateKey: config.pushNotifications.privateKey
+  publicKey: config.pushNotifications.vapid.publicKey,
+  privateKey: config.pushNotifications.vapid.privateKey
 };
 
 webpush.setVapidDetails(
-  'mailto: alice-o2-flp-prototype@cern.ch',
+  'mailto: ' + config.pushNotifications.vapid.email,
   vapidKeys.publicKey,
   vapidKeys.privateKey
 );
@@ -185,8 +185,8 @@ function sendAPNNotif() {
   let options = {
     token: {
       key: 'APNsAuthKey_M6F56D7FRJ.p8',
-      keyId: config.pushNotifications.APNKeyId,
-      teamId: config.pushNotifications.APNTeamId
+      keyId: config.pushNotifications.APN.keyId,
+      teamId: config.pushNotifications.APN.teamId
     },
     production: true
   };
@@ -202,7 +202,7 @@ function sendAPNNotif() {
   note.urlArgs = [];
   note.body = argv.message;
   note.title = argv.title;
-  note.topic = 'web.ch.cern.anirudh';
+  note.topic = config.pushNotifications.APN.pushId;
 
   return getAPNSubscriptions()
     .then(function(subscriptions) {

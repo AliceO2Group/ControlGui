@@ -20,12 +20,12 @@ const db = new Database();
 app.use(express.static(path.join(__dirname, '')));
 
 const vapidKeys = {
-  publicKey: config.pushNotifications.publicKey,
-  privateKey: config.pushNotifications.privateKey
+  publicKey: config.pushNotifications.vapid.publicKey,
+  privateKey: config.pushNotifications.vapid.privateKey
 };
 
 webpush.setVapidDetails(
-  'mailto: ' + config.pushNotifications.email,
+  'mailto: ' + config.pushNotifications.vapid.email,
   vapidKeys.publicKey,
   vapidKeys.privateKey
 );
@@ -65,7 +65,8 @@ class HttpServer {
     this.app.use(bodyParser.json());
 
     this.app.get('/', (req, res) => this.oAuthAuthorize(res));
-    this.app.post('/v1/pushPackages/web.ch.cern.anirudh', (req, res) => this.safariPermission(res));
+    this.app.post('/v1/pushPackages/' + config.pushNotifications.APN.pushId,
+      (req, res) => this.safariPermission(res));
     this.app.post('/v1/devices/:deviceToken/registrations/:websitePushID',
       (req, res) => this.safariSubscribe(req, res));
     this.app.delete('/v1/devices/:deviceToken/registrations/:websitePushID',
@@ -126,6 +127,7 @@ class HttpServer {
       data.token = this.jwt.generateToken(data.personid, data.username, 1);
       data.websockethostname = config.websocket.hostname;
       data.applicationServerPublicKey = vapidKeys.publicKey;
+      data.pushId = config.pushNotifications.APN.pushId;
       return res.status(200).send(this.renderPage('public/index.tpl', data));
     }.bind(this));
   }

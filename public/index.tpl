@@ -71,7 +71,8 @@ $(function() {
     result: $('.result'),
     jwtToken: '{{token}}',
     preferencesForm: $('.preferences-form'),
-    preferenceOptionsSection: $('#preferenceOptions')
+    preferenceOptionsSection: $('#preferenceOptions'),
+    pushId: '{{pushId}}'
   });
 
   $('#ws').bind('websocketlock-get', function(evt, data) {
