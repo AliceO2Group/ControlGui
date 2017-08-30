@@ -6,6 +6,7 @@ $.widget('o2.apn', {
     preferencesForm: undefined,
     preferenceOptionsSection: undefined,
     pushId: undefined,
+    hostname: undefined,
     preferenceOptions: ['Type A', 'Type B', 'Type C'],
     // Change these options and the default value of 'preferences' in DB to modify the preferences
     isSubscribed: false
@@ -86,7 +87,7 @@ $.widget('o2.apn', {
     if (permissionData.permission === 'default') {
       // console.log("The user is making a decision");
       window.safari.pushNotification.requestPermission(
-        'https://pcald31.cern.ch',
+        this.options.hostname,
         this.options.pushId,
         {},
         (permissionData) => {

@@ -123,6 +123,7 @@ class HttpServer {
       data.websockethostname = config.websocket.hostname;
       data.applicationServerPublicKey = config.pushNotifications.vapid.publicKey;
       data.pushId = config.pushNotifications.APN.pushId;
+      data.hostname = config.pushNotifications.APN.hostname;
       return res.status(200).send(this.renderPage('public/index.tpl', data));
     }.bind(this));
   }

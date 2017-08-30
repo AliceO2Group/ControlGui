@@ -4,4 +4,4 @@ error.log
 npm-debug.log
 .DS_Store
 .nyc_output
-APNsAuthKey_M6F56D7FRJ.p8
+APNsAuthKey.p8

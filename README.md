@@ -41,6 +41,7 @@ The goal of Control GUI Prototype is to identify library and framework sets and 
       `preferences` varchar(20) NOT NULL DEFAULT '000'
     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
     ```
+5. For configuring Push Notifications for macOS, you need to generate some tokens and certificates. The steps for these are [specified here](docs/APNS.md).
 
 
 ### ZeroMQ custom installation
@@ -96,9 +97,16 @@ Replace *&lt;tags&gt;* with corresponding data:
 8. websocket
   * hostname - Websocket hostname
 9. pushNotifications
-  * publicKey - Application Server VAPID Public Key
-  * privateKey - Application Server VAPID Private key
-  (for steps to generate these keys, go to [Generating the VAPID keys](#generating-the-vapid-keys))
+  * vapid
+    * publicKey - Application Server VAPID Public Key
+    * privateKey - Application Server VAPID Private key
+    (for steps to generate these keys, go to [Generating the VAPID keys](#generating-the-vapid-keys))
+    * email - Email Id for VAPID Keys
+  * APN (for steps to obtain all these, go [here](docs/APNS.md))
+    * keyId - ID of the APN Authentication Token (obtained while creating the token)
+    * teamId - Your Apple Team ID (obtained from your [Apple Developer Account](https://developer.apple.com/account))
+    * pushId - 'Identifier' used while registering with Apple
+    * authenticationToken - APN Authentication Token `.p8` File
   * host - MySQL Host
   * user - MySQL User
   * password - MySQL Password
