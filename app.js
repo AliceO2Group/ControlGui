@@ -1,13 +1,17 @@
 const config = require('./config.json');
 
-const ZeroMQClient = require('./zeromq/client');
-const WebSocket = require('./websocket/server');
-const HttpServer = require('./http/server');
+const ZeroMQClient = require('@aliceo2/aliceo2-gui').ZeroMQClient;
+const HttpServer = require('@aliceo2/aliceo2-gui').HttpServer;
+const WebSocket = require('@aliceo2/aliceo2-gui').WebSocket;
+const Notifications = require('@aliceo2/aliceo2-gui').Notifications;
 
 const zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port, 'sub');
 const zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, 'req');
-const http = new HttpServer();
-const websocketServer = new WebSocket(http.server);
+
+const http = new HttpServer(config.http, config.jwt, config.oAuth);
+
+const websocketServer = new WebSocket(http.server, config.jwt);
+http.passToTemplate('websockethostname', 'pcald03.cern.ch');
 
 const Padlock = require('./padlock.js');
 const padlock = new Padlock();
@@ -27,7 +31,5 @@ websocketServer.bind('execute', (request) => {
 zmqSub.on('message', function(message) {
   websocketServer.broadcast(message);
 });
-
-const Notifications = require('./http/notifications.js');
 // eslint-disable-next-line
-const notifications = new Notifications(http);
+const notifications = new Notifications(http, config.pushNotifications);

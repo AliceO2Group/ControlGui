@@ -1,5 +1,5 @@
-const log = require('./log.js');
-const Response = require('./websocket/response.js');
+const log = require('@aliceo2/aliceo2-gui').Log;
+const Response = require('@aliceo2/aliceo2-gui').Response;
 
 /**
  * WebSocket module enforcing that only single user is allowed to execute commands at the time.

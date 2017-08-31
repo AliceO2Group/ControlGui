@@ -1,5 +1,5 @@
 {
-  "name": "o2-gui-prototype",
+  "name": "aliceo2-gui-control",
   "version": "1.0.0",
   "description": "Prototype of Control GUI",
   "main": "app.js",
@@ -9,37 +9,22 @@
     "coverage": "./node_modules/.bin/nyc ./node_modules/mocha/bin/mocha",
     "mocha": "./node_modules/.bin/mocha test/",
     "qunit": "./node_modules/.bin/phantomjs ./node_modules/qunit-phantomjs-runner/runner-list.js file://`pwd`/test/qunit-lock.html",
-    "eslint": "./node_modules/.bin/eslint ./*.js http/*.js jwt/*.js public/*.js websocket/*.js zeromq/*.js test/*.js",
-    "doc": "./node_modules/.bin/jsdoc2md --files ./*.js http/*.js jwt/*.js public/*.js websocket/*.js zeromq/*.js test/*.js > docs/API.md"
+    "eslint": "./node_modules/.bin/eslint ./*.js public/*.js test/*.js",
+    "doc": "./node_modules/.bin/jsdoc2md --files ./*.js public/*.js test/*.js > docs/API.md"
   },
   "author": "Adam Wegrzynek",
   "repository": {
     "type": "git",
     "url": "https://github.com/AliceO2Group/ControlGui"
   },
-  "license": "GPLv3",
+  "license": "GPL-3",
   "dependencies": {
-    "apn": "^2.1.5",
-    "body-parser": "^1.17.2",
-    "chai-as-promised": "^7.1.1",
-    "express": "^4.15.2",
-    "jquery": "^3.2.1",
-    "jquery-ui-dist": "^1.12.1",
-    "jsonwebtoken": "^7.4.3",
-    "mustache": "^2.3.0",
-    "mysql": "^2.13.0",
-    "passport": "^0.4.0",
-    "passport-saml": "^0.15.0",
-    "simple-oauth2": "^1.1.0",
-    "web-push": "^3.2.2",
-    "winston": "^2.3.1",
-    "ws": "^3.0.0",
-    "yargs": "^8.0.2",
-    "zeromq": "^4.3.0"
+    "@aliceo2/aliceo2-gui": "^1.0.12"
   },
   "devDependencies": {
     "chai": "^4.0.2",
     "chai-http": "^3.0.0",
+    "chai-as-promised": "^7.1.1",
     "eslint": "^4.5.0",
     "eslint-config-google": "^0.9.1",
     "jsdoc-to-markdown": "^3.0.0",
