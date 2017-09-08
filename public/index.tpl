@@ -44,9 +44,8 @@ textarea {
 $(function() {
   /// instance of websocket widget
   var ws = $.o2.websocket({
-    // pass url of websocket server
     url: 'wss://{{websockethostname}}',
-    // token, cernid, name and username are provided by CERN SSO
+    oauth: '{{oauth}}',
     token: '{{token}}',
     id: {{personid}},
   }, $('#ws') );
@@ -101,9 +100,6 @@ $(function() {
   });
   $('#ws').bind('websocketclose', function() {
     $('#overlay').css('visibility', 'visible');
-    const networkInterval = setInterval(function() {
-      window.location.href = location.protocol + '//' + location.host;
-    }, 2000);
   });
 
   $('#ws').bind('websocketnotification', function(evt, parsed) {

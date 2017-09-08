@@ -10,7 +10,7 @@ const zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, 'r
 
 const http = new HttpServer(config.http, config.jwt, config.oAuth);
 
-const websocketServer = new WebSocket(http.server, config.jwt);
+const websocketServer = new WebSocket(http, config.jwt);
 http.passToTemplate('websockethostname', 'pcald03.cern.ch');
 
 const Padlock = require('./padlock.js');
