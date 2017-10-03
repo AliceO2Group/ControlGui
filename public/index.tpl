@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" href="/jquery-ui/jquery-ui.css">
+<link rel="stylesheet" href="/libs/jquery-ui.css">
 <style>
 body {
   margin: 20px;
@@ -33,8 +33,8 @@ textarea {
   display: none;
 }
 </style>
-<script src="/jquery/jquery.js"></script>
-<script src="/jquery-ui/jquery-ui.js"></script>
+<script src="/libs/jquery.js"></script>
+<script src="/libs/jquery-ui.js"></script>
 <script src="ws.widget.js"></script>
 <script src="padlock.widget.js"></script>
 <script src="notification-ws.widget.js"></script>
@@ -92,6 +92,9 @@ $(function() {
  
   /// button listener - sends commands to server
   $('button').on('click', function() {
+    ws.setFilter(function(message) {
+      return (message.command != 'test');
+    });
     ws.send({command : this.id, value: Math.random()*100});
   });
 

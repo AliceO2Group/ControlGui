@@ -19,16 +19,16 @@
   },
   "license": "GPL-3",
   "dependencies": {
-    "@aliceo2/aliceo2-gui": "^1.0.17"
+    "@aliceo2/aliceo2-gui": "^1.0.21"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^4.6.1",
+    "eslint": "^4.8.0",
     "eslint-config-google": "^0.9.1",
     "jsdoc-to-markdown": "^3.0.0",
-    "mocha": "^3.5.0",
+    "mocha": "^4.0.0",
     "nyc": "^11.2.1",
     "phantom": "^4.0.5",
     "qunit": "^1.0.0",
