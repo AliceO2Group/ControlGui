@@ -98,7 +98,7 @@ $(function() {
     ws.send({command : this.id, value: Math.random()*100});
   });
 
-  $('#ws').bind('websocketopen', function() {
+  $('#ws').bind('websocketauthed', function() {
     ws.send({command: 'lock-check'});
   });
   $('#ws').bind('websocketclose', function() {
