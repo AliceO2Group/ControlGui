@@ -44,7 +44,7 @@ textarea {
 $(function() {
   /// instance of websocket widget
   var ws = $.o2.websocket({
-    url: 'wss://{{websockethostname}}',
+    url: `wss://${location.host}`,
     oauth: '{{oauth}}',
     token: '{{token}}',
     id: {{personid}},
