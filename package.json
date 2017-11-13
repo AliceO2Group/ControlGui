@@ -10,7 +10,8 @@
     "mocha": "./node_modules/.bin/mocha test/",
     "qunit": "./node_modules/.bin/phantomjs ./node_modules/qunit-phantomjs-runner/runner-list.js file://`pwd`/test/qunit-lock.html",
     "eslint": "./node_modules/.bin/eslint ./*.js public/*.js test/*.js",
-    "doc": "./node_modules/.bin/jsdoc2md --files ./*.js public/*.js test/*.js > docs/API.md"
+    "doc": "./node_modules/.bin/jsdoc2md --files ./*.js public/*.js test/*.js > docs/API.md",
+    "postinstall": "mkdir -p public/libs/images; cp node_modules/jquery-ui-dist/jquery-ui.* public/libs; cp node_modules/jquery-ui-dist/images/* public/libs/images;"
   },
   "author": "Adam Wegrzynek",
   "repository": {
@@ -19,19 +20,20 @@
   },
   "license": "GPL-3",
   "dependencies": {
-    "@aliceo2/aliceo2-gui": "^1.0.35"
+    "@aliceo2/aliceo2-gui": "^1.0.43",
+    "jquery-ui-dist": "^1.12.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "chai-http": "^3.0.0",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^4.9.0",
+    "chai-http": "^3.0.0",
+    "eslint": "^4.11.0",
     "eslint-config-google": "^0.9.1",
-    "jsdoc-to-markdown": "^3.0.0",
+    "jsdoc-to-markdown": "^3.0.1",
     "mocha": "^4.0.1",
-    "nyc": "^11.2.1",
+    "nyc": "^11.3.0",
     "phantom": "^4.0.5",
-    "qunit": "^1.0.0",
+    "qunit": "^2.4.1",
     "qunit-phantomjs-runner": "^2.3.0"
   }
 }

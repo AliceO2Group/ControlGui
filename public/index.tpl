@@ -35,58 +35,35 @@ textarea {
 </style>
 <script src="/libs/jquery.js"></script>
 <script src="/libs/jquery-ui.js"></script>
-<script src="ws.widget.js"></script>
+<script src="websocket-client.js"></script>
 <script src="padlock.widget.js"></script>
-<script src="notification-ws.widget.js"></script>
-<script src="notification-settings.widget.js"></script>
-<script src="notification-apn.widget.js"></script>
 <script>
 $(function() {
-  /// instance of websocket widget
-  var ws = $.o2.websocket({
-    url: `wss://${location.host}`,
-    oauth: '{{oauth}}',
-    token: '{{token}}',
-    id: {{personid}},
-  }, $('#ws') );
-
+  var ws = new WebSocketClient(
+    {{personid}},
+    '{{token}}',
+    '{{oauth}}'
+  );
+  ws.onclose(console.log);
+  ws.onopen(console.log);
+  ws.onerror(console.log);
+  
   var padlock = $.o2.padlock({
     id: {{personid}}
   }, $('#padlock') );
 
-  var notification = $.o2.socketNotification();
-
-  var pushNotif = $.o2.pushNotification({
-    applicationServerPublicKey: '{{applicationServerPublicKey}}',
-    pushButton: $('.js-push-btn'),
-    result: $('.result'),
-    jwtToken: '{{token}}',
-    preferencesForm: $('.preferences-form'),
-    preferenceOptionsSection: $('#preferenceOptions')
-  });
-
-  var apn = $.o2.apn({
-    pushButton: $('#safariSubscribe'),
-    result: $('.result'),
-    jwtToken: '{{token}}',
-    preferencesForm: $('.preferences-form'),
-    preferenceOptionsSection: $('#preferenceOptions'),
-    pushId: '{{pushId}}',
-    hostname: '{{hostname}}'
-  });
-
-  $('#ws').bind('websocketlock-get', function(evt, data) {
+  ws.bind('lock-get', function(data) {
     padlock.lock(data.payload.id);
     $('#execute-zeromq').prop('disabled', false).removeClass("ui-state-disabled");
   });
 
-  $('#ws').bind('websocketlock-release', function(evt, data) {
+  ws.bind('lock-release', function(data) {
     padlock.unlock();
     $('#execute-zeromq').prop('disabled', true).addClass("ui-state-disabled");
   });
 
-  $('#ws').bind('websocketlock-check', function(evt, data) {
-  if (data.payload.locked) padlock.lock(data.payload.id);
+  ws.bind('lock-check', function(data) {
+    if (data.payload.locked) padlock.lock(data.payload.id);
     else padlock.unlock();
   });
  
@@ -98,15 +75,11 @@ $(function() {
     ws.send({command : this.id, value: Math.random()*100});
   });
 
-  $('#ws').bind('websocketauthed', function() {
+  ws.bind('authed', function() {
     ws.send({command: 'lock-check'});
   });
-  $('#ws').bind('websocketclose', function() {
+  ws.bind('close', function() {
     $('#overlay').css('visibility', 'visible');
-  });
-
-  $('#ws').bind('websocketnotification', function(evt, parsed) {
-    notification.generate(parsed);
   });
 });
 </script>
@@ -128,25 +101,6 @@ $(function() {
 <br><br>
 <h3>Console log</h3>
 <textarea id="console" class="ui-widget ui-state-default ui-corner-all"></textarea>
-<div id="ws"></div>
 <div id="overlay"></div>
-<hr>
-<p>
-  <h3>Push Notification Controls</h3>
-  <button disabled class="js-push-btn ui-button ui-corner-all ui-widget">
-    Enable Push Messaging
-  </button>
-  <button disabled id="safariSubscribe" class="ui-button ui-corner-all ui-widget">
-    Enable Push Messaging
-  </button>
-</p>
-<br>
-<form class="is-invisible preferences-form">
-  <h3>Notification Preferences</h3>
-  <div id="preferenceOptions"></div>
-  <input type="submit" class="ui-button ui-corner-all ui-widget" value="Update Notification Preferences">
-</form>
-<br><br>
-<div class="result"></div>
 </body>
 </html>

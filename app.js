@@ -3,7 +3,6 @@ const config = require('./config.json');
 const ZeroMQClient = require('@aliceo2/aliceo2-gui').ZeroMQClient;
 const HttpServer = require('@aliceo2/aliceo2-gui').HttpServer;
 const WebSocket = require('@aliceo2/aliceo2-gui').WebSocket;
-const Notifications = require('@aliceo2/aliceo2-gui').Notifications;
 
 const zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port, 'sub');
 const zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, 'req');
@@ -30,5 +29,3 @@ websocketServer.bind('execute', (request) => {
 zmqSub.on('message', function(message) {
   websocketServer.broadcast(message);
 });
-// eslint-disable-next-line
-const notifications = new Notifications(http, config.pushNotifications);

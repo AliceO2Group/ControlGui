@@ -11,7 +11,7 @@
 $.widget('o2.padlock', {
   /**
    * Clear all classes from the element, sets back default color
-   */ 
+   */
   _clear: function() {
     this._removeClass('ui-icon-locked')._removeClass('ui-icon-unlocked');
     this.element.css('color', 'black');
@@ -20,7 +20,7 @@ $.widget('o2.padlock', {
   /**
    * Sets icon to locked, stored the id
    * @param {number} id - person ID
-   */ 
+   */
   lock: function(id) {
     this._clear();
     if (this.options.id != id) {
