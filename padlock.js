@@ -1,5 +1,5 @@
 const log = require('@aliceo2/aliceo2-gui').Log;
-const Response = require('@aliceo2/aliceo2-gui').Response;
+const WebSocketMessage = require('@aliceo2/aliceo2-gui').WebSocketMessage;
 
 /**
  * WebSocket module enforcing that only single user is allowed to execute commands at the time.
@@ -22,14 +22,14 @@ class Padlock {
    */
   check(message) {
     if (this.isHoldingLock(message.id)) {
-      return new Response(200).command('lock-get').payload(
+      return new WebSocketMessage(200).setCommand('lock-get').setPayload(
         {details: 'Locked by you', locked: true, id: this._lockedId});
     } else if (this._lockedId !== null) {
-      return new Response(200).payload(
+      return new WebSocketMessage(200).setPayload(
         {details: 'Locked by ' + this._lockedId, locked: true, id: this._lockedId}
       );
     } else {
-      return new Response(200).payload({locked: false});
+      return new WebSocketMessage(200).setPayload({locked: false});
     }
   }
 
@@ -39,11 +39,12 @@ class Padlock {
    */
   get(message) {
     if (this.lock(message.id)) {
-      return new Response(200).payload(
+      return new WebSocketMessage(200).setPayload(
         {details: 'Granted to ' + message.id, id: message.id}
-      ).broadcast();
+      ).setBroadcast();
     } else {
-      return new Response(403).payload({details: 'Already locked/not authorized'});
+      return new WebSocketMessage(403)
+        .setPayload({details: 'Already locked/not authorized'});
     }
   }
 
@@ -53,9 +54,10 @@ class Padlock {
    */
   release(message) {
     if (this.unlock(message.id)) {
-      return new Response(200).payload({details: 'Unlocked by ' + message.id}).broadcast();
+      return new WebSocketMessage(200)
+        .setPayload({details: 'Unlocked by ' + message.id}).setBroadcast();
     } else {
-      return new Response(403);
+      return new WebSocketMessage(403);
     }
   }
 

@@ -1,8 +1,6 @@
 const config = require('./config.json');
 
-const ZeroMQClient = require('@aliceo2/aliceo2-gui').ZeroMQClient;
-const HttpServer = require('@aliceo2/aliceo2-gui').HttpServer;
-const WebSocket = require('@aliceo2/aliceo2-gui').WebSocket;
+const {ZeroMQClient, HttpServer, WebSocket, WebSocketMessage} = require('@aliceo2/aliceo2-gui');
 
 const zmqSub = new ZeroMQClient(config.zeromq.sub.ip, config.zeromq.sub.port, 'sub');
 const zmqReq = new ZeroMQClient(config.zeromq.req.ip, config.zeromq.req.port, 'req');
@@ -20,9 +18,9 @@ websocketServer.bind('lock-check', (message) => padlock.check(message));
 websocketServer.bind('execute', (request) => {
   if (padlock.isHoldingLock(request.id)) {
     zmqReq.send(request);
-    return new Response(202);
+    return new WebSocketMessage(202);
   } else {
-    return new Response(403);
+    return new WebSocketMessage(403);
   }
 });
 

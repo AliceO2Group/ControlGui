@@ -102,5 +102,6 @@ $(function() {
 <h3>Console log</h3>
 <textarea id="console" class="ui-widget ui-state-default ui-corner-all"></textarea>
 <div id="overlay"></div>
+<div>Test var test: {{test}}</div>
 </body>
 </html>
